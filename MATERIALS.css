@@ -8,13 +8,15 @@
 
 .u-section-1 .u-text-1 {
   font-family: "Press Start 2P";
+  font-size: 2.25rem;
   margin: 207px 0 0;
 }
 
 .u-section-1 .u-text-2 {
-  font-size: 0.875rem;
+  font-size: 1.875rem;
   font-family: "Press Start 2P";
-  margin: 21px 0 0;
+  width: 686px;
+  margin: 32px auto 0;
 }
 
 .u-section-1 .u-btn-1 {
@@ -23,7 +25,8 @@
   border-style: none;
   font-family: "Press Start 2P";
   font-size: 4.5rem;
-  margin: 54px auto 60px;
+  box-shadow: 13px 12px 8px 0 rgba(51,51,51,1);
+  margin: 43px auto 60px;
 }
 
 @media (max-width: 1199px) {
@@ -32,7 +35,14 @@
   }
 
   .u-section-1 .u-text-1 {
-    margin-left: 386px;
+    width: 554px;
+    margin-top: 213px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .u-section-1 .u-text-2 {
+    margin-top: 15px;
   }
 }
 
@@ -42,26 +52,63 @@
   }
 
   .u-section-1 .u-text-1 {
-    margin-left: 296px;
+    width: 424px;
+    margin-top: 221px;
+  }
+
+  .u-section-1 .u-text-2 {
+    margin-top: 8px;
   }
 }
 
 @media (max-width: 767px) {
   .u-section-1 .u-sheet-1 {
-    min-height: 471px;
+    min-height: 871px;
   }
 
   .u-section-1 .u-text-1 {
-    margin-left: 222px;
+    width: auto;
+    margin-top: 185px;
+    margin-right: 46px;
+    margin-left: 70px;
+  }
+
+  .u-section-1 .u-text-2 {
+    width: auto;
+    margin-top: 40px;
+    margin-left: -25px;
+    margin-right: -25px;
+  }
+
+  .u-section-1 .u-btn-1 {
+    margin-top: 46px;
   }
 }
 
 @media (max-width: 575px) {
   .u-section-1 .u-sheet-1 {
-    min-height: 297px;
+    min-height: 761px;
   }
 
   .u-section-1 .u-text-1 {
-    margin-left: 140px;
+    font-size: 1.875rem;
+    margin-top: 217px;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .u-section-1 .u-text-2 {
+    font-size: 1.125rem;
+    margin-top: 36px;
+    margin-left: -16px;
+    margin-right: -16px;
+  }
+
+  .u-section-1 .u-btn-1 {
+    border-style: solid;
+    font-size: 1.5rem;
+    animation-duration: 1000ms;
+    margin-top: 52px;
+    padding: 9px 26px 10px;
   }
 }
