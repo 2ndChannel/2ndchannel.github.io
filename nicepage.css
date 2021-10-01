@@ -36903,27 +36903,31 @@ a.u-link.u-text-hover-grey-90:hover {
 }
 
 .u-header .u-sheet-1 {
-  min-height: 89px;
+  min-height: 99px;
 }
 
 .u-header .u-image-1 {
   width: 284px;
   height: 89px;
-  margin: 0 auto 0 0;
+  margin: 5px auto;
 }
 @media (max-width: 1199px) {
   .u-header .u-sheet-1 {
-    min-height: 73px;
+    min-height: 82px;
+  }
+
+  .u-header .u-image-1 {
+    width: 284px;
   }
 }
 @media (max-width: 991px) {
   .u-header .u-sheet-1 {
-    min-height: 56px;
+    min-height: 63px;
   }
 }
 @media (max-width: 767px) {
   .u-header .u-sheet-1 {
-    min-height: 89px;
+    min-height: 96px;
   }
 
   .u-header .u-image-1 {
@@ -36931,7 +36935,11 @@ a.u-link.u-text-hover-grey-90:hover {
     margin: initial;
   }
 }
-
+@media (max-width: 575px) {
+  .u-header .u-sheet-1 {
+    min-height: 95px;
+  }
+}
 .u-footer {
   background-image: url("images/podval.png");
   background-position: 50% 50%;
