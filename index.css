@@ -93,6 +93,7 @@
   letter-spacing: 2px;
   font-size: 0.75rem;
   border-style: none;
+  background-image: none;
   margin: -39px 0 0 auto;
 }
 
@@ -337,9 +338,9 @@
 
   .u-section-1 .u-group-2 {
     min-height: 391px;
-    width: 340px;
-    margin-left: 0;
-    margin-right: 0;
+    width: auto;
+    margin-right: initial;
+    margin-left: initial;
   }
 
   .u-section-1 .u-text-1 {
