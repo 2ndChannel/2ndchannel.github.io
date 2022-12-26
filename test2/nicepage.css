@@ -36550,7 +36550,7 @@ a.u-link.u-text-hover-grey-90:hover {
 }
 
 .u-header .u-menu-1 {
-  margin: -71px 72px 52px auto;
+  margin: -53px 0 43px auto;
 }
 
 .u-header .u-file-icon-1 {
@@ -36600,8 +36600,7 @@ a.u-link.u-text-hover-grey-90:hover {
 
   .u-header .u-menu-1 {
     width: auto;
-    margin-top: -71px;
-    margin-right: 72px;
+    margin-top: -53px;
     margin-left: 375px;
   }
 }
