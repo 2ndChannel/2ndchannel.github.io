@@ -36653,12 +36653,14 @@ a.u-link.u-text-hover-grey-90:hover {
 
   .u-header .u-menu-1 {
     margin-top: -52px;
+    margin-right: 0;
     margin-bottom: 26px;
   }
 
   .u-header .u-file-icon-1 {
     font-size: calc(1em + 8px);
-    padding: 4px 40px;
+    padding-left: 25px;
+    padding-right: 25px;
   }
 
   .u-header .u-nav-5 {
