@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Безымянная страница</title>
+<meta name="keywords" content="2nd Channel, TNU4, Unkende, Ninja Gaiden 4, Ункенде, ТНУ4, Денди, старые игры, ретроигры, фанатская игра, game maker, разработка игры, стримы, гейм мейкер, ниндзя гайден, ninja gaiden, ryu hayabusa, рю хаябуса, dendy">
+<meta name="author" content="2nd Channel">
+<link href="favicon.ico" rel="shortcut icon" type="image/x-icon">
+<link href="favicon.png" rel="apple-touch-icon" sizes="16x16">
+<link href="2nd_Channel.css" rel="stylesheet">
+<link href="broadcast.css" rel="stylesheet">
+<script src="jquery-1.12.4.min.js"></script>
+<script src="wwb14.min.js"></script>
+</head>
+<body>
+<div id="container">
+<div id="wb_Text1" style="position:absolute;left:20px;top:94px;width:950px;height:192px;z-index:3;">
+<span style="color:#FFFFFF;font-family:Verdana;font-size:13px;">Решил отправить Архив движков в ссылку. Эта версия - последняя в нём. Сохраню новую версию TNU Engine v8.530.<br>Сделано всё до уровня 09-2 за исключением катсцен до и после т09-1.<br>22 октября 2022 года, 20:42.<br><br>TNU Engine v8.530<br>1. Заметил, что при использовании оружия на блоке Ункенде в последний шаг принималд неверный кадр (отворачивал голову или<br>что-то в этмоу роде). Относительно недавно менял его DRAW. И тогда при отрисовке нужного кадра проверялся image_index.<br>Как выяснил, из-за этого была ошибка. Поэтому вместо него прописал &quot;-1&quot;. Тогда всё нормализовалось. У Роберта таких проблем<br>не было.<br>2. При коллизии с Эвисом может отниматься не только 1, но и 2 удара. Значение через определённый промежуток времени рандомно<br>меняется. А пули и раньше отнимали 2 удара (думал, что 1). Хотя битва с ним всё равно стала тяжелее, поскольку теперь<br>у Роберта за одно использование айтема может быть 3 патрона пистолета, а не 6.</span></div>
+</div>
+<div id="PageHeader1" style="position:fixed;text-align:left;left:0;top:0;right:0;height:76px;z-index:7777;">
+<div id="wb_Image1" style="position:absolute;left:16px;top:6px;width:251px;height:57px;z-index:0;">
+<img src="images/logotype.png" id="Image1" alt=""></div>
+<div id="wb_М-Главная" style="position:absolute;left:311px;top:22px;width:132px;height:24px;z-index:1;">
+<a href="./index.html" onmouseenter="ShowObject('Image5', 1);return false;"><img src="images/menu1.png" id="М-Главная" alt=""></a></div>
+<div id="wb_Image4" style="position:absolute;left:713px;top:22px;width:241px;height:24px;z-index:2;">
+<img src="images/menu3.png" id="Image4" alt=""></div>
+</div>
+</body>
+</html>
