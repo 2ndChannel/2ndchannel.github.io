@@ -1,19 +1,64 @@
+@-webkit-keyframes bouncing-ball
+{
+   0% { -webkit-transform: rotate(0deg) ;  }
+   50% { -webkit-transform: translate(0px,140px) rotate(0deg) ; height: 140px;  }
+   55% { -webkit-transform: translate(0px,150px) rotate(0deg) ; height: 120px;  }
+   65% { -webkit-transform: translate(0px,120px) rotate(0deg) ; height: 120px;  }
+   95% { -webkit-transform: translate(0px,0px) rotate(0deg) ;  }
+   100% { -webkit-transform: translate(0px,0px) rotate(0deg) ;  }
+}
+@-moz-keyframes bouncing-ball
+{
+   0% { -moz-transform: rotate(0deg) ;  }
+   50% { -moz-transform: translate(0px,140px) rotate(0deg) ; height: 140px;  }
+   55% { -moz-transform: translate(0px,150px) rotate(0deg) ; height: 120px;  }
+   65% { -moz-transform: translate(0px,120px) rotate(0deg) ; height: 120px;  }
+   95% { -moz-transform: translate(0px,0px) rotate(0deg) ;  }
+   100% { -moz-transform: translate(0px,0px) rotate(0deg) ;  }
+}
+@-o-keyframes bouncing-ball
+{
+   0% { -o-transform: rotate(0deg) ;  }
+   50% { -o-transform: translate(0px,140px) rotate(0deg) ; height: 140px;  }
+   55% { -o-transform: translate(0px,150px) rotate(0deg) ; height: 120px;  }
+   65% { -o-transform: translate(0px,120px) rotate(0deg) ; height: 120px;  }
+   95% { -o-transform: translate(0px,0px) rotate(0deg) ;  }
+   100% { -o-transform: translate(0px,0px) rotate(0deg) ;  }
+}
+@-ms-keyframes bouncing-ball
+{
+   0% { -ms-transform: rotate(0deg) ;  }
+   50% { -ms-transform: translate(0px,140px) rotate(0deg) ; height: 140px;  }
+   55% { -ms-transform: translate(0px,150px) rotate(0deg) ; height: 120px;  }
+   65% { -ms-transform: translate(0px,120px) rotate(0deg) ; height: 120px;  }
+   95% { -ms-transform: translate(0px,0px) rotate(0deg) ;  }
+   100% { -ms-transform: translate(0px,0px) rotate(0deg) ;  }
+}
+@keyframes bouncing-ball
+{
+   0% { transform: rotate(0deg) ;  }
+   50% { transform: translate(0px,140px) rotate(0deg) ; height: 140px;  }
+   55% { transform: translate(0px,150px) rotate(0deg) ; height: 120px;  }
+   65% { transform: translate(0px,120px) rotate(0deg) ; height: 120px;  }
+   95% { transform: translate(0px,0px) rotate(0deg) ;  }
+   100% { transform: translate(0px,0px) rotate(0deg) ;  }
+}
 a
 {
-   color: #0000FF;
+   color: #FFFFFF;
    text-decoration: underline;
 }
 a:visited
 {
-   color: #800080;
+   color: #C04600;
 }
 a:active
 {
-   color: #FF0000;
+   color: #319B0F;
 }
 a:hover
 {
-   color: #0000FF;
+   color: #C00000;
    text-decoration: underline;
 }
 input:focus, textarea:focus, select:focus
