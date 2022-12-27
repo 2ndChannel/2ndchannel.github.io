@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" >
+	<url>
+		<loc>https://2ndchannel.github.io/</loc>
+		<lastmod>2022-12-27</lastmod>
+		<changefreq>monthly</changefreq>
+		<priority>0.5</priority>
+	</url>
+	<url>
+		<loc>https://2ndchannel.github.io/index.html</loc>
+		<lastmod>2022-12-27</lastmod>
+		<changefreq>monthly</changefreq>
+		<priority>0.5</priority>
+	</url>
+	<url>
+		<loc>https://2ndchannel.github.io/broadcast.html</loc>
+		<lastmod>2022-12-27</lastmod>
+		<changefreq>monthly</changefreq>
+		<priority>0.5</priority>
+	</url>
+	<url>
+		<loc>https://2ndchannel.github.io/extra.html</loc>
+		<lastmod>2022-12-27</lastmod>
+		<changefreq>monthly</changefreq>
+		<priority>0.5</priority>
+	</url>
+	<url>
+		<loc>https://2ndchannel.github.io/header.html</loc>
+		<lastmod>2022-12-27</lastmod>
+		<changefreq>monthly</changefreq>
+		<priority>0.5</priority>
+	</url>
+</urlset>
