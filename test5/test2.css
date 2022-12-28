@@ -1,0 +1,188 @@
+div#container
+{
+   width: 1000px;
+   position: relative;
+   margin: 0 auto 0 auto;
+   text-align: left;
+}
+body
+{
+   background-color: #000000;
+   background-image: url(images/city.png);
+   background-attachment: fixed;
+   background-position: center center;
+   background-repeat: no-repeat;
+   background-size: cover;
+   color: #000000;
+   font-family: "Lucida Sans Unicode";
+   font-weight: normal;
+   font-size: 19px;
+   line-height: 1.1875;
+   margin: 0;
+   text-align: center;
+}
+#Layer1dgf
+{
+   background-color: #FBFBFB;
+   background-image: none;
+}
+#wb_Image1gadfsdafsdfa
+{
+   margin: 0;
+   vertical-align: top;
+}
+#Image1gadfsdafsdfa
+{
+   border: 0px solid #000000;
+   box-sizing: border-box;
+   padding: 0;
+   display: inline-block;
+   width: 91px;
+   height: 91px;
+   vertical-align: top;
+}
+#Layer1
+{
+   background-color: #DB7093;
+   background-image: none;
+}
+#Layer1
+{
+   position: fixed;
+   text-align: center;
+   left: 0;
+   top: 0px;
+   right: 0;
+   width: 894px;
+   height: 400px;
+   margin-left: auto;
+   margin-right: auto;
+   z-index: 2;
+}
+#wb_Image1gadfsdafsdfa
+{
+   display: inline-block;
+   width: 91px;
+   height: 91px;
+   z-index: 0;
+}
+#Layer1dgf
+{
+   position: fixed;
+   text-align: center;
+   right: 0;
+   top: 0;
+   bottom: 0;
+   width: 106px;
+   z-index: 1;
+}
+@media only screen and (min-width: 768px) and (max-width: 999px)
+{
+div#container
+{
+   width: 768px;
+}
+body
+{
+   background-color: #000000;
+   background-image: url(images/city.png);
+   background-attachment: fixed;
+   background-position: center center;
+   background-repeat: no-repeat;
+   background-size: cover;
+}
+#Layer1dgf
+{
+   width: 111px;
+   visibility: visible;
+   display: inline;
+   font-size: 19px;
+   font-family: "Lucida Sans Unicode";
+   font-weight: normal;
+   font-style: normal;
+   text-decoration: none;
+   background-color: #FBFBFB;
+   background-image: none;
+}
+#wb_Image1gadfsdafsdfa
+{
+   width: 91px;
+   height: 91px;
+   visibility: visible;
+   display: inline-block;
+   margin: 0;
+   padding: 0;
+}
+#Image1gadfsdafsdfa
+{
+   width: 91px;
+   height: 91px;
+}
+#Layer1
+{
+   visibility: visible;
+   display: inline;
+   font-size: 19px;
+   font-family: "Lucida Sans Unicode";
+   font-weight: normal;
+   font-style: normal;
+   text-decoration: none;
+   background-color: #DB7093;
+   background-image: none;
+}
+}
+@media only screen and (max-width: 767px)
+{
+div#container
+{
+   width: 320px;
+}
+body
+{
+   background-color: #000000;
+   background-image: url(images/city.png);
+   background-attachment: fixed;
+   background-position: center center;
+   background-repeat: no-repeat;
+   background-size: cover;
+}
+#Layer1dgf
+{
+   width: 106px;
+   visibility: visible;
+   display: inline;
+   font-size: 19px;
+   font-family: "Lucida Sans Unicode";
+   font-weight: normal;
+   font-style: normal;
+   text-decoration: none;
+   background-color: #FBFBFB;
+   background-image: none;
+}
+#wb_Image1gadfsdafsdfa
+{
+   width: 91px;
+   height: 91px;
+   visibility: visible;
+   display: inline-block;
+   margin: 0;
+   padding: 0;
+}
+#Image1gadfsdafsdfa
+{
+   width: 91px;
+   height: 91px;
+}
+#Layer1
+{
+   visibility: visible;
+   display: inline;
+   font-size: 19px;
+   font-family: "Lucida Sans Unicode";
+   font-weight: normal;
+   font-style: normal;
+   text-decoration: none;
+   background-color: #DB7093;
+   background-image: none;
+}
+}
