@@ -1,0 +1,293 @@
+div#container
+{
+   width: 1200px;
+   position: relative;
+   margin: 0 auto 0 auto;
+   text-align: left;
+}
+body
+{
+   background-color: #000000;
+   background-image: url('images/city.png');
+   background-attachment: fixed;
+   background-position: left center;
+   background-repeat: repeat-x;
+   background-size: cover;
+   color: #FFFFFF;
+   font-family: Verdana;
+   font-weight: normal;
+   font-size: 16px;
+   line-height: 1.1875;
+   margin: 0;
+   text-align: center;
+}
+a
+{
+   color: #FFFFFF;
+   text-decoration: underline;
+}
+a:visited
+{
+   color: #FF0000;
+}
+a:active
+{
+   color: #32CD32;
+}
+a:hover
+{
+   color: #FF4500;
+   text-decoration: underline;
+}
+#preloader
+{
+   background: #000000 url("images/loading.gif") no-repeat center center;
+   bottom: 0;
+   position: fixed;
+   top: 0;
+   width: 100%;
+   z-index: 99999;
+}
+#wb_menu_Image1
+{
+   vertical-align: top;
+}
+#menu_Image1
+{
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 4px 4px 4px 4px;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+}
+#wb_menu_Image2
+{
+   vertical-align: top;
+}
+#menu_Image2
+{
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 4px 4px 4px 4px;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+}
+#wb_menu_Image3
+{
+   vertical-align: top;
+}
+#menu_Image3
+{
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 4px 4px 4px 4px;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+}
+#wb_Image1
+{
+   vertical-align: top;
+}
+#Image1
+{
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 0;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+}
+#wb_Image1
+{
+   position: absolute;
+   left: 0px;
+   top: 0px;
+   width: 169px;
+   height: 38px;
+   z-index: 3;
+}
+#wb_index_EmbeddedPage1
+{
+   position: absolute;
+   left: 242px;
+   top: 0px;
+   width: 716px;
+   height: 38px;
+   z-index: 4;
+}
+#wb_menu_Image3
+{
+   position: absolute;
+   left: 327px;
+   top: 3px;
+   width: 132px;
+   height: 24px;
+   z-index: 2;
+}
+#wb_menu_Image2
+{
+   position: absolute;
+   left: 187px;
+   top: 3px;
+   width: 132px;
+   height: 24px;
+   z-index: 1;
+}
+#wb_menu_Image1
+{
+   position: absolute;
+   left: 467px;
+   top: 3px;
+   width: 241px;
+   height: 24px;
+   z-index: 0;
+}
+@media only screen and (min-width: 768px) and (max-width: 1199px)
+{
+div#container
+{
+   width: 768px;
+}
+body
+{
+   background-color: #000000;
+   background-image: url('images/city.png');
+   background-attachment: fixed;
+   background-position: left center;
+   background-repeat: repeat-x;
+   background-size: cover;
+}
+#wb_index_EmbeddedPage1
+{
+   left: 31px;
+   top: 0px;
+   width: 707px;
+   height: 38px;
+   visibility: visible;
+   display: inline;
+}
+#wb_menu_Image1
+{
+   left: 458px;
+   top: 3px;
+   width: 241px;
+   height: 24px;
+   visibility: visible;
+   display: inline;
+   margin: 4px 4px 4px 4px;
+   padding: 0;
+}
+#wb_menu_Image2
+{
+   left: 178px;
+   top: 3px;
+   width: 132px;
+   height: 24px;
+   visibility: visible;
+   display: inline;
+   margin: 4px 4px 4px 4px;
+   padding: 0;
+}
+#wb_menu_Image3
+{
+   left: 318px;
+   top: 3px;
+   width: 132px;
+   height: 24px;
+   visibility: visible;
+   display: inline;
+   margin: 4px 4px 4px 4px;
+   padding: 0;
+}
+#wb_Image1
+{
+   left: 0px;
+   top: 0px;
+   width: 169px;
+   height: 38px;
+   visibility: visible;
+   display: inline;
+   margin: 0;
+   padding: 0;
+}
+}
+@media only screen and (max-width: 767px)
+{
+div#container
+{
+   width: 320px;
+}
+body
+{
+   background-color: #000000;
+   background-image: url('images/city.png');
+   background-attachment: fixed;
+   background-position: left center;
+   background-repeat: repeat-x;
+   background-size: cover;
+}
+#wb_index_EmbeddedPage1
+{
+   left: 0px;
+   top: 0px;
+   width: 300px;
+   height: 102px;
+   visibility: visible;
+   display: inline;
+}
+#wb_menu_Image1
+{
+   left: 36px;
+   top: 70px;
+   width: 241px;
+   height: 24px;
+   visibility: visible;
+   display: inline;
+   margin: 4px 4px 4px 4px;
+   padding: 0;
+}
+#wb_menu_Image2
+{
+   left: 20px;
+   top: 38px;
+   width: 132px;
+   height: 24px;
+   visibility: visible;
+   display: inline;
+   margin: 4px 4px 4px 4px;
+   padding: 0;
+}
+#wb_menu_Image3
+{
+   left: 160px;
+   top: 38px;
+   width: 132px;
+   height: 24px;
+   visibility: visible;
+   display: inline;
+   margin: 4px 4px 4px 4px;
+   padding: 0;
+}
+#wb_Image1
+{
+   left: 76px;
+   top: 0px;
+   width: 169px;
+   height: 38px;
+   visibility: visible;
+   display: inline;
+   margin: 0;
+   padding: 0;
+}
+}
