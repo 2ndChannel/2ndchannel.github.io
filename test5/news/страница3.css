@@ -1,0 +1,106 @@
+div#container
+{
+   width: 970px;
+   position: relative;
+   margin: 0 auto 0 auto;
+   text-align: left;
+}
+body
+{
+   background-color: #000000;
+   background-image: url(images/city.png);
+   background-attachment: fixed;
+   background-position: center center;
+   background-repeat: no-repeat;
+   background-size: cover;
+   color: #000000;
+   font-family: "Lucida Sans Unicode";
+   font-weight: normal;
+   font-size: 19px;
+   line-height: 1.1875;
+   margin: 0;
+   text-align: center;
+}
+#wb_Image1sdds
+{
+   margin: 0;
+   vertical-align: top;
+}
+#Image1sdds
+{
+   border: 0px solid #000000;
+   box-sizing: border-box;
+   padding: 0;
+   display: inline-block;
+   width: 248px;
+   height: 248px;
+   vertical-align: top;
+}
+#wb_LayoutGrid1sssssssss
+{
+   clear: both;
+   position: relative;
+   table-layout: fixed;
+   display: table;
+   text-align: center;
+   width: 100%;
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #CCCCCC;
+   box-sizing: border-box;
+   margin: 0;
+}
+#LayoutGrid1sssssssss
+{
+   box-sizing: border-box;
+   padding: 0px 15px 0px 15px;
+   margin-right: auto;
+   margin-left: auto;
+}
+#LayoutGrid1sssssssss .row
+{
+   margin-right: -15px;
+   margin-left: -15px;
+}
+#LayoutGrid1sssssssss > .row > .col-1
+{
+   box-sizing: border-box;
+   font-size: 0px;
+   min-height: 1px;
+   padding-right: 15px;
+   padding-left: 15px;
+   position: relative;
+}
+#LayoutGrid1sssssssss > .row > .col-1
+{
+   float: left;
+}
+#LayoutGrid1sssssssss > .row > .col-1
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #FFFFFF;
+   width: 100%;
+   text-align: left;
+}
+#LayoutGrid1sssssssss:before,
+#LayoutGrid1sssssssss:after,
+#LayoutGrid1sssssssss .row:before,
+#LayoutGrid1sssssssss .row:after
+{
+   display: table;
+   content: " ";
+}
+#LayoutGrid1sssssssss:after,
+#LayoutGrid1sssssssss .row:after
+{
+   clear: both;
+}
+@media (max-width: 480px)
+{
+#LayoutGrid1sssssssss > .row > .col-1
+{
+   float: none;
+   width: 100% !important;
+}
+}
