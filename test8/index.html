@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>2ND CHANNEL: все ссылки / материалы / статистика</title>
+<meta name="author" content="2nd Channel">
+<meta name="categories" content="Games">
+<meta name="generator" content="2nd Channel">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="2nd_Channel.css" rel="stylesheet">
+<link href="index.css" rel="stylesheet">
+<script src="jquery-3.6.0.min.js"></script>
+<script src="jquery-ui.min.js"></script>
+<script src="wwb18.min.js"></script>
+<script>
+$(document).ready(function()
+{
+   if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {$('#preloader').remove();}
+});
+$(window).on('load', function()
+{
+   $('#preloader').remove();
+});
+</script>
+</head>
+<body>
+<div id="container">
+<div id="wb_index_EmbeddedPage1">
+<div id="wb_menu_Image1">
+<a href="#" onmouseleave="SetImage('menu_Image1','images/menu3.png');return false;" onmousemove="SetImage('menu_Image1','images/menu3_choose.png');return false;"><img src="images/menu3.png" id="menu_Image1" alt="" width="241" height="24"></a></div>
+<div id="wb_menu_Image2">
+<a href="#" onclick="ShowObjectWithEffect('submenu1', 1, 'slideup', 500);return false;" onmouseleave="SetImage('menu_Image2','images/menu1.png');return false;" onmousemove="SetImage('menu_Image2','images/menu1_choose.png');return false;"><img src="images/menu1.png" id="menu_Image2" alt="" width="132" height="24"></a></div>
+<div id="wb_menu_Image3">
+<a href="#" onmouseleave="SetImage('menu_Image3','images/menu2.png');return false;" onmousemove="SetImage('menu_Image3','images/menu2_choose.png');return false;"><img src="images/menu2.png" id="menu_Image3" alt="" width="132" height="24"></a></div>
+<div id="wb_menu_Image4">
+<img src="images/logotype.png" id="menu_Image4" alt="" width="169" height="39"></div>
+<div id="submenu1">
+<div id="wb_Image1">
+<img src="images/menu1a.png" id="Image1" alt="" width="122" height="14"></div>
+<div id="wb_Image2">
+<img src="images/menu2dfs.png" id="Image2" alt="" width="122" height="16"></div>
+<div id="wb_Image3">
+<img src="images/menu3er.png" id="Image3" alt="" width="230" height="14"></div>
+<div id="wb_Image4">
+<a href="#" onclick="ShowObjectWithEffect('submenu1', 0, 'slideup', 500);return false;"><img src="images/up.png" id="Image4" alt="" width="36" height="36"></a></div>
+</div>
+</div>
+</div>
+<div id="preloader"></div>
+</body>
+</html>
