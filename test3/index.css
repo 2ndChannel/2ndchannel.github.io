@@ -8,9 +8,9 @@ div#container
 body
 {
    background-color: #000000;
-   background-image: url('images/city2.png');
+   background-image: url('images/city6.png');
    background-attachment: fixed;
-   background-position: center center;
+   background-position: left top;
    background-repeat: repeat-x;
    color: #FFFFFF;
    font-family: Verdana;
