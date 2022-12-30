@@ -12,6 +12,7 @@ body
    background-attachment: fixed;
    background-position: left top;
    background-repeat: repeat-x;
+   background-size: 100% 100%;
    color: #FFFFFF;
    font-family: Verdana;
    font-weight: normal;

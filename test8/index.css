@@ -12,6 +12,7 @@ body
    background-attachment: fixed;
    background-position: left top;
    background-repeat: repeat-x;
+   background-size: 100% 100%;
    color: #FFFFFF;
    font-family: Verdana;
    font-weight: normal;
@@ -237,6 +238,7 @@ body
    background-attachment: fixed;
    background-position: left top;
    background-repeat: repeat-x;
+   background-size: 100% 100%;
 }
 #wb_EmbeddedPage1
 {
@@ -357,6 +359,7 @@ body
    background-attachment: fixed;
    background-position: left top;
    background-repeat: repeat-x;
+   background-size: 100% 100%;
 }
 #wb_EmbeddedPage1
 {
