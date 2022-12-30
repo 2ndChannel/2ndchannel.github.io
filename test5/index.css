@@ -10,7 +10,7 @@ body
    background-color: #000000;
    background-image: url('images/city2.png');
    background-attachment: fixed;
-   background-position: left top;
+   background-position: center top;
    background-repeat: repeat-x;
    color: #FFFFFF;
    font-family: Verdana;
@@ -235,7 +235,7 @@ body
    background-color: #000000;
    background-image: url('images/city2.png');
    background-attachment: fixed;
-   background-position: left top;
+   background-position: center top;
    background-repeat: repeat-x;
 }
 #wb_EmbeddedPage1
@@ -355,7 +355,7 @@ body
    background-color: #000000;
    background-image: url('images/city2.png');
    background-attachment: fixed;
-   background-position: left top;
+   background-position: center top;
    background-repeat: repeat-x;
 }
 #wb_EmbeddedPage1
