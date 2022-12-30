@@ -10,8 +10,9 @@ body
    background-color: #000000;
    background-image: url('images/city2.png');
    background-attachment: fixed;
-   background-position: center top;
+   background-position: center center;
    background-repeat: repeat-x;
+   background-size: contain;
    color: #FFFFFF;
    font-family: Verdana;
    font-weight: normal;
