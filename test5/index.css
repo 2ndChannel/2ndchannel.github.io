@@ -1,0 +1,518 @@
+div#container
+{
+   width: 1200px;
+   position: relative;
+   margin: 0 auto 0 auto;
+   text-align: left;
+}
+body
+{
+   background-color: #000000;
+   background-image: url('images/city2.png');
+   background-attachment: fixed;
+   background-position: center top;
+   background-repeat: repeat-x;
+   background-size: 100% 100%;
+   color: #FFFFFF;
+   font-family: Verdana;
+   font-weight: normal;
+   font-size: 16px;
+   line-height: 1.1875;
+   margin: 0;
+   text-align: center;
+}
+a
+{
+   color: #FFFFFF;
+   text-decoration: underline;
+}
+a:visited
+{
+   color: #FF0000;
+}
+a:active
+{
+   color: #32CD32;
+}
+a:hover
+{
+   color: #FF4500;
+   text-decoration: underline;
+}
+#wb_system_menu_Image1
+{
+   vertical-align: top;
+}
+#system_menu_Image1
+{
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 4px 4px 4px 4px;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+}
+#wb_system_menu_Image2
+{
+   vertical-align: top;
+}
+#system_menu_Image2
+{
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 4px 4px 4px 4px;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+}
+#wb_system_menu_Image3
+{
+   vertical-align: top;
+}
+#system_menu_Image3
+{
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 4px 4px 4px 4px;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+}
+#wb_system_menu_Image4
+{
+   vertical-align: top;
+}
+#system_menu_Image4
+{
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 4px 4px 4px 4px;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+}
+#system_menu_Layer1
+{
+   background-color: transparent;
+   background-image: none;
+   border-radius: 0px;
+}
+#wb_index_Text1 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_index_Text1 div
+{
+   text-align: left;
+}
+#Layer1
+{
+   background-color: rgba(0,0,0,0.39);
+   background-image: none;
+   border-radius: 30px;
+}
+#wb_index_ych_main_img
+{
+   vertical-align: top;
+}
+#index_ych_main_img
+{
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 0;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+}
+#wb_Text1 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text1
+{
+   color: #FFFFFF;
+   font-family: Verdana;
+   font-weight: 400;
+   font-size: 11px;
+   line-height: 14px;
+}
+#wb_Text1 p, #wb_Text1 ul
+{
+   margin: 0;
+   padding: 0;
+}
+#wb_Text1
+{
+   position: absolute;
+   left: 118px;
+   top: 21px;
+   width: 505px;
+   height: 84px;
+   z-index: 6;
+}
+#wb_index_ych_main_img
+{
+   position: absolute;
+   left: 18px;
+   top: 18px;
+   width: 90px;
+   height: 90px;
+   z-index: 5;
+}
+#wb_system_menu_Image4
+{
+   position: absolute;
+   left: 242px;
+   top: 0px;
+   width: 169px;
+   height: 38px;
+   z-index: 3;
+}
+#wb_system_menu_Image3
+{
+   position: absolute;
+   left: 570px;
+   top: 7px;
+   width: 132px;
+   height: 24px;
+   z-index: 2;
+}
+#wb_system_menu_Image2
+{
+   position: absolute;
+   left: 430px;
+   top: 7px;
+   width: 132px;
+   height: 24px;
+   z-index: 1;
+}
+#wb_system_menu_Image1
+{
+   position: absolute;
+   left: 710px;
+   top: 7px;
+   width: 241px;
+   height: 24px;
+   z-index: 0;
+}
+#system_menu_Layer1
+{
+   position: absolute;
+   text-align: left;
+   left: 0px;
+   top: 0px;
+   width: 1200px;
+   height: 46px;
+   z-index: 4;
+}
+#Layer1
+{
+   position: absolute;
+   text-align: left;
+   left: 0px;
+   top: 163px;
+   width: 641px;
+   height: 122px;
+   z-index: 9;
+}
+#wb_index_system_menu_EmbeddedPage1
+{
+   position: absolute;
+   left: 0px;
+   top: 0px;
+   width: 1200px;
+   height: 46px;
+   z-index: 7;
+}
+#wb_index_Text1
+{
+   position: absolute;
+   left: 119px;
+   top: 72px;
+   width: 962px;
+   height: 56px;
+   z-index: 8;
+}
+@media only screen and (min-width: 768px) and (max-width: 1199px)
+{
+div#container
+{
+   width: 768px;
+}
+body
+{
+   background-color: #000000;
+   background-image: url('images/city2.png');
+   background-attachment: fixed;
+   background-position: center top;
+   background-repeat: repeat-x;
+}
+#wb_index_system_menu_EmbeddedPage1
+{
+   left: 0px;
+   top: 0px;
+   width: 768px;
+   height: 46px;
+   visibility: visible;
+   display: inline;
+}
+#wb_system_menu_Image1
+{
+   left: 494px;
+   top: 7px;
+   width: 241px;
+   height: 24px;
+   visibility: visible;
+   display: inline;
+   margin: 4px 4px 4px 4px;
+   padding: 0;
+}
+#wb_system_menu_Image2
+{
+   left: 214px;
+   top: 7px;
+   width: 132px;
+   height: 24px;
+   visibility: visible;
+   display: inline;
+   margin: 4px 4px 4px 4px;
+   padding: 0;
+}
+#wb_system_menu_Image3
+{
+   left: 354px;
+   top: 7px;
+   width: 132px;
+   height: 24px;
+   visibility: visible;
+   display: inline;
+   margin: 4px 4px 4px 4px;
+   padding: 0;
+}
+#wb_system_menu_Image4
+{
+   left: 26px;
+   top: 0px;
+   width: 169px;
+   height: 38px;
+   visibility: visible;
+   display: inline;
+   margin: 4px 4px 4px 4px;
+   padding: 0;
+}
+#system_menu_Layer1
+{
+   left: 0px;
+   top: 0px;
+   width: 768px;
+   height: 46px;
+   visibility: visible;
+   display: block;
+}
+#wb_index_Text1
+{
+   left: 39px;
+   top: 72px;
+   width: 690px;
+   height: 98px;
+   visibility: visible;
+   display: inline;
+}
+#wb_index_Text1
+{
+   margin: 0;
+   padding: 0;
+}
+#Layer1
+{
+   left: 12px;
+   top: 203px;
+   width: 641px;
+   height: 127px;
+   visibility: visible;
+   display: block;
+}
+#wb_index_ych_main_img
+{
+   left: 10px;
+   top: 9px;
+   width: 108px;
+   height: 108px;
+   visibility: visible;
+   display: inline;
+   margin: 0;
+   padding: 0;
+}
+#wb_Text1
+{
+   left: 118px;
+   top: 21px;
+   width: 505px;
+   height: 84px;
+   visibility: visible;
+   display: inline;
+}
+#wb_Text1
+{
+   font-family: Verdana;
+   font-weight: 400;
+   font-size: 11px;
+   margin: 0;
+   padding: 0;
+   text-align: left;
+   line-height: 15px;
+}
+}
+@media only screen and (max-width: 767px)
+{
+div#container
+{
+   width: 320px;
+}
+body
+{
+   background-color: #000000;
+   background-image: url('images/city4.png');
+   background-attachment: fixed;
+   background-position: center top;
+   background-repeat: repeat-x;
+   background-size: 100% 100%;
+}
+#wb_index_system_menu_EmbeddedPage1
+{
+   left: 0px;
+   top: 0px;
+   width: 320px;
+   height: 110px;
+   visibility: visible;
+   display: inline;
+}
+#wb_system_menu_Image1
+{
+   left: 36px;
+   top: 78px;
+   width: 241px;
+   height: 24px;
+   visibility: visible;
+   display: inline;
+   margin: 4px 4px 4px 4px;
+   padding: 0;
+}
+#wb_system_menu_Image2
+{
+   left: 20px;
+   top: 46px;
+   width: 132px;
+   height: 24px;
+   visibility: visible;
+   display: inline;
+   margin: 4px 4px 4px 4px;
+   padding: 0;
+}
+#wb_system_menu_Image3
+{
+   left: 160px;
+   top: 46px;
+   width: 132px;
+   height: 24px;
+   visibility: visible;
+   display: inline;
+   margin: 4px 4px 4px 4px;
+   padding: 0;
+}
+#wb_system_menu_Image4
+{
+   left: 72px;
+   top: 0px;
+   width: 169px;
+   height: 38px;
+   visibility: visible;
+   display: inline;
+   margin: 4px 4px 4px 4px;
+   padding: 0;
+}
+#system_menu_Layer1
+{
+   left: 0px;
+   top: 0px;
+   width: 320px;
+   height: 110px;
+   visibility: visible;
+   display: block;
+}
+#wb_index_Text1
+{
+   left: 10px;
+   top: 136px;
+   width: 301px;
+   height: 182px;
+   visibility: visible;
+   display: inline;
+}
+#wb_index_Text1
+{
+   margin: 0;
+   padding: 0;
+}
+#Layer1
+{
+   left: 0px;
+   top: 336px;
+   width: 320px;
+   height: 428px;
+   visibility: visible;
+   display: block;
+}
+#wb_index_ych_main_img
+{
+   left: 101px;
+   top: 28px;
+   width: 108px;
+   height: 108px;
+   visibility: visible;
+   display: inline;
+   margin: 0;
+   padding: 0;
+}
+#wb_Text1
+{
+   left: 17px;
+   top: 153px;
+   width: 286px;
+   height: 252px;
+   visibility: visible;
+   display: inline;
+}
+#wb_Text1
+{
+   font-family: Verdana;
+   font-weight: 400;
+   font-size: 16px;
+   margin: 0;
+   padding: 0;
+   text-align: left;
+   line-height: 19px;
+}
+}
