@@ -16,15 +16,19 @@
 <div class="bg"></div>
 
 <div id="nav"></div>
+
+<!-- НАВИГАЦИЯ -->
+<script src="script.js"></script>
+
 <script>
 fetch("nav.html")
 .then(r => r.text())
 .then(html => {
   document.getElementById("nav").innerHTML = html;
 
-  initMenu();
-  setActiveLink();
-  updateMenuTitle();
+  if(typeof initMenu === "function") initMenu();
+  if(typeof setActiveLink === "function") setActiveLink();
+  if(typeof updateMenuTitle === "function") updateMenuTitle();
 });
 </script>
 
@@ -39,8 +43,7 @@ fetch("nav.html")
     </select>
   </div>
 
-  <!-- Кнопки -->
-  <div style="margin-bottom:10px; display:flex; gap:10px; flex-wrap:wrap;">
+  <div style="margin-bottom:10px;">
     <button id="downloadSelected">Скачать выбранное</button>
     <button id="selectAll">Выбрать все</button>
     <button id="clearAll">Снять выбор</button>
@@ -74,12 +77,13 @@ function getYouTubeTitle(url){
     .catch(() => "");
 }
 
-// ===== Render =====
+// ===== render games =====
 function renderGames(data){
   const container = document.getElementById("games");
   container.innerHTML = "";
 
   data.forEach(async (g, i) => {
+
     const title = await getYouTubeTitle(g.stream);
 
     const div = document.createElement("div");
@@ -92,7 +96,7 @@ function renderGames(data){
         <img src="https://cdn-icons-png.flaticon.com/512/727/727245.png" width="18">
       </a>
 
-      <a href="${g.download}" target="_blank" download>
+      <a href="${g.download}" target="_blank">
         <img src="https://cdn-icons-png.flaticon.com/512/724/724933.png" width="18">
       </a>
 
@@ -103,7 +107,7 @@ function renderGames(data){
   });
 }
 
-// ===== Load =====
+// ===== load json =====
 fetch("games.json")
 .then(r=>r.json())
 .then(data=>{
@@ -112,7 +116,7 @@ fetch("games.json")
   renderGames(gamesData);
 });
 
-// ===== Sort =====
+// ===== sort =====
 document.addEventListener("change", (e)=>{
   if(e.target.id !== "sortSelect") return;
 
@@ -133,7 +137,7 @@ document.addEventListener("change", (e)=>{
   renderGames(sorted);
 });
 
-// ===== Скачать выбранное (РАБОЧИЙ СПОСОБ) =====
+// ===== download selected (100% working) =====
 document.getElementById("downloadSelected").addEventListener("click", ()=>{
   const selected = [...document.querySelectorAll(".game-checkbox:checked")];
 
@@ -142,7 +146,7 @@ document.getElementById("downloadSelected").addEventListener("click", ()=>{
     return;
   }
 
-  selected.forEach((el, index)=>{
+  selected.forEach((el, i)=>{
     const game = gamesData[el.dataset.index];
 
     if(game.download && game.download !== "#"){
@@ -153,22 +157,21 @@ document.getElementById("downloadSelected").addEventListener("click", ()=>{
         document.body.appendChild(a);
         a.click();
         a.remove();
-      }, index * 500); // задержка чтобы браузер не заблокировал
+      }, i * 500);
     }
   });
 });
 
-// ===== Выбрать всё =====
+// ===== select all =====
 document.getElementById("selectAll").addEventListener("click", ()=>{
-  document.querySelectorAll(".game-checkbox").forEach(cb=>cb.checked = true);
+  document.querySelectorAll(".game-checkbox").forEach(c=>c.checked = true);
 });
 
-// ===== Снять всё =====
+// ===== clear all =====
 document.getElementById("clearAll").addEventListener("click", ()=>{
-  document.querySelectorAll(".game-checkbox").forEach(cb=>cb.checked = false);
+  document.querySelectorAll(".game-checkbox").forEach(c=>c.checked = false);
 });
 </script>
 
-<script src="script.js"></script>
 </body>
 </html>
