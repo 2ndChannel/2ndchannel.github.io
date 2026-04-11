@@ -27,9 +27,24 @@ function initMenu(){
   });
 }
 
+function setActiveLink(){
+  const links = document.querySelectorAll("#menu a");
+  const current = location.pathname.split("/").pop();
+
+  links.forEach(link=>{
+    const href = link.getAttribute("href");
+
+    if(href === current || (href === "index.html" && current === "")){
+      link.classList.add("active");
+    }
+  });
+}
+
+/* ОДИН observer — главный */
 const observer = new MutationObserver(()=>{
   if(document.getElementById("menu")){
     initMenu();
+    setActiveLink();
   }
 });
 

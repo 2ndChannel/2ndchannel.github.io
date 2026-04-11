@@ -18,7 +18,7 @@ body{
 .bg{
   position:fixed;
   inset:0;
-  background:url("https://rh74896.github.io/obsidianhr2/site2/system/city_vertical.gif") repeat-x;
+  background:url("https://2ndchannel.github.io/test9/system/city_vertical.gif") repeat-x;
   background-size:cover;
   animation: scrollBg 240s linear infinite;
   pointer-events:none;
@@ -230,4 +230,26 @@ a{
   .links img{
     width:24px;
   }
+}
+
+@media (min-width:701px){
+
+  .menu-links a{
+    position: relative;
+    padding: 0 12px;
+  }
+
+  .menu-links a:not(:last-child)::after{
+    content: "•";
+    position: absolute;
+    right: -6px;
+    color: #fff;
+    font-size: 28px;
+    line-height: 1;
+  }
+
+}
+
+.menu-links a.active{
+  color: #2ecc71;
 }
