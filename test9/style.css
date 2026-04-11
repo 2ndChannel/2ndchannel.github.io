@@ -12,6 +12,8 @@ body{
   color:#fff;
   background:#000;
   overflow-x:hidden;
+  
+  font-variant-numeric: lining-nums;
 }
 
 /* BACKGROUND */
@@ -305,4 +307,9 @@ a{
 
 .menu-links a.active{
   color:#2ecc71;
+}
+
+.num {
+  display: inline-block;
+  transform: translateY(-1px);
 }
