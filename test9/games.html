@@ -6,9 +6,6 @@
 <link rel="stylesheet" href="style.css">
 
 <title>Игры на стримах | 2nd Channel</title>
-
-<meta name="description" content="Список игр со стримов 2nd Channel: NES, Dendy, Sega, фан-игры, ссылки на прохождения и загрузку игр.">
-<meta name="keywords" content="игры на стриме, NES игры, Dendy игры, Sega, скачать игры, ретро игры, фан игры, TNU4, 2nd Channel">
 </head>
 
 <body>
@@ -17,7 +14,6 @@
 
 <div id="nav"></div>
 
-<!-- НАВИГАЦИЯ -->
 <script src="script.js"></script>
 
 <script>
@@ -34,90 +30,109 @@ fetch("nav.html")
 
 <div class="container card center">
 
-  <div style="margin-bottom:10px;">
-    <label>Сортировка: </label>
-    <select id="sortSelect">
-      <option value="date" selected>По дате (новые)</option>
-      <option value="name">По алфавиту</option>
-      <option value="status">По статусу</option>
-    </select>
-  </div>
+<div style="margin-bottom:10px;">
+  <label>Сортировка: </label>
+  <select id="sortSelect">
+    <option value="date" selected>По дате</option>
+    <option value="name">По алфавиту</option>
+  </select>
+</div>
 
-  <div style="margin-bottom:10px;">
-    <button id="downloadSelected">Скачать выбранное</button>
-    <button id="selectAll">Выбрать все</button>
-    <button id="clearAll">Снять выбор</button>
-  </div>
-
-  <div id="games"></div>
+<div id="games"></div>
 
 </div>
 
 <script>
 let gamesData = [];
-const ytCache = {};
 
-// ===== YouTube title =====
-function getYouTubeTitle(url){
-  if(!url) return Promise.resolve("");
-  if(ytCache[url]) return Promise.resolve(ytCache[url]);
-
-  if(!url.includes("youtube.com") && !url.includes("youtu.be")){
-    return Promise.resolve("");
-  }
-
-  const api = "https://www.youtube.com/oembed?url=" + encodeURIComponent(url) + "&format=json";
-
-  return fetch(api)
-    .then(r => r.json())
-    .then(d => {
-      ytCache[url] = d.title;
-      return d.title;
-    })
-    .catch(() => "");
-}
-
-// ===== render games =====
-function renderGames(data){
-  const container = document.getElementById("games");
-  container.innerHTML = "";
-
-  data.forEach(async (g, i) => {
-
-    const title = await getYouTubeTitle(g.stream);
-
-    const div = document.createElement("div");
-    div.className = `badge ${g.status}`;
-
-    div.innerHTML = `
-      <input type="checkbox" class="game-checkbox" data-index="${i}">
-
-      <a href="${g.stream}" target="_blank" title="${title}">
-        <img src="https://cdn-icons-png.flaticon.com/512/727/727245.png" width="18">
-      </a>
-
-      <a href="${g.download}" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/724/724933.png" width="18">
-      </a>
-
-      ${g.name}
-    `;
-
-    container.appendChild(div);
-  });
-}
-
-// ===== load json =====
+// ===== LOAD =====
 fetch("games.json")
 .then(r=>r.json())
 .then(data=>{
   gamesData = data;
-  gamesData.sort((a,b)=> new Date(b.date) - new Date(a.date));
-  renderGames(gamesData);
+  renderGrouped(data);
 });
 
-// ===== sort =====
-document.addEventListener("change", (e)=>{
+// ===== GROUP BY STREAM =====
+function groupByStream(data){
+  const groups = {};
+
+  data.forEach(game=>{
+    const key = game.streamTitle || "Без стрима";
+
+    if(!groups[key]){
+      groups[key] = [];
+    }
+
+    groups[key].push(game);
+  });
+
+  return groups;
+}
+
+// ===== RENDER =====
+function renderGrouped(data){
+  const container = document.getElementById("games");
+  container.innerHTML = "";
+
+  const groups = groupByStream(data);
+
+  Object.keys(groups).forEach(streamName=>{
+    const games = groups[streamName];
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "card";
+    wrapper.style.marginBottom = "15px";
+
+    wrapper.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+        <h3 style="margin:0;">${streamName}</h3>
+        <button onclick="downloadStream('${streamName}')">
+          Скачать все игры стрима
+        </button>
+      </div>
+      <div style="margin-top:10px;" id="group-${streamName.replace(/\s/g,'_')}"></div>
+    `;
+
+    container.appendChild(wrapper);
+
+    const list = wrapper.querySelector("div[id^='group-']");
+
+    games.forEach(game=>{
+      const div = document.createElement("div");
+      div.className = `badge ${game.status}`;
+
+      div.innerHTML = `
+        <a href="${game.stream}" target="_blank">🎥</a>
+        <a href="${game.download}" target="_blank">⬇</a>
+        ${game.name}
+      `;
+
+      list.appendChild(div);
+    });
+  });
+}
+
+// ===== DOWNLOAD STREAM =====
+function downloadStream(streamName){
+  const games = gamesData.filter(g => (g.streamTitle || "Без стрима") === streamName);
+
+  games.forEach((g,i)=>{
+    if(g.download && g.download !== "#"){
+      setTimeout(()=>{
+        const a = document.createElement("a");
+        a.href = g.download;
+        a.download = "";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }, i * 400);
+    }
+  });
+}
+
+// ===== SORT =====
+document.addEventListener("change",(e)=>{
   if(e.target.id !== "sortSelect") return;
 
   let sorted = [...gamesData];
@@ -130,46 +145,7 @@ document.addEventListener("change", (e)=>{
     sorted.sort((a,b)=>a.name.localeCompare(b.name));
   }
 
-  if(e.target.value === "status"){
-    sorted.sort((a,b)=>a.status.localeCompare(b.status));
-  }
-
-  renderGames(sorted);
-});
-
-// ===== download selected (100% working) =====
-document.getElementById("downloadSelected").addEventListener("click", ()=>{
-  const selected = [...document.querySelectorAll(".game-checkbox:checked")];
-
-  if(!selected.length){
-    alert("Выберите хотя бы одну игру");
-    return;
-  }
-
-  selected.forEach((el, i)=>{
-    const game = gamesData[el.dataset.index];
-
-    if(game.download && game.download !== "#"){
-      setTimeout(()=>{
-        const a = document.createElement("a");
-        a.href = game.download;
-        a.download = "";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-      }, i * 500);
-    }
-  });
-});
-
-// ===== select all =====
-document.getElementById("selectAll").addEventListener("click", ()=>{
-  document.querySelectorAll(".game-checkbox").forEach(c=>c.checked = true);
-});
-
-// ===== clear all =====
-document.getElementById("clearAll").addEventListener("click", ()=>{
-  document.querySelectorAll(".game-checkbox").forEach(c=>c.checked = false);
+  renderGrouped(sorted);
 });
 </script>
 
