@@ -34,6 +34,7 @@ fetch("nav.html")
   <div style="margin-bottom:10px;">
     <label>Сортировка: </label>
     <select id="sortSelect">
+      <option value="date" selected>По дате (новые)</option>
       <option value="name">По алфавиту</option>
       <option value="status">По статусу</option>
     </select>
@@ -67,6 +68,10 @@ fetch("games.json")
 .then(r=>r.json())
 .then(data=>{
   gamesData = data;
+
+  // сортировка по дате по умолчанию (новые сверху)
+  gamesData.sort((a,b)=> new Date(b.date) - new Date(a.date));
+
   renderGames(gamesData);
 });
 
@@ -74,6 +79,10 @@ document.addEventListener("change", (e)=>{
   if(e.target.id !== "sortSelect") return;
 
   let sorted = [...gamesData];
+
+  if(e.target.value === "date"){
+    sorted.sort((a,b)=> new Date(b.date) - new Date(a.date));
+  }
 
   if(e.target.value === "name"){
     sorted.sort((a,b)=>a.name.localeCompare(b.name));
