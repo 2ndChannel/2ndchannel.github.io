@@ -50,8 +50,27 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
-
   padding:12px;
+}
+
+/* ===== MENU BUTTON ===== */
+.menu-toggle{
+  display:none;
+  cursor:pointer;
+  color:#fff;
+  font-weight:bold;
+  padding:6px 10px;
+  user-select:none;
+
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+/* текст страницы рядом с ☰ */
+#menuTitle{
+  font-weight:bold;
+  letter-spacing:1px;
 }
 
 /* DESKTOP MENU */
@@ -69,15 +88,6 @@ body{
   display:inline-block;
   letter-spacing:1px;
   white-space:nowrap;
-}
-
-/* MOBILE BUTTON */
-.menu-toggle{
-  display:none;
-  cursor:pointer;
-  color:#fff;
-  font-weight:bold;
-  padding:5px;
 }
 
 /* CONTAINER */
@@ -202,7 +212,7 @@ a{
 @media (max-width:700px){
 
   .menu-toggle{
-    display:block;
+    display:flex;
   }
 
   .menu-links{

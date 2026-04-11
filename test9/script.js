@@ -11,12 +11,44 @@ function closeImg(){
   fs.style.display = "none";
 }
 
+/* ===== MENU ===== */
+
+function getPageTitle(){
+  const current = location.href.split("/").pop().toLowerCase();
+
+  const map = {
+    "index.html": "Главная",
+    "games.html": "Игры",
+    "streams.html": "Стримы",
+    "tnu4.html": "TNU4"
+  };
+
+  return map[current] || "Главная";
+}
+
+function updateMenuTitle(){
+  const title = document.getElementById("menuTitle");
+  const menu = document.getElementById("menu");
+
+  if(!title) return;
+
+  const isOpen = menu && menu.classList.contains("open");
+
+  if(isOpen){
+    title.textContent = "Меню";
+  } else {
+    title.textContent = getPageTitle();
+  }
+}
+
 function toggleMenu(){
   const menu = document.getElementById("menu");
   if(menu) menu.classList.toggle("open");
 
   updateMenuTitle();
 }
+
+/* ===== MENU INIT ===== */
 
 function initMenu(){
   const menu = document.getElementById("menu");
@@ -25,9 +57,12 @@ function initMenu(){
   menu.querySelectorAll("a").forEach(a=>{
     a.onclick = ()=>{
       menu.classList.remove("open");
+      updateMenuTitle();
     };
   });
 }
+
+/* ===== ACTIVE LINK ===== */
 
 function setActiveLink(){
   const links = document.querySelectorAll("#menu a");
@@ -43,40 +78,20 @@ function setActiveLink(){
   });
 }
 
+/* ===== AUTO INIT (для динамического nav) ===== */
+
 const observer = new MutationObserver(()=>{
   const menu = document.getElementById("menu");
   if(menu){
     initMenu();
     setActiveLink();
+    updateMenuTitle();
   }
 });
 
 observer.observe(document.body, {childList:true, subtree:true});
 
-function updateMenuTitle(){
-  const btn = document.getElementById("menuToggle");
-  const menu = document.getElementById("menu");
-
-  if(!btn || !menu) return;
-
-  const isOpen = menu.classList.contains("open");
-
-  if(isOpen){
-    btn.textContent = "☰ Меню";
-    return;
-  }
-
-  const current = location.href.split("/").pop().toLowerCase();
-
-  const map = {
-    "index.html": "Главная",
-    "games.html": "Игры",
-    "streams.html": "Стримы",
-    "tnu4.html": "TNU4"
-  };
-
-  btn.textContent = map[current] || "☰ Меню";
-}
+/* ===== ON LOAD ===== */
 
 document.addEventListener("DOMContentLoaded", ()=>{
   updateMenuTitle();
