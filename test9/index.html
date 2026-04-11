@@ -40,6 +40,18 @@ fetch("nav.html")
     <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">Канал 3</a>
   </div>
 
+  <div class="card links">
+    <h2>Стриминг</h2>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/145/145813.png">VK Live</a>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968819.png">Trovo</a>
+  </div>
+
+  <div class="card links">
+    <h2>Соцсети</h2>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/145/145813.png">VK паблик</a>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/747/747376.png">Форум</a>
+  </div>
+
 </div>
 
 <script>
@@ -58,7 +70,6 @@ fetch("news.json")
 .then(newsArray => {
   const now = new Date();
   
-  // Ищем первую новость, которая должна отображаться сейчас
   for (const news of newsArray) {
     const start = news.startDate ? new Date(news.startDate) : null;
     const end = news.endDate ? new Date(news.endDate) : null;
@@ -69,7 +80,6 @@ fetch("news.json")
     if (afterStart && beforeEnd && !localStorage.getItem("newsClosed_" + news.id)) {
       newsText.innerHTML = parseLinks(news.text);
       newsBlock.style.display = "block";
-      // Сохраняем id новости, чтобы закрытие было для неё
       closeBtn.dataset.newsId = news.id;
       break;
     }
@@ -84,5 +94,6 @@ closeBtn.onclick = function() {
 }
 </script>
 
+<script src="script.js"></script>
 </body>
 </html>
