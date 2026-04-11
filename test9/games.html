@@ -39,22 +39,22 @@ fetch("nav.html")
     </select>
   </div>
 
-  <!-- Кнопка для скачивания выбранных файлов -->
-  <button id="downloadSelected" style="margin-bottom:10px;">Скачать выбранное</button>
+  <!-- Кнопки -->
+  <div style="margin-bottom:10px; display:flex; gap:10px; flex-wrap:wrap;">
+    <button id="downloadSelected">Скачать выбранное</button>
+    <button id="selectAll">Выбрать все</button>
+    <button id="clearAll">Снять выбор</button>
+  </div>
 
   <div id="games"></div>
 
 </div>
 
-<!-- Подключаем JSZip и FileSaver для создания ZIP -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.11.0/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-
 <script>
 let gamesData = [];
 const ytCache = {};
 
-// Получение названия видео YouTube
+// ===== YouTube title =====
 function getYouTubeTitle(url){
   if(!url) return Promise.resolve("");
   if(ytCache[url]) return Promise.resolve(ytCache[url]);
@@ -74,7 +74,7 @@ function getYouTubeTitle(url){
     .catch(() => "");
 }
 
-// Рендер списка игр с чекбоксами
+// ===== Render =====
 function renderGames(data){
   const container = document.getElementById("games");
   container.innerHTML = "";
@@ -87,7 +87,7 @@ function renderGames(data){
 
     div.innerHTML = `
       <input type="checkbox" class="game-checkbox" data-index="${i}">
-      
+
       <a href="${g.stream}" target="_blank" title="${title}">
         <img src="https://cdn-icons-png.flaticon.com/512/727/727245.png" width="18">
       </a>
@@ -103,7 +103,7 @@ function renderGames(data){
   });
 }
 
-// Загрузка списка игр
+// ===== Load =====
 fetch("games.json")
 .then(r=>r.json())
 .then(data=>{
@@ -112,7 +112,7 @@ fetch("games.json")
   renderGames(gamesData);
 });
 
-// Сортировка
+// ===== Sort =====
 document.addEventListener("change", (e)=>{
   if(e.target.id !== "sortSelect") return;
 
@@ -133,29 +133,39 @@ document.addEventListener("change", (e)=>{
   renderGames(sorted);
 });
 
-// Скачивание выбранных файлов в ZIP
-document.getElementById("downloadSelected").addEventListener("click", async ()=>{
+// ===== Скачать выбранное (РАБОЧИЙ СПОСОБ) =====
+document.getElementById("downloadSelected").addEventListener("click", ()=>{
   const selected = [...document.querySelectorAll(".game-checkbox:checked")];
-  if(!selected.length) return alert("Выберите хотя бы один файл");
 
-  const zip = new JSZip();
-
-  for(let el of selected){
-    const game = gamesData[el.dataset.index];
-    if(game.download && game.download !== "#"){
-      try {
-        const response = await fetch(game.download);
-        const blob = await response.blob();
-        zip.file(game.download.split("/").pop(), blob);
-      } catch(e){
-        console.warn("Не удалось загрузить файл:", game.download);
-      }
-    }
+  if(!selected.length){
+    alert("Выберите хотя бы одну игру");
+    return;
   }
 
-  zip.generateAsync({type:"blob"}).then(content=>{
-    saveAs(content, "games.zip");
+  selected.forEach((el, index)=>{
+    const game = gamesData[el.dataset.index];
+
+    if(game.download && game.download !== "#"){
+      setTimeout(()=>{
+        const a = document.createElement("a");
+        a.href = game.download;
+        a.download = "";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }, index * 500); // задержка чтобы браузер не заблокировал
+    }
   });
+});
+
+// ===== Выбрать всё =====
+document.getElementById("selectAll").addEventListener("click", ()=>{
+  document.querySelectorAll(".game-checkbox").forEach(cb=>cb.checked = true);
+});
+
+// ===== Снять всё =====
+document.getElementById("clearAll").addEventListener("click", ()=>{
+  document.querySelectorAll(".game-checkbox").forEach(cb=>cb.checked = false);
 });
 </script>
 
