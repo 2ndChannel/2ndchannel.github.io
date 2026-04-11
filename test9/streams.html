@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<title>Стримы</title>
+</head>
+<body>
+
+<div class="bg"></div>
+
+<div id="nav"></div>
+<script>
+fetch("nav.html")
+.then(r=>r.text())
+.then(html=>document.getElementById("nav").innerHTML=html);
+</script>
+
+<div class="container">
+  <div class="card">
+
+    <table class="table">
+      <tr><th>Стрим</th><th>Дата</th><th>Канал</th></tr>
+
+      <tr>
+        <td><a href="#">Стрим рисования</a></td>
+        <td>01.04.2026</td>
+        <td><span class="badge channel-youtube">YouTube</span></td>
+      </tr>
+
+      <tr>
+        <td><a href="#">Игровой стрим</a></td>
+        <td>05.04.2026</td>
+        <td><span class="badge channel-trovo">Trovo</span></td>
+      </tr>
+
+    </table>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

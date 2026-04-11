@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<script src="script.js"></script>
+</head>
+<body>
+
+<div class="bg"></div>
+
+<div id="nav"></div>
+<script>
+fetch("nav.html")
+.then(r=>r.text())
+.then(html=>document.getElementById("nav").innerHTML=html);
+</script>
+
+<div class="container">
+
+<div class="card">
+<h1>Фан-игра</h1>
+<p>Описание проекта.</p>
+<img src="https://picsum.photos/1000/500">
+<p>Продолжение описания.</p>
+</div>
+
+<div class="card">
+<h2>Скриншоты</h2>
+<div class="gallery">
+<img src="https://picsum.photos/300/200?1" onclick="openImg(this.src)">
+<img src="https://picsum.photos/300/200?2" onclick="openImg(this.src)">
+<img src="https://picsum.photos/300/200?3" onclick="openImg(this.src)">
+<img src="https://picsum.photos/300/200?4" onclick="openImg(this.src)">
+</div>
+</div>
+
+<div class="card">
+<a href="#"><img src="https://cdn-icons-png.flaticon.com/512/724/724933.png" width="220"></a>
+</div>
+
+</div>
+
+<div id="fs" class="fullscreen" onclick="closeImg()"><img></div>
+
+</body>
+</html>

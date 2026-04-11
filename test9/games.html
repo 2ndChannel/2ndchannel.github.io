@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="bg"></div>
+
+<div id="nav"></div>
+<script>
+fetch("nav.html")
+.then(r=>r.text())
+.then(html=>document.getElementById("nav").innerHTML=html);
+</script>
+
+<div class="container card center" id="games"></div>
+
+<script>
+fetch("games.json")
+.then(r=>r.json())
+.then(data=>{
+  document.getElementById("games").innerHTML =
+  data.map(g=>`
+    <div class="badge ${g.status}">
+      <a href="${g.stream}" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/727/727245.png" width="18">
+      </a>
+      <a href="${g.download}" target="_blank" download>
+        <img src="https://cdn-icons-png.flaticon.com/512/724/724933.png" width="18">
+      </a>
+      ${g.name}
+    </div>
+  `).join("");
+});
+</script>
+
+<script src="script.js"></script>
+</body>
+</html>
