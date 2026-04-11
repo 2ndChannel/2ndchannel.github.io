@@ -5,9 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="style.css">
 <title>Главная | 2nd Channel</title>
-
-<meta name="description" content="2nd Channel — ретро-игры, стримы, прохождения Dendy / NES и Sega, фан-проект на GameMaker Team Ninja Unkende 4 / Ninja Gaiden 4 (TNU4).">
-<meta name="keywords" content="2nd Channel, Unkende, Ункенде, TNU4, ретро игры, NES, Dendy, денди, Sega, стримы, GameMaker, Ninja Gaiden, прохождения, фан игры">
 </head>
 <body>
 
@@ -19,7 +16,6 @@ fetch("nav.html")
 .then(r => r.text())
 .then(html => {
   document.getElementById("nav").innerHTML = html;
-
   initMenu();
   setActiveLink();
   updateMenuTitle();
@@ -28,7 +24,7 @@ fetch("nav.html")
 
 <div class="container">
 
-  <!-- ==== БАННЕР НОВОСТИ (ПУСТОЙ, ПОДСКРИПТ) ==== -->
+  <!-- ==== БАННЕР НОВОСТИ ==== -->
   <div id="stream-news" style="display:none; background:#ffcc00; padding:12px; text-align:center; font-weight:bold; border-radius:8px; margin-bottom:15px; position:relative;">
     <span id="news-text"></span>
     <button id="close-news" style="position:absolute; right:10px; top:8px; background:none; border:none; font-weight:bold; cursor:pointer;">✖</button>
@@ -44,46 +40,49 @@ fetch("nav.html")
     <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">Канал 3</a>
   </div>
 
-  <div class="card links">
-    <h2>Стриминг</h2>
-    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/145/145813.png">VK Live</a>
-    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968819.png">Trovo</a>
-  </div>
-
-  <div class="card links">
-    <h2>Соцсети</h2>
-    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/145/145813.png">VK паблик</a>
-    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/747/747376.png">Форум</a>
-  </div>
-
 </div>
 
 <script>
-  // ЭЛЕМЕНТЫ
-  const newsBlock = document.getElementById("stream-news");
-  const newsText = document.getElementById("news-text");
-  const closeBtn = document.getElementById("close-news");
+const newsBlock = document.getElementById("stream-news");
+const newsText = document.getElementById("news-text");
+const closeBtn = document.getElementById("close-news");
 
-  // ЗАГРУЖАЕМ JSON с новостью
-  fetch("news.json")
-  .then(r => r.json())
-  .then(data => {
-    const now = new Date();
-    const endDate = new Date(data.endDate);
+// Преобразуем Markdown-ссылки в HTML <a>
+function parseLinks(text) {
+  return text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+}
 
-    if (now <= endDate && !localStorage.getItem("newsClosed")) {
-      newsText.textContent = data.text;
+// Загрузка новостей из JSON
+fetch("news.json")
+.then(r => r.json())
+.then(newsArray => {
+  const now = new Date();
+  
+  // Ищем первую новость, которая должна отображаться сейчас
+  for (const news of newsArray) {
+    const start = news.startDate ? new Date(news.startDate) : null;
+    const end = news.endDate ? new Date(news.endDate) : null;
+    
+    const afterStart = !start || now >= start;
+    const beforeEnd = !end || now <= end;
+    
+    if (afterStart && beforeEnd && !localStorage.getItem("newsClosed_" + news.id)) {
+      newsText.innerHTML = parseLinks(news.text);
       newsBlock.style.display = "block";
+      // Сохраняем id новости, чтобы закрытие было для неё
+      closeBtn.dataset.newsId = news.id;
+      break;
     }
-  });
-
-  // Кнопка закрытия
-  closeBtn.onclick = function() {
-    newsBlock.style.display = "none";
-    localStorage.setItem("newsClosed", "true");
   }
+});
+
+// Кнопка закрытия
+closeBtn.onclick = function() {
+  const newsId = this.dataset.newsId || "default";
+  newsBlock.style.display = "none";
+  localStorage.setItem("newsClosed_" + newsId, "true");
+}
 </script>
 
-<script src="script.js"></script>
 </body>
 </html>
