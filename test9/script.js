@@ -78,19 +78,6 @@ function setActiveLink(){
   });
 }
 
-/* ===== AUTO INIT (для динамического nav) ===== */
-
-const observer = new MutationObserver(()=>{
-  const menu = document.getElementById("menu");
-  if(menu){
-    initMenu();
-    setActiveLink();
-    updateMenuTitle();
-  }
-});
-
-observer.observe(document.body, {childList:true, subtree:true});
-
 /* ===== ON LOAD ===== */
 
 document.addEventListener("DOMContentLoaded", ()=>{
