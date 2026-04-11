@@ -209,7 +209,8 @@ a{
 }
 
 /* ===== MOBILE ===== */
-@media (max-width:700px){
+/* ВЕРТИКАЛЬНЫЙ ТЕЛЕФОН */
+@media (max-width:700px) and (orientation:portrait){
 
   .menu-toggle{
     display:flex;
@@ -254,6 +255,33 @@ a{
     width:24px;
   }
 }
+
+/* ГОРИЗОНТАЛЬНЫЙ ТЕЛЕФОН */
+@media (max-width:700px) and (orientation:landscape){
+
+  .menu-toggle{
+    display:none;
+  }
+
+  .menu-links{
+    display:flex;
+    flex-direction:row;
+    justify-content:center;
+    align-items:center;
+    gap:16px;
+  }
+  
+    .menu-links a:not(:last-child)::after{
+    content:"•";
+    margin-left:16px;
+    font-size:26px;
+    opacity:0.7;
+    display:inline-block;
+    color:#fff;
+  }
+}
+
+
 
 /* DESKTOP MENU SEPARATORS */
 @media (min-width:701px){
