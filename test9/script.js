@@ -29,12 +29,13 @@ function initMenu(){
 
 function setActiveLink(){
   const links = document.querySelectorAll("#menu a");
-  const current = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+
+  const current = location.href.split("/").pop().toLowerCase();
 
   links.forEach(link=>{
     const href = (link.getAttribute("href") || "").split("/").pop().toLowerCase();
 
-    if(href === current){
+    if(current.includes(href)){
       link.classList.add("active");
     }
   });
