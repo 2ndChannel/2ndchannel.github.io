@@ -1,83 +1,116 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ресурсы 2nd Channel</title>
+
+<meta name="description" content="2nd Channel — площадка, посвящённая ретро играм NES / Dendy, Sega и других старых консолей, фан-игре Team Ninja Unkende 4 / Ninja Gaiden 4 (TNU4) и другим любительским проектам.">
+<meta name="robots" content="index, follow">
+<meta name="language" content="ru">
+
+<!-- Open Graph -->
+<meta property="og:title" content="2nd Channel — ретро игры, TNU4 и иные фан-проекты">
+<meta property="og:description" content="NES / Dendy, Sega, стримы и фан-проект TNU4 (Team Ninja Unkende 4)">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://2ndchannel.github.io/">
+<meta property="og:image" content="https://2ndchannel.github.io/system/preview.jpg">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="2nd Channel">
+<meta name="twitter:description" content="Ретро игры, стримы и фан-проект TNU4">
+<meta name="twitter:image" content="https://2ndchannel.github.io/system/preview.jpg">
+
 <link rel="stylesheet" href="style.css">
-<title>2nd Channel: Team Ninja Unkende 4, ссылки, ресурсы и другие проекты</title>
 </head>
+
 <body>
 
 <div class="bg"></div>
 
 <div id="nav"></div>
+
+<script src="script.js"></script>
+
 <script>
 fetch("nav.html")
 .then(r => r.text())
 .then(html => {
   document.getElementById("nav").innerHTML = html;
-  initMenu();
-  setActiveLink();
-  updateMenuTitle();
+
+  if(typeof initMenu === "function") initMenu();
+  if(typeof setActiveLink === "function") setActiveLink();
+  if(typeof updateMenuTitle === "function") updateMenuTitle();
 });
 </script>
 
 <div class="container">
 
-  <!-- ==== БАННЕР НОВОСТИ ==== -->
-  <div id="stream-news" style="display:none; background:#ffcc00; padding:12px; text-align:center; font-weight:bold; border-radius:8px; margin-bottom:15px; position:relative;">
-    <span id="news-text"></span>
-    <button id="close-news" style="position:absolute; right:10px; top:8px; background:none; border:none; font-weight:bold; cursor:pointer;">✖</button>
-  </div>
+<!-- NEWS -->
+<div id="stream-news" style="display:none; background:#ffcc00; padding:12px; text-align:center; font-weight:bold; border-radius:8px; margin-bottom:15px; position:relative;">
+  <span id="news-text"></span>
+  <button id="close-news" style="position:absolute; right:10px; top:8px; background:none; border:none; font-weight:bold; cursor:pointer;">✖</button>
+</div>
 
-  <!-- ==== ОСНОВНОЕ СОДЕРЖАНИЕ ==== -->
-  <div class="card"><h1>Мои ссылки</h1></div>
+<!-- INTRO SEO TEXT -->
+<div class="card">
+  <h1>2nd Channel</h1>
+  <p>
+    2nd Channel — это площадка, посвящённая ретро играм NES / Dendy и Sega (и не только),
+    фан-игре Team Ninja Unkende 4 / Ninja Gaiden 4 (TNU4), совместным кинопросмотрам
+    и связанным темам.
+  </p>
+</div>
 
-  <div class="card links">
-    <h2>YouTube</h2>
-    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">Канал 1</a>
-    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">Канал 2</a>
-    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">Канал 3</a>
-  </div>
+<!-- LINKS -->
+<div class="card links">
+  <h2>YouTube</h2>
+  <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">Канал 1</a>
+  <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">Канал 2</a>
+  <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">Канал 3</a>
+</div>
 
-  <div class="card links">
-    <h2>Стриминг</h2>
-    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/145/145813.png">VK Live</a>
-    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968819.png">Trovo</a>
-  </div>
+<div class="card links">
+  <h2>Стриминг</h2>
+  <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/145/145813.png">VK Live</a>
+  <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968819.png">Trovo</a>
+</div>
 
-  <div class="card links">
-    <h2>Соцсети</h2>
-    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/145/145813.png">VK паблик</a>
-    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/747/747376.png">Форум</a>
-  </div>
+<div class="card links">
+  <h2>Соцсети</h2>
+  <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/145/145813.png">VK паблик</a>
+  <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/747/747376.png">Форум</a>
+</div>
 
 </div>
 
+<!-- NEWS SCRIPT -->
 <script>
 const newsBlock = document.getElementById("stream-news");
 const newsText = document.getElementById("news-text");
 const closeBtn = document.getElementById("close-news");
 
-// Преобразуем Markdown-ссылки в HTML <a>
 function parseLinks(text) {
-  return text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+  return text.replace(/\[([^\]]+)\]\(([^)]+)\)/g,
+    '<a href="$2" target="_blank">$1</a>');
 }
 
-// Загрузка новостей из JSON
 fetch("news.json")
 .then(r => r.json())
 .then(newsArray => {
   const now = new Date();
-  
+
   for (const news of newsArray) {
     const start = news.startDate ? new Date(news.startDate) : null;
     const end = news.endDate ? new Date(news.endDate) : null;
-    
-    const afterStart = !start || now >= start;
-    const beforeEnd = !end || now <= end;
-    
-    if (afterStart && beforeEnd && !localStorage.getItem("newsClosed_" + news.id)) {
+
+    const active =
+      (!start || now >= start) &&
+      (!end || now <= end);
+
+    if (active && !localStorage.getItem("newsClosed_" + news.id)) {
       newsText.innerHTML = parseLinks(news.text);
       newsBlock.style.display = "block";
       closeBtn.dataset.newsId = news.id;
@@ -86,14 +119,12 @@ fetch("news.json")
   }
 });
 
-// Кнопка закрытия
 closeBtn.onclick = function() {
   const newsId = this.dataset.newsId || "default";
   newsBlock.style.display = "none";
   localStorage.setItem("newsClosed_" + newsId, "true");
-}
+};
 </script>
 
-<script src="script.js"></script>
 </body>
 </html>
