@@ -67,7 +67,7 @@ body{
   text-decoration:none;
   font-weight:bold;
   display:inline-block;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   white-space: nowrap;
 }
 
@@ -174,9 +174,9 @@ body{
 
   border-radius:6px;
 
-  white-space: nowrap;
-  overflow:hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.2;
 }
 
 .badge a{
