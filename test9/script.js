@@ -78,3 +78,21 @@ function setActiveLink(){
 document.addEventListener("DOMContentLoaded", ()=>{
   updateMenuTitle();
 });
+
+/* ===== WRAP NUMBERS ===== */
+document.addEventListener("DOMContentLoaded", ()=>{
+  function wrapNumbers(node){
+    if(node.nodeType === Node.TEXT_NODE){
+      const replaced = node.textContent.replace(/(\d+)/g,'<span class="num">$1</span>');
+      if(replaced !== node.textContent){
+        const temp = document.createElement('span');
+        temp.innerHTML = replaced;
+        node.replaceWith(...temp.childNodes);
+      }
+    } else if(node.nodeType === Node.ELEMENT_NODE && !["SCRIPT","STYLE"].includes(node.tagName)){
+      node.childNodes.forEach(wrapNumbers);
+    }
+  }
+
+  wrapNumbers(document.body);
+});
