@@ -7,9 +7,9 @@
 	"date": "2026-04-03"
 	},
 	{
-	  "name": "Super Mario",
+	  "name": "Ice Climber",
 	  "stream": "#",
-	  "download": "#",
+	  "download": "downloads/games/nes/Ice%20Climber.nes",
 	  "status": "green",
 	  "date": "2026-04-05"
 	},
