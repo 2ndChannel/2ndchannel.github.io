@@ -311,6 +311,5 @@ a{
 
 .num {
   display: inline-block;
-  transform: translateY(-2px); /* смещаем цифры вверх/вниз */
-  font-size: 0.95em;           /* уменьшаем размер цифр если нужно */
+  font-size: 1.2em;           /* уменьшаем размер цифр если нужно */
 }
