@@ -55,14 +55,14 @@ body{
 
 /* ===== MENU BUTTON ===== */
 .menu-toggle{
-  display:none;
+  display:none; /* скрыто на десктопе */
+
   cursor:pointer;
   color:#fff;
   font-weight:bold;
   padding:6px 10px;
   user-select:none;
 
-  display:flex;
   align-items:center;
   gap:8px;
 }
