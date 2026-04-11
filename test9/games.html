@@ -4,11 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="style.css">
+
 <title>Игры на стримах | 2nd Channel</title>
 
 <meta name="description" content="Список игр со стримов 2nd Channel: NES, Dendy, Sega, фан-игры, ссылки на прохождения и загрузку игр.">
 <meta name="keywords" content="игры на стриме, NES игры, Dendy игры, Sega, скачать игры, ретро игры, фан игры, TNU4, 2nd Channel">
 </head>
+
 <body>
 
 <div class="bg"></div>
@@ -20,32 +22,68 @@ fetch("nav.html")
 .then(html=>{
   document.getElementById("nav").innerHTML = html;
 
-  // ждём пока script.js точно загрузится
   setTimeout(()=>{
     if(typeof setActiveLink === "function") setActiveLink();
     if(typeof initMenu === "function") initMenu();
-  }, 0);
+  },0);
 });
 </script>
 
-<div class="container card center" id="games"></div>
+<div class="container card center">
+
+  <div style="margin-bottom:10px;">
+    <label>Сортировка: </label>
+    <select id="sortSelect">
+      <option value="name">По алфавиту</option>
+      <option value="status">По статусу</option>
+    </select>
+  </div>
+
+  <div id="games"></div>
+
+</div>
 
 <script>
-fetch("games.json")
-.then(r=>r.json())
-.then(data=>{
+let gamesData = [];
+
+function renderGames(data){
   document.getElementById("games").innerHTML =
   data.map(g=>`
     <div class="badge ${g.status}">
       <a href="${g.stream}" target="_blank">
         <img src="https://cdn-icons-png.flaticon.com/512/727/727245.png" width="18">
       </a>
+
       <a href="${g.download}" target="_blank" download>
         <img src="https://cdn-icons-png.flaticon.com/512/724/724933.png" width="18">
       </a>
+
       ${g.name}
     </div>
   `).join("");
+}
+
+fetch("games.json")
+.then(r=>r.json())
+.then(data=>{
+  gamesData = data;
+  renderGames(gamesData);
+});
+
+document.addEventListener("change", (e)=>{
+  if(e.target.id !== "sortSelect") return;
+
+  let sorted = [...gamesData];
+
+  if(e.target.value === "name"){
+    sorted.sort((a,b)=>a.name.localeCompare(b.name));
+  }
+
+  if(e.target.value === "status"){
+    sorted.sort((a,b)=>a.status.localeCompare(b.status));
+  }
+
+  renderGames(sorted);
 });
 </script>
 
