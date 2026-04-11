@@ -234,21 +234,29 @@ a{
 
 @media (min-width:701px){
 
-  .menu-links{
-    display:flex;
-    align-items:center;
-  }
+.menu-links{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:16px; /* ВОТ ГЛАВНОЕ */
+}
 
-  .menu-links a{
-    display:flex;
-    align-items:center;
-  }
+.menu-links a{
+  display:inline-block;
+}
 
-  .menu-links a:not(:last-child)::after{
-    content:"•";
-    margin: 0 14px;
-    font-size:28px;
-    color:#fff;
-  }
+.menu-links a:not(:last-child)::after{
+  content:"•";
+  margin-left:16px;
+  font-family: Arial, sans-serif;
+  font-size:26px;
+  opacity:0.7;
+  display:inline-block;
+  vertical-align:middle;
+}
 
+}
+
+.menu-links a.active{
+  color:#2ecc71;
 }

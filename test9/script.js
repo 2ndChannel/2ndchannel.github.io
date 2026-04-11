@@ -21,28 +21,28 @@ function initMenu(){
   if(!menu) return;
 
   menu.querySelectorAll("a").forEach(a=>{
-    a.addEventListener("click", ()=>{
+    a.onclick = ()=>{
       menu.classList.remove("open");
-    });
+    };
   });
 }
 
 function setActiveLink(){
   const links = document.querySelectorAll("#menu a");
-  const current = location.pathname.split("/").pop();
+  const current = (location.pathname.split("/").pop() || "index.html").toLowerCase();
 
   links.forEach(link=>{
-    const href = link.getAttribute("href");
+    const href = (link.getAttribute("href") || "").split("/").pop().toLowerCase();
 
-    if(href === current || (href === "index.html" && current === "")){
+    if(href === current){
       link.classList.add("active");
     }
   });
 }
 
-/* ОДИН observer — главный */
 const observer = new MutationObserver(()=>{
-  if(document.getElementById("menu")){
+  const menu = document.getElementById("menu");
+  if(menu){
     initMenu();
     setActiveLink();
   }

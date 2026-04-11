@@ -16,13 +16,11 @@ fetch("nav.html")
 .then(html=>{
   document.getElementById("nav").innerHTML = html;
 
-  if(typeof setActiveLink === "function"){
-    setActiveLink(); // ← ВАЖНО
-  }
-
-  if(typeof initMenu === "function"){
-    initMenu();
-  }
+  // ждём пока script.js точно загрузится
+  setTimeout(()=>{
+    if(typeof setActiveLink === "function") setActiveLink();
+    if(typeof initMenu === "function") initMenu();
+  }, 0);
 });
 </script>
 
