@@ -6,7 +6,7 @@
 /* BASE */
 body{
   margin:0;
-  padding-top:70px; /* совпадает с высотой меню */
+  padding-top:70px;
   font-family:"BitCell", Arial, sans-serif;
   font-size:24px;
   color:#fff;
@@ -67,8 +67,8 @@ body{
   text-decoration:none;
   font-weight:bold;
   display:inline-block;
-  letter-spacing: 1px;
-  white-space: nowrap;
+  letter-spacing:1px;
+  white-space:nowrap;
 }
 
 /* MOBILE BUTTON */
@@ -174,9 +174,9 @@ body{
 
   border-radius:6px;
 
-  white-space: normal;
-  word-break: break-word;
-  line-height: 1.2;
+  white-space:normal;
+  word-break:break-word;
+  line-height:1.2;
 }
 
 .badge a{
@@ -220,7 +220,7 @@ a{
     width:100%;
     padding:10px 0;
     text-align:center;
-	letter-spacing: 1px;
+    letter-spacing:1px;
   }
 
   .container{
@@ -243,9 +243,9 @@ a{
   .links img{
     width:24px;
   }
-
 }
 
+/* DESKTOP MENU SEPARATORS */
 @media (min-width:701px){
 
 .menu-links{
@@ -255,21 +255,14 @@ a{
   gap:16px;
 }
 
-.menu-links a{
-  display:inline-block;
-}
-
 .menu-links a:not(:last-child)::after{
   content:"•";
   margin-left:16px;
-  font-family: Arial, sans-serif;
   font-size:26px;
   opacity:0.7;
   display:inline-block;
-  vertical-align:middle;
   color:#fff;
 }
-
 }
 
 .menu-links a.active{
