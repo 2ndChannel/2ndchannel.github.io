@@ -28,28 +28,61 @@ fetch("nav.html")
 
 <div class="container">
 
-<div class="card"><h1>Мои ссылки</h1></div>
+  <!-- ==== БАННЕР НОВОСТИ (ПУСТОЙ, ПОДСКРИПТ) ==== -->
+  <div id="stream-news" style="display:none; background:#ffcc00; padding:12px; text-align:center; font-weight:bold; border-radius:8px; margin-bottom:15px; position:relative;">
+    <span id="news-text"></span>
+    <button id="close-news" style="position:absolute; right:10px; top:8px; background:none; border:none; font-weight:bold; cursor:pointer;">✖</button>
+  </div>
 
-<div class="card links">
-<h2>YouTube</h2>
-<a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">Канал 1</a>
-<a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">Канал 2</a>
-<a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">Канал 3</a>
+  <!-- ==== ОСНОВНОЕ СОДЕРЖАНИЕ ==== -->
+  <div class="card"><h1>Мои ссылки</h1></div>
+
+  <div class="card links">
+    <h2>YouTube</h2>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">Канал 1</a>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">Канал 2</a>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">Канал 3</a>
+  </div>
+
+  <div class="card links">
+    <h2>Стриминг</h2>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/145/145813.png">VK Live</a>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968819.png">Trovo</a>
+  </div>
+
+  <div class="card links">
+    <h2>Соцсети</h2>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/145/145813.png">VK паблик</a>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/747/747376.png">Форум</a>
+  </div>
+
 </div>
 
-<div class="card links">
-<h2>Стриминг</h2>
-<a href="#"><img src="https://cdn-icons-png.flaticon.com/512/145/145813.png">VK Live</a>
-<a href="#"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968819.png">Trovo</a>
-</div>
+<script>
+  // ЭЛЕМЕНТЫ
+  const newsBlock = document.getElementById("stream-news");
+  const newsText = document.getElementById("news-text");
+  const closeBtn = document.getElementById("close-news");
 
-<div class="card links">
-<h2>Соцсети</h2>
-<a href="#"><img src="https://cdn-icons-png.flaticon.com/512/145/145813.png">VK паблик</a>
-<a href="#"><img src="https://cdn-icons-png.flaticon.com/512/747/747376.png">Форум</a>
-</div>
+  // ЗАГРУЖАЕМ JSON с новостью
+  fetch("news.json")
+  .then(r => r.json())
+  .then(data => {
+    const now = new Date();
+    const endDate = new Date(data.endDate);
 
-</div>
+    if (now <= endDate && !localStorage.getItem("newsClosed")) {
+      newsText.textContent = data.text;
+      newsBlock.style.display = "block";
+    }
+  });
+
+  // Кнопка закрытия
+  closeBtn.onclick = function() {
+    newsBlock.style.display = "none";
+    localStorage.setItem("newsClosed", "true");
+  }
+</script>
 
 <script src="script.js"></script>
 </body>
