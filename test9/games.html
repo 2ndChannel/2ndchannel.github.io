@@ -45,12 +45,40 @@ fetch("nav.html")
 
 <script>
 let gamesData = [];
+const ytCache = {};
+
+function getYouTubeTitle(url){
+  if(!url) return Promise.resolve("");
+  if(ytCache[url]) return Promise.resolve(ytCache[url]);
+
+  if(!url.includes("youtube.com") && !url.includes("youtu.be")){
+    return Promise.resolve("");
+  }
+
+  const api = "https://www.youtube.com/oembed?url=" + encodeURIComponent(url) + "&format=json";
+
+  return fetch(api)
+    .then(r => r.json())
+    .then(d => {
+      ytCache[url] = d.title;
+      return d.title;
+    })
+    .catch(() => "");
+}
 
 function renderGames(data){
-  document.getElementById("games").innerHTML =
-  data.map(g=>`
-    <div class="badge ${g.status}">
-      <a href="${g.stream}" target="_blank">
+  const container = document.getElementById("games");
+  container.innerHTML = "";
+
+  data.forEach(async (g) => {
+
+    const title = await getYouTubeTitle(g.stream);
+
+    const div = document.createElement("div");
+    div.className = `badge ${g.status}`;
+
+    div.innerHTML = `
+      <a href="${g.stream}" target="_blank" title="${title}">
         <img src="https://cdn-icons-png.flaticon.com/512/727/727245.png" width="18">
       </a>
 
@@ -59,18 +87,17 @@ function renderGames(data){
       </a>
 
       ${g.name}
-    </div>
-  `).join("");
+    `;
+
+    container.appendChild(div);
+  });
 }
 
 fetch("games.json")
 .then(r=>r.json())
 .then(data=>{
   gamesData = data;
-
-  // сортировка по дате по умолчанию (новые сверху)
   gamesData.sort((a,b)=> new Date(b.date) - new Date(a.date));
-
   renderGames(gamesData);
 });
 

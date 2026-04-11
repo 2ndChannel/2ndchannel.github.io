@@ -34,13 +34,10 @@ function updateMenuTitle(){
 
   const isOpen = menu && menu.classList.contains("open");
 
-  if(isOpen){
-    title.textContent = "Меню";
-  } else {
-    title.textContent = getPageTitle();
-  }
+  title.textContent = isOpen ? "Меню" : getPageTitle();
 }
 
+/* ❗ ВОТ ЕДИНСТВЕННЫЙ toggleMenu */
 function toggleMenu(){
   const menu = document.getElementById("menu");
   if(menu) menu.classList.toggle("open");
@@ -77,8 +74,6 @@ function setActiveLink(){
     }
   });
 }
-
-/* ===== ON LOAD ===== */
 
 document.addEventListener("DOMContentLoaded", ()=>{
   updateMenuTitle();
