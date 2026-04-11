@@ -68,6 +68,7 @@ body{
   font-weight:bold;
   display:inline-block;
   letter-spacing: 2px;
+  white-space: nowrap;
 }
 
 /* MOBILE BUTTON */
@@ -163,12 +164,23 @@ body{
 
 /* BADGE */
 .badge{
-  display:block;
+  display:flex;
+  align-items:center;
+  gap:10px;
+
   margin:8px auto;
   max-width:600px;
   padding:8px 10px;
-  text-align:left;
+
   border-radius:6px;
+
+  white-space: nowrap;
+  overflow:hidden;
+  text-overflow: ellipsis;
+}
+
+.badge a{
+  flex-shrink:0;
 }
 
 /* COLORS */
@@ -208,6 +220,7 @@ a{
     width:100%;
     padding:10px 0;
     text-align:center;
+	letter-spacing: 1px;
   }
 
   .container{
@@ -230,6 +243,7 @@ a{
   .links img{
     width:24px;
   }
+
 }
 
 @media (min-width:701px){
