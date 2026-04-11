@@ -2,14 +2,14 @@
 	{
 	"name": "Charlie",
 	"stream": "https://www.youtube.com/live/1GS7WTnDQhc?t=25786&themeRefresh=1",
-	"download": "downloads/games/nes/Circus%20Charlie.nes",
+	"download": "https://2ndchannel.github.io/test9/downloads/games/nes/Circus%20Charlie.nes",
 	"status": "red",
 	"date": "2026-04-03"
 	},
 	{
 	  "name": "Ice Climber",
 	  "stream": "#",
-	  "download": "downloads/games/nes/Ice%20Climber.nes",
+	  "download": "https://2ndchannel.github.io/test9/downloads/games/nes/Ice%20Climber.nes",
 	  "status": "green",
 	  "date": "2026-04-05"
 	},
