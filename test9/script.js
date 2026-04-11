@@ -14,6 +14,8 @@ function closeImg(){
 function toggleMenu(){
   const menu = document.getElementById("menu");
   if(menu) menu.classList.toggle("open");
+
+  updateMenuTitle();
 }
 
 function initMenu(){
@@ -50,3 +52,32 @@ const observer = new MutationObserver(()=>{
 });
 
 observer.observe(document.body, {childList:true, subtree:true});
+
+function updateMenuTitle(){
+  const btn = document.getElementById("menuToggle");
+  const menu = document.getElementById("menu");
+
+  if(!btn || !menu) return;
+
+  const isOpen = menu.classList.contains("open");
+
+  if(isOpen){
+    btn.textContent = "☰ Меню";
+    return;
+  }
+
+  const current = location.href.split("/").pop().toLowerCase();
+
+  const map = {
+    "index.html": "Главная",
+    "games.html": "Игры",
+    "streams.html": "Стримы",
+    "tnu4.html": "TNU4"
+  };
+
+  btn.textContent = map[current] || "☰ Меню";
+}
+
+document.addEventListener("DOMContentLoaded", ()=>{
+  updateMenuTitle();
+});
