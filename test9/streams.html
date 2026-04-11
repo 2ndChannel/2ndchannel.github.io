@@ -14,7 +14,17 @@
 <script>
 fetch("nav.html")
 .then(r=>r.text())
-.then(html=>document.getElementById("nav").innerHTML=html);
+.then(html=>{
+  document.getElementById("nav").innerHTML = html;
+
+  if(typeof setActiveLink === "function"){
+    setActiveLink(); // ← ВАЖНО
+  }
+
+  if(typeof initMenu === "function"){
+    initMenu();
+  }
+});
 </script>
 
 <div class="container">

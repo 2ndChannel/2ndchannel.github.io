@@ -234,22 +234,21 @@ a{
 
 @media (min-width:701px){
 
+  .menu-links{
+    display:flex;
+    align-items:center;
+  }
+
   .menu-links a{
-    position: relative;
-    padding: 0 12px;
+    display:flex;
+    align-items:center;
   }
 
   .menu-links a:not(:last-child)::after{
-    content: "•";
-    position: absolute;
-    right: -6px;
-    color: #fff;
-    font-size: 28px;
-    line-height: 1;
+    content:"•";
+    margin: 0 14px;
+    font-size:28px;
+    color:#fff;
   }
 
-}
-
-.menu-links a.active{
-  color: #2ecc71;
 }
