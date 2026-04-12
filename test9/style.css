@@ -18,12 +18,12 @@ body {
 /* ===== BACKGROUND (ВОЗВРАЩАЕМ ГОРОД) ===== */
 .bg {
   position: fixed;
-  inset: 0;
-  background-color: green; /* по умолчанию, на всякий случай */
+  inset: 0;                 /* растянуть на весь экран */
+  background-color: #000;   /* фон всегда черный */
   background-repeat: repeat-x;
   background-size: cover;
   background-position: center top;
-  animation: scrollBg 240s linear infinite;
+  animation: scrollBg 240s linear infinite; /* если нужна анимация */
   pointer-events: none;
   z-index: 0;
   will-change: background-position;
