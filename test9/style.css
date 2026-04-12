@@ -24,11 +24,28 @@ body {
   animation: scrollBg 240s linear infinite;
   pointer-events: none;
   z-index: 0;
+  background-position: 0 0; /* Добавляем начальную позицию */
+  will-change: background-position; /* Оптимизация для анимации */
 }
 
 @keyframes scrollBg {
   from { background-position: 0 0; }
   to { background-position: -1280px 0; }
+}
+
+/* Фиксируем проблему с качеством отображения на некоторых экранах */
+@media (max-width: 768px) {
+  .bg {
+    background-size: 150%; /* Увеличиваем размер фона на мобильных */
+    background-position: center; /* Центрируем фон */
+  }
+}
+
+@media (max-width: 480px) {
+  .bg {
+    background-size: 200%; /* Еще больше на самых маленьких экранах */
+    background-position: center;
+  }
 }
 
 /* LAYERS */
