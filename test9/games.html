@@ -1,31 +1,170 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Игры</title>
 <link rel="stylesheet" href="style.css">
+
+<title>Игры на стримах | 2nd Channel</title>
+<meta name="description" content="2nd Channel — площадка, посвящённая ретро играм NES / Dendy, Sega и другим старым консолям. На этой странице собраны игры со стримов, сгруппированные по трансляциям с возможностью скачивания.">
+<meta name="robots" content="index, follow">
+<meta name="language" content="ru">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Игры со стримов — 2nd Channel">
+<meta property="og:description" content="NES / Dendy / Sega игры со стримов, фан-проекты и архив прохождений 2nd Channel">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://2ndchannel.github.io/test9/games.html">
+<meta property="og:image" content="https://2ndchannel.github.io/system/preview.jpg">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Игры со стримов | 2nd Channel">
+<meta name="twitter:description" content="Архив игр со стримов NES, Dendy и Sega с возможностью скачивания">
+<meta name="twitter:image" content="https://2ndchannel.github.io/system/preview.jpg">
+
 </head>
+
 <body>
 
 <div class="bg"></div>
+
 <div id="nav"></div>
 
-<div class="container card">
+<script src="script.js"></script>
 
-<select id="sortSelect">
-  <option value="date">По дате</option>
-  <option value="name">По имени</option>
-</select>
+<script>
+fetch("nav.html")
+.then(r => r.text())
+.then(html => {
+  document.getElementById("nav").innerHTML = html;
+
+  if(typeof initMenu === "function") initMenu();
+  if(typeof setActiveLink === "function") setActiveLink();
+  if(typeof updateMenuTitle === "function") updateMenuTitle();
+});
+</script>
+
+<div class="container card center">
+
+<div style="margin-bottom:10px;">
+  <label>Сортировка: </label>
+  <select id="sortSelect">
+    <option value="date" selected>По дате</option>
+    <option value="name">По алфавиту</option>
+  </select>
+</div>
 
 <div id="games"></div>
 
 </div>
 
-<script src="script.js"></script>
-<script src="nav.js"></script>
-<script src="games.js"></script>
+<script>
+let gamesData = [];
+
+// ===== LOAD =====
+fetch("games.json")
+.then(r=>r.json())
+.then(data=>{
+  gamesData = data;
+  renderGrouped(data);
+});
+
+// ===== GROUP BY STREAM =====
+function groupByStream(data){
+  const groups = {};
+
+  data.forEach(game=>{
+    const key = game.streamTitle || "Без стрима";
+
+    if(!groups[key]){
+      groups[key] = [];
+    }
+
+    groups[key].push(game);
+  });
+
+  return groups;
+}
+
+// ===== RENDER =====
+function renderGrouped(data){
+  const container = document.getElementById("games");
+  container.innerHTML = "";
+
+  const groups = groupByStream(data);
+
+  Object.keys(groups).forEach(streamName=>{
+    const games = groups[streamName];
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "card";
+    wrapper.style.marginBottom = "15px";
+
+    wrapper.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+        <h3 style="margin:0;">${streamName}</h3>
+        <button onclick="downloadStream('${streamName}')">
+          Скачать все игры стрима
+        </button>
+      </div>
+      <div style="margin-top:10px;" id="group-${streamName.replace(/\s/g,'_')}"></div>
+    `;
+
+    container.appendChild(wrapper);
+
+    const list = wrapper.querySelector("div[id^='group-']");
+
+    games.forEach(game=>{
+      const div = document.createElement("div");
+      div.className = `badge ${game.status}`;
+
+      div.innerHTML = `
+        <a href="${game.stream}" target="_blank">🎥</a>
+        <a href="${game.download}" target="_blank">⬇</a>
+        ${game.name}
+      `;
+
+      list.appendChild(div);
+    });
+  });
+}
+
+// ===== DOWNLOAD STREAM =====
+function downloadStream(streamName){
+  const games = gamesData.filter(g => (g.streamTitle || "Без стрима") === streamName);
+
+  games.forEach((g,i)=>{
+    if(g.download && g.download !== "#"){
+      setTimeout(()=>{
+        const a = document.createElement("a");
+        a.href = g.download;
+        a.download = "";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }, i * 400);
+    }
+  });
+}
+
+// ===== SORT =====
+document.addEventListener("change",(e)=>{
+  if(e.target.id !== "sortSelect") return;
+
+  let sorted = [...gamesData];
+
+  if(e.target.value === "date"){
+    sorted.sort((a,b)=> new Date(b.date) - new Date(a.date));
+  }
+
+  if(e.target.value === "name"){
+    sorted.sort((a,b)=>a.name.localeCompare(b.name));
+  }
+
+  renderGrouped(sorted);
+});
+</script>
 
 </body>
 </html>
