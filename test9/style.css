@@ -24,8 +24,8 @@ body {
   animation: scrollBg 240s linear infinite;
   pointer-events: none;
   z-index: 0;
-  background-position: 0 0; /* Добавляем начальную позицию */
-  will-change: background-position; /* Оптимизация для анимации */
+  background-position: center top;
+  will-change: background-position;
 }
 
 @keyframes scrollBg {
@@ -36,15 +36,15 @@ body {
 /* Фиксируем проблему с качеством отображения на некоторых экранах */
 @media (max-width: 768px) {
   .bg {
-    background-size: 150%; /* Увеличиваем размер фона на мобильных */
-    background-position: center; /* Центрируем фон */
+    background-size: 150%;
+    background-position: center center;
   }
 }
 
 @media (max-width: 480px) {
   .bg {
-    background-size: 200%; /* Еще больше на самых маленьких экранах */
-    background-position: center;
+    background-size: 200%;
+    background-position: center center;
   }
 }
 
@@ -88,6 +88,7 @@ body {
   gap: 16px;
   justify-content: center;
   align-items: center;
+  flex-wrap: nowrap; /* предотвращаем перенос */
 }
 
 /* горизонтальное */
