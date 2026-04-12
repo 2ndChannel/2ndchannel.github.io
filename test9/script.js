@@ -33,19 +33,15 @@ function updateMenuTitle(){
   if(!title) return;
 
   const isOpen = menu && menu.classList.contains("open");
-
   title.textContent = isOpen ? "Меню" : getPageTitle();
 }
 
-/* ❗ ВОТ ЕДИНСТВЕННЫЙ toggleMenu */
 function toggleMenu(){
   const menu = document.getElementById("menu");
   if(menu) menu.classList.toggle("open");
 
   updateMenuTitle();
 }
-
-/* ===== MENU INIT ===== */
 
 function initMenu(){
   const menu = document.getElementById("menu");
@@ -59,40 +55,49 @@ function initMenu(){
   });
 }
 
-/* ===== ACTIVE LINK ===== */
-
 function setActiveLink(){
   const links = document.querySelectorAll("#menu a");
-
   const current = location.href.split("/").pop().toLowerCase();
 
   links.forEach(link=>{
     const href = (link.getAttribute("href") || "").split("/").pop().toLowerCase();
-
     if(current.includes(href)){
       link.classList.add("active");
     }
   });
 }
 
+/* ===== УМНОЕ МЕНЮ ===== */
+
+function adjustMenu(){
+  const menu = document.getElementById("menu");
+  const toggle = document.getElementById("menuToggle");
+  const nav = document.querySelector(".nav");
+
+  if(!menu || !toggle || !nav) return;
+
+  // сброс
+  menu.classList.remove("vertical","open");
+  menu.classList.add("horizontal");
+  toggle.style.display = "none";
+
+  const menuWidth = menu.scrollWidth;
+  const availableWidth = nav.clientWidth;
+
+  if(menuWidth > availableWidth){
+    menu.classList.remove("horizontal");
+    menu.classList.add("vertical");
+    toggle.style.display = "flex";
+  }
+}
+
+/* ===== INIT ===== */
+
 document.addEventListener("DOMContentLoaded", ()=>{
   updateMenuTitle();
+  initMenu();
+  setActiveLink();
+  adjustMenu();
 });
 
-/* ===== WRAP NUMBERS ===== */
-document.addEventListener("DOMContentLoaded", ()=>{
-  function wrapNumbers(node){
-    if(node.nodeType === Node.TEXT_NODE){
-      const replaced = node.textContent.replace(/(\d+)/g,'<span class="num">$1</span>');
-      if(replaced !== node.textContent){
-        const temp = document.createElement('span');
-        temp.innerHTML = replaced;
-        node.replaceWith(...temp.childNodes);
-      }
-    } else if(node.nodeType === Node.ELEMENT_NODE && !["SCRIPT","STYLE"].includes(node.tagName)){
-      node.childNodes.forEach(wrapNumbers);
-    }
-  }
-
-  wrapNumbers(document.body);
-});
+window.addEventListener("resize", adjustMenu);
