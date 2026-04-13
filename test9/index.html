@@ -28,30 +28,10 @@
 
 <body>
 
-<!-- Фон -->
 <div class="bg"></div>
-<script>
-  const bg = document.querySelector('.bg');
 
-  // Пробуем загрузить GIF
-  const gif = new Image();
-  gif.src = "system/city_vertical.gif";
-
-  gif.onload = () => {
-    // Если загрузилось, устанавливаем фон
-    bg.style.backgroundImage = `url('${gif.src}')`;
-  }
-
-  gif.onerror = () => {
-    // Если не загрузилось — фон не ставим и показываем предупреждение
-    bg.style.backgroundImage = 'none';
-    alert("Ошибка: фоновая картинка не загрузилась!");
-    console.warn("Фоновая картинка GIF не загрузилась:", gif.src);
-  }
-</script>
-
-<!-- Навигация -->
 <div id="nav"></div>
+
 <script src="script.js"></script>
 
 <script>

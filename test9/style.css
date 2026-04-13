@@ -19,13 +19,12 @@ body {
 .bg {
   position: fixed;
   inset: 0;
-  background-color: #000;   /* фон всегда черный */
-  background-repeat: repeat-x;
+  background: url("https://2ndchannel.github.io/test9/system/city_vertical.gif") repeat-x;
   background-size: cover;
-  background-position: center top;
-  animation: scrollBg 240s linear infinite; /* если нужна анимация */
+  animation: scrollBg 240s linear infinite;
   pointer-events: none;
   z-index: 0;
+  background-position: center top;
   will-change: background-position;
 }
 
