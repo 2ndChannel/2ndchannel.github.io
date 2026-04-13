@@ -90,7 +90,7 @@
     const newsText = document.getElementById("news-text");
     const closeBtn = document.getElementById("close-news");
 
-    // Функция для корректировки времени с учётом часового пояса пользователя
+    // Функция для корректировки времени с учётом часового пояса UTC+4
     function adjustEventTime(eventTime) {
       const now = new Date();
       const [hours, minutes] = eventTime.split(":").map(num => parseInt(num, 10));
@@ -98,16 +98,16 @@
       // Создаем дату с сегодняшним днем и заданным временем
       const eventDate = new Date(now.setHours(hours, minutes, 0, 0));
 
-      // Получаем часовой пояс пользователя
-      const userTimeZone = getUserTimeZone();
-
-      // Преобразуем дату события с учётом часового пояса пользователя
+      // Исправляем для часового пояса UTC+4
       const userOffset = new Date().getTimezoneOffset();
-      eventDate.setMinutes(eventDate.getMinutes() - userOffset);
+      const timeZoneOffset = -240; // Для UTC+4 (по умолчанию смещение для Москвы -240 минут)
+
+      // Вычисляем новое смещение времени с учётом UTC+4
+      eventDate.setMinutes(eventDate.getMinutes() + (userOffset - timeZoneOffset));
 
       // Форматируем время в строку
       const eventTimeString = `${String(eventDate.getHours()).padStart(2, "0")}:${String(eventDate.getMinutes()).padStart(2, "0")}`;
-      
+
       return eventTimeString;
     }
 
@@ -152,11 +152,6 @@
     // Функция для обработки ссылок в тексте
     function parseLinks(text) {
       return text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
-    }
-
-    // Функция для получения текущего часового пояса
-    function getUserTimeZone() {
-      return Intl.DateTimeFormat().resolvedOptions().timeZone;
     }
   </script>
 
