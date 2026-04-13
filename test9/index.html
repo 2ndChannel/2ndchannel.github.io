@@ -32,27 +32,22 @@
 <div class="bg"></div>
 <script>
   const bg = document.querySelector('.bg');
-  // Фон всегда черный по умолчанию
-  bg.style.backgroundColor = '#000';
 
+  // Пробуем загрузить GIF
   const gif = new Image();
-  gif.src = "https://2ndchannel.github.io/test9/system/city_vertical.gif";
+  gif.src = "system/city_vertical.gif";
 
   gif.onload = () => {
+    // Если загрузилось, устанавливаем фон
     bg.style.backgroundImage = `url('${gif.src}')`;
-  };
+  }
 
   gif.onerror = () => {
-    // GIF не загрузился — пробуем PNG
-    const png = new Image();
-    png.src = "https://2ndchannel.github.io/test9/system/city_vertical.png";
-    png.onload = () => {
-      bg.style.backgroundImage = `url('${png.src}')`;
-    };
-    png.onerror = () => {
-      console.warn("Не удалось загрузить фон GIF и PNG, фон останется черным");
-    };
-  };
+    // Если не загрузилось — фон не ставим и показываем предупреждение
+    bg.style.backgroundImage = 'none';
+    alert("Ошибка: фоновая картинка не загрузилась!");
+    console.warn("Фоновая картинка GIF не загрузилась:", gif.src);
+  }
 </script>
 
 <!-- Навигация -->
