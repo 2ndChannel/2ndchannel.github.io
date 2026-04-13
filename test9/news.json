@@ -4,14 +4,16 @@
     "text": "🔴 Прямой стрим сегодня в {eventTime}! Смотрите [таймкоды](https://www.youtube.com/watch?v=1GS7WTnDQhc).",
     "startDate": "2026-04-11T00:00:00",
     "endDate": "2026-04-11T23:59:59",
-    "eventTime": "18:00"
+    "eventTime": "18:00",
+    "startedText": "Стрим уже идёт!"
   },
   {
     "id": "stream2",
     "text": "Стрим будет сегодня в {eventTime}",
     "startDate": "2026-04-13T00:00:00",
-    "endDate": "2026-04-13T23:59:59",
-    "eventTime": "05:51"
+    "endDate": "2026-04-13T06:21:00",
+    "eventTime": "06:19",
+    "startedText": "Стрим уже идёт. Бегом на стрим!"
   },
   {
     "id": "always",
