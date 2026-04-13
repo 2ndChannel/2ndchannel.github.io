@@ -1,15 +1,17 @@
 [
   {
     "id": "stream1",
-    "text": "🔴 Прямой стрим сегодня в 18:00! Смотрите [таймкоды](https://www.youtube.com/watch?v=1GS7WTnDQhc).",
+    "text": "🔴 Прямой стрим сегодня в {eventTime}! Смотрите [таймкоды](https://www.youtube.com/watch?v=1GS7WTnDQhc).",
     "startDate": "2026-04-11T00:00:00",
-    "endDate": "2026-04-11T23:59:59"
+    "endDate": "2026-04-11T23:59:59",
+    "eventTime": "18:00"
   },
   {
     "id": "stream2",
-    "text": "Стрим будет сегодня в 20:15",
+    "text": "Стрим будет сегодня в {eventTime}",
     "startDate": "2026-04-13T00:00:00",
-    "endDate": "2026-04-13T23:59:59"
+    "endDate": "2026-04-13T23:59:59",
+    "eventTime": "20:15"
   },
   {
     "id": "always",

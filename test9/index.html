@@ -90,36 +90,28 @@
     const newsText = document.getElementById("news-text");
     const closeBtn = document.getElementById("close-news");
 
-    function parseLinks(text) {
-      return text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
-    }
-
-    // Функция для получения "сегодня" или "завтра"
-    function getTimeText(date) {
+    // Функция для корректировки времени с учётом часового пояса пользователя
+    function adjustEventTime(eventTime) {
       const now = new Date();
-      const targetDate = new Date(date);
+      const [hours, minutes] = eventTime.split(":").map(num => parseInt(num, 10));
 
-      if (targetDate.toDateString() === now.toDateString()) {
-        return "сегодня";
-      } else if (targetDate.getDate() === now.getDate() + 1) {
-        return "завтра";
-      }
-      return "в будущем";  // Для других случаев
+      // Создаем дату с сегодняшним днем и заданным временем
+      const eventDate = new Date(now.setHours(hours, minutes, 0, 0));
+
+      // Получаем часовой пояс пользователя
+      const userTimeZone = getUserTimeZone();
+
+      // Преобразуем дату события с учётом часового пояса пользователя
+      const userOffset = new Date().getTimezoneOffset();
+      eventDate.setMinutes(eventDate.getMinutes() - userOffset);
+
+      // Форматируем время в строку
+      const eventTimeString = `${String(eventDate.getHours()).padStart(2, "0")}:${String(eventDate.getMinutes()).padStart(2, "0")}`;
+      
+      return eventTimeString;
     }
 
-    // Функция для конвертации локального времени в UTC
-    function localToUTC(localDate) {
-      const localDateObj = new Date(localDate);
-      const offset = localDateObj.getTimezoneOffset();
-      localDateObj.setMinutes(localDateObj.getMinutes() + offset); // Перевод в UTC
-      return localDateObj.toISOString(); // Возвращаем строку в формате UTC
-    }
-
-    // Функция для получения текущего часового пояса
-    function getUserTimeZone() {
-      return Intl.DateTimeFormat().resolvedOptions().timeZone;
-    }
-
+    // Функция для обработки новостей
     fetch("news.json")
       .then(r => r.json())
       .then(newsArray => {
@@ -134,31 +126,13 @@
           if (active && !localStorage.getItem("newsClosed_" + news.id)) {
             let updatedText = news.text;
 
-            // Если в новости указан текст со временем (например, "в 22:15")
-            const timeRegex = /в (\d{2}):(\d{2})/;
-            const match = updatedText.match(timeRegex);
+            // Если в новости указано время (например, "{eventTime}")
+            if (news.eventTime) {
+              const adjustedTime = adjustEventTime(news.eventTime);
 
-            if (match) {
-              const hours = parseInt(match[1], 10);
-              const minutes = match[2];
-
-              // Проверим, прошло ли время стрима для корректировки на "завтра"
-              const streamDate = new Date();
-              streamDate.setHours(hours, minutes, 0, 0);
-
-              if (streamDate < now) {
-                // Если время прошло, меняем на "завтра"
-                streamDate.setDate(streamDate.getDate() + 1);
-                const newTimeText = getTimeText(streamDate) + ` в ${String(streamDate.getHours()).padStart(2, "0")}:${String(streamDate.getMinutes()).padStart(2, "0")}`;
-                updatedText = updatedText.replace(/сегодня в \d{2}:\d{2}/, newTimeText);
-              }
+              // Заменяем {eventTime} на корректированное время
+              updatedText = updatedText.replace("{eventTime}", adjustedTime);
             }
-
-            // Получаем часовой пояс пользователя
-            const userTimeZone = getUserTimeZone();
-
-            // Добавляем информацию о часовом поясе в новость
-            updatedText += `<br><br><strong>Ваш часовой пояс: </strong>${userTimeZone}`;
 
             newsText.innerHTML = parseLinks(updatedText);
             newsBlock.style.display = "block";
@@ -168,11 +142,22 @@
         }
       });
 
+    // Закрытие новостей
     closeBtn.onclick = function() {
       const newsId = this.dataset.newsId || "default";
       newsBlock.style.display = "none";
       localStorage.setItem("newsClosed_" + newsId, "true");
     };
+
+    // Функция для обработки ссылок в тексте
+    function parseLinks(text) {
+      return text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+    }
+
+    // Функция для получения текущего часового пояса
+    function getUserTimeZone() {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone;
+    }
   </script>
 
 </body>
