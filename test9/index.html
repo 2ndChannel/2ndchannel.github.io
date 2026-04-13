@@ -107,6 +107,19 @@
       return "в будущем";  // Для других случаев
     }
 
+    // Функция для конвертации локального времени в UTC
+    function localToUTC(localDate) {
+      const localDateObj = new Date(localDate);
+      const offset = localDateObj.getTimezoneOffset();
+      localDateObj.setMinutes(localDateObj.getMinutes() + offset); // Перевод в UTC
+      return localDateObj.toISOString(); // Возвращаем строку в формате UTC
+    }
+
+    // Функция для получения текущего часового пояса
+    function getUserTimeZone() {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone;
+    }
+
     fetch("news.json")
       .then(r => r.json())
       .then(newsArray => {
@@ -140,6 +153,12 @@
                 updatedText = updatedText.replace(/сегодня в \d{2}:\d{2}/, newTimeText);
               }
             }
+
+            // Получаем часовой пояс пользователя
+            const userTimeZone = getUserTimeZone();
+
+            // Добавляем информацию о часовом поясе в новость
+            updatedText += `<br><br><strong>Ваш часовой пояс: </strong>${userTimeZone}`;
 
             newsText.innerHTML = parseLinks(updatedText);
             newsBlock.style.display = "block";
