@@ -49,6 +49,7 @@
     <!-- NEWS -->
     <div id="stream-news" style="display:none; background:#ffcc00; padding:12px; text-align:center; font-weight:bold; border-radius:8px; margin-bottom:15px; position:relative;">
       <span id="news-text"></span>
+      <div id="countdown" style="margin-top:5px; font-weight:normal;"></div>
       <button id="close-news" style="position:absolute; right:10px; top:8px; background:none; border:none; font-weight:bold; cursor:pointer;">✖</button>
     </div>
 
@@ -88,15 +89,14 @@
   <script>
     const newsBlock = document.getElementById("stream-news");
     const newsText = document.getElementById("news-text");
+    const countdownEl = document.getElementById("countdown");
     const closeBtn = document.getElementById("close-news");
 
-    // Функция для корректировки времени с учётом часового пояса UTC+4
-    function adjustEventTime(eventTime) {
-      const [hours, minutes] = eventTime.split(":").map(num => parseInt(num, 10));
-
-      // Создаем дату с сегодняшним днем в UTC+4
+    // Перевод времени события из UTC+4 в локальное
+    function getEventDateLocal(eventTime) {
+      const [hours, minutes] = eventTime.split(":").map(Number);
       const now = new Date();
-      const eventDateUTC4 = new Date(Date.UTC(
+      const eventUTC = new Date(Date.UTC(
         now.getUTCFullYear(),
         now.getUTCMonth(),
         now.getUTCDate(),
@@ -104,40 +104,52 @@
         minutes,
         0, 0
       ));
-
-      // Преобразуем в локальное время пользователя
-      const localHours = eventDateUTC4.getHours();
-      const localMinutes = eventDateUTC4.getMinutes();
-
-      return `${String(localHours).padStart(2, "0")}:${String(localMinutes).padStart(2, "0")}`;
+      return eventUTC;
     }
 
-    // Функция для обработки ссылок в тексте
+    // Таймер обратного отсчёта
+    function startCountdown(eventDate) {
+      function updateTimer() {
+        const now = new Date();
+        let diff = Math.floor((eventDate - now) / 1000);
+
+        if (diff > 0) {
+          const h = Math.floor(diff / 3600);
+          diff %= 3600;
+          const m = Math.floor(diff / 60);
+          const s = diff % 60;
+          countdownEl.textContent = `До события: ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        } else {
+          countdownEl.textContent = "Событие уже началось или прошло!";
+          clearInterval(timerInterval);
+        }
+      }
+      updateTimer();
+      const timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    // Обработка ссылок в тексте
     function parseLinks(text) {
       return text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
     }
 
-    // Функция для обработки новостей
+    // Загрузка новостей
     fetch("news.json")
       .then(r => r.json())
       .then(newsArray => {
         const now = new Date();
-
         for (const news of newsArray) {
           const start = news.startDate ? new Date(news.startDate) : null;
           const end = news.endDate ? new Date(news.endDate) : null;
-
           const active = (!start || now >= start) && (!end || now <= end);
 
           if (active && !localStorage.getItem("newsClosed_" + news.id)) {
             let updatedText = news.text;
 
-            // Если в новости указано время (например, "{eventTime}")
             if (news.eventTime) {
-              const adjustedTime = adjustEventTime(news.eventTime);
-
-              // Заменяем {eventTime} на корректированное время
-              updatedText = updatedText.replace("{eventTime}", adjustedTime);
+              const eventDate = getEventDateLocal(news.eventTime);
+              updatedText = updatedText.replace("{eventTime}", news.eventTime);
+              startCountdown(eventDate);
             }
 
             newsText.innerHTML = parseLinks(updatedText);
@@ -148,7 +160,7 @@
         }
       });
 
-    // Закрытие новостей
+    // Закрытие новости
     closeBtn.onclick = function() {
       const newsId = this.dataset.newsId || "default";
       newsBlock.style.display = "none";
