@@ -19,33 +19,19 @@ body {
 .bg {
   position: fixed;
   inset: 0;
+  height: 100svh;
   background: url("https://2ndchannel.github.io/test9/system/city_vertical.gif") repeat-x;
-  background-size: cover;
+  background-size: auto 100%;
+  background-position: 0 bottom;
   animation: scrollBg 240s linear infinite;
   pointer-events: none;
   z-index: 0;
-  background-position: center top;
   will-change: background-position;
 }
 
 @keyframes scrollBg {
-  from { background-position: 0 0; }
-  to { background-position: -1280px 0; }
-}
-
-/* Фиксируем проблему с качеством отображения на некоторых экранах */
-@media (max-width: 768px) {
-  .bg {
-    background-size: 150%;
-    background-position: center center;
-  }
-}
-
-@media (max-width: 480px) {
-  .bg {
-    background-size: 200%;
-    background-position: center center;
-  }
+  from { background-position: 0 bottom; }
+  to { background-position: -1280px bottom; }
 }
 
 /* LAYERS */
