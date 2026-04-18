@@ -27,18 +27,8 @@
 
 <div class="bg"></div>
 <div id="nav"></div>
-
 <script src="script.js"></script>
-<script>
-  fetch("nav.html")
-    .then(r => r.text())
-    .then(html => {
-      document.getElementById("nav").innerHTML = html;
-      if (typeof initMenu === "function") initMenu();
-      if (typeof setActiveLink === "function") setActiveLink();
-      if (typeof updateMenuTitle === "function") updateMenuTitle();
-    });
-</script>
+<script>loadNavbar();</script>
 
 <div class="container">
 

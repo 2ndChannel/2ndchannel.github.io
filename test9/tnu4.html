@@ -14,17 +14,8 @@
 <div class="bg"></div>
 
 <div id="nav"></div>
-<script>
-fetch("nav.html")
-.then(r => r.text())
-.then(html => {
-  document.getElementById("nav").innerHTML = html;
-
-  initMenu();
-  setActiveLink();
-  updateMenuTitle();
-});
-</script>
+<script src="script.js"></script>
+<script>loadNavbar();</script>
 
 <div class="container">
 
@@ -52,6 +43,5 @@ fetch("nav.html")
 </div>
 
 <div id="fs" class="fullscreen" onclick="closeImg()"><img></div>
-<script src="script.js"></script>
 </body>
 </html>

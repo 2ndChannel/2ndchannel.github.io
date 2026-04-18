@@ -3,7 +3,8 @@ function openImg(src){
   const fs = document.getElementById("fs");
   if(!fs) return;
   fs.style.display = "flex";
-  fs.querySelector("img").src = src;
+  const img = fs.querySelector("img");
+  if(img) img.src = src;
 }
 
 function closeImg(){
@@ -14,14 +15,15 @@ function closeImg(){
 
 // ===== MENU TITLE =====
 function getPageTitle(){
-  const current = location.href.split("/").pop().toLowerCase();
+  const current = location.href.split("/").pop().split("?")[0].toLowerCase();
   const map = {
     "index.html": "Главная",
     "games.html": "Игры",
     "streams.html": "Стримы",
     "tnu4.html": "TNU4"
   };
-  return map[current] || "Главная";
+  // Если адрес пустой (корень сайта), возвращаем Главная
+  return map[current] || (current === "" ? "Главная" : "Главная");
 }
 
 function updateMenuTitle(){
@@ -53,12 +55,15 @@ function initMenu(){
 
 function setActiveLink(){
   const links = document.querySelectorAll("#menu a");
-  const current = location.href.split("/").pop().toLowerCase();
+  const current = location.href.split("/").pop().split("?")[0].toLowerCase() || "index.html";
 
   links.forEach(link => {
     const href = (link.getAttribute("href") || "").split("/").pop().toLowerCase();
-    if(current.includes(href)){
+    // Точное совпадение или проверка вхождения
+    if(current.includes(href) || (current === "index.html" && href === "index.html")){
       link.classList.add("active");
+    } else {
+      link.classList.remove("active");
     }
   });
 }
@@ -71,7 +76,7 @@ function adjustMenu(){
 
   if(!menu || !toggle || !nav) return;
 
-  // Сбрасываем
+  // Сбрасываем для замера
   menu.classList.remove("vertical", "open");
   menu.classList.add("horizontal");
   toggle.style.display = "none";
@@ -84,19 +89,48 @@ function adjustMenu(){
     menu.classList.add("vertical");
     toggle.style.display = "flex";
   }
+  updateMenuTitle();
+}
+
+// ===== UNIVERSAL NAV LOADER =====
+function loadNavbar() {
+  const navContainer = document.getElementById("nav");
+  if (!navContainer) return;
+
+  fetch("nav.html")
+    .then(r => {
+      if (!r.ok) throw new Error("Nav file not found");
+      return r.text();
+    })
+    .then(html => {
+      navContainer.innerHTML = html;
+
+      // Инициализируем только после того, как HTML реально появился
+      initMenu();
+      setActiveLink();
+      updateMenuTitle();
+      
+      // Запускаем серию замеров адаптивности
+      adjustMenu();
+      setTimeout(adjustMenu, 50);
+      setTimeout(adjustMenu, 150);
+      requestAnimationFrame(adjustMenu);
+    })
+    .catch(err => console.error("Error loading navigation:", err));
 }
 
 // ===== INIT ON PAGE LOAD =====
 window.addEventListener("load", () => {
-  updateMenuTitle();
-  initMenu();
-  setActiveLink();
-
-  // Несколько вызовов для надёжного измерения размеров
-  adjustMenu();
-  setTimeout(adjustMenu, 50);
-  setTimeout(adjustMenu, 150);
-  requestAnimationFrame(adjustMenu);
+  // Если навигация уже есть в HTML (статическая), настраиваем её
+  // Если нет — её настроит loadNavbar после загрузки
+  if(document.getElementById("menu")) {
+    updateMenuTitle();
+    initMenu();
+    setActiveLink();
+    adjustMenu();
+    setTimeout(adjustMenu, 50);
+    requestAnimationFrame(adjustMenu);
+  }
 });
 
 // ===== ADJUST MENU ON RESIZE =====
