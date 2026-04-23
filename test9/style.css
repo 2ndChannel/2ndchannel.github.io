@@ -1,13 +1,13 @@
-/* ===== FONT ===== */
+/* ===== 1. ШРИФТЫ ===== */
 @font-face {
   font-family: "Machina";
   src: url("system/2F_MachinaOrto-Medium.ttf") format("truetype");
 }
 
-/* BASE */
+/* ===== 2. БАЗОВЫЕ НАСТРОЙКИ ===== */
 body {
   margin: 0;
-  padding-top: 70px;
+  padding-top: 70px; /* Отступ под фиксированное меню */
   font-family: Arial, sans-serif;
   font-size: 24px;
   color: #fff;
@@ -15,7 +15,7 @@ body {
   overflow-x: hidden;
 }
 
-/* ===== BACKGROUND (ВОЗВРАЩАЕМ ГОРОД) ===== */
+/* ===== 3. АНИМИРОВАННЫЙ ФОН (ГОРОД) ===== */
 .bg {
   position: fixed;
   inset: 0;
@@ -33,30 +33,50 @@ body {
   to { background-position: -1280px 0; }
 }
 
-/* Фиксируем проблему с качеством отображения на некоторых экранах */
+/* Адаптация фона под мобильные */
 @media (max-width: 768px) {
-  .bg {
-    background-size: 150%;
-    background-position: center center;
-  }
+  .bg { background-size: 150%; background-position: center center; }
 }
-
 @media (max-width: 480px) {
-  .bg {
-    background-size: 200%;
-    background-position: center center;
-  }
+  .bg { background-size: 200%; background-position: center center; }
 }
 
-/* LAYERS */
-.nav,
-.container,
-.card {
+/* ===== 4. СЛОИ И КОНТЕЙНЕРЫ ===== */
+.nav, .container, .card {
   position: relative;
   z-index: 1;
 }
 
-/* ===== NAV ===== */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 15px;
+}
+
+/* Стили карточек (основной блок контента) */
+.card {
+  background: rgba(0, 120, 255, 0.4);
+  backdrop-filter: blur(3px);
+  padding: 18px;
+  border-radius: 18px;
+  margin: 10px auto;
+  max-width: 800px;
+}
+
+/* Заголовки в карточках */
+.card h1, .card h2, .card h3 {
+  font-family: "Machina", Arial, sans-serif;
+  font-weight: normal;
+  margin: 0 0 15px 0;
+  padding: 0;
+}
+
+.card p {
+  margin: 10px 0;
+  line-height: 1.4;
+}
+
+/* ===== 5. НАВИГАЦИЯ (NAVBAR) ===== */
 .nav {
   position: fixed;
   top: 0;
@@ -68,9 +88,10 @@ body {
   flex-direction: column;
   align-items: center;
   padding: 12px;
+  box-sizing: border-box;
 }
 
-/* ===== HAMBURGER ===== */
+/* Бургер-меню (появляется через JS) */
 .menu-toggle {
   display: none;
   cursor: pointer;
@@ -82,29 +103,41 @@ body {
   gap: 8px;
 }
 
-/* ===== MENU ===== */
+/* Ссылки меню */
 .menu-links {
   display: flex;
   gap: 16px;
   justify-content: center;
   align-items: center;
-  flex-wrap: nowrap; /* предотвращаем перенос */
 }
 
-/* горизонтальное */
-.menu-links.horizontal {
-  flex-direction: row;
+.menu-links a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  transition: color 0.3s;
 }
 
-/* точки-разделители */
+.menu-links a:hover {
+  color: #2ecc71;
+}
+
+.menu-links a.active {
+  color: #2ecc71;
+}
+
+/* Горизонтальные разделители-точки */
 .menu-links.horizontal a:not(:last-child)::after {
   content: "•";
   margin-left: 16px;
   font-size: 26px;
   opacity: 0.7;
+  color: #fff;
 }
 
-/* вертикальное */
+/* Вертикальное меню для мобильных */
 .menu-links.vertical {
   flex-direction: column;
   display: none;
@@ -119,116 +152,11 @@ body {
 .menu-links.vertical a {
   width: 100%;
   text-align: center;
-  padding: 10px 0;
+  padding: 12px 0;
+  border-top: 1px solid rgba(255,255,255,0.1);
 }
 
-/* ссылки */
-.menu-links a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: bold;
-  letter-spacing: 1px;
-  white-space: nowrap;
-}
-
-.menu-links a.active {
-  color: #2ecc71;
-}
-
-/* ===== CONTAINER ===== */
-.container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 15px;
-}
-
-/* ===== CARD (ВОЗВРАЩАЕМ СТИЛЬ) ===== */
-.card {
-  background: rgba(0, 120, 255, 0.4);
-  backdrop-filter: blur(3px);
-  padding: 18px;
-  border-radius: 18px;
-  margin: 10px auto;
-  max-width: 800px;
-}
-
-/* HEADERS */
-.card h1,
-.card h2 {
-  font-family: "Machina", Arial, sans-serif;
-  font-weight: normal;
-}
-
-/* LINKS */
-.links a {
-  display: flex;
-  align-items: center;
-  margin: 10px 0;
-}
-
-.links img {
-  width: 28px;
-  margin-right: 10px;
-}
-
-/* ===== GALLERY ===== */
-.gallery {
-  display: flex;
-  overflow-x: auto;
-  gap: 10px;
-}
-
-.gallery img {
-  height: 160px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-/* FULLSCREEN */
-.fullscreen {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
+/* Скрытие точек в вертикальном режиме */
+.menu-links.vertical a::after {
   display: none;
-  align-items: center;
-  justify-content: center;
-}
-
-.fullscreen img {
-  max-width: 95%;
-  max-height: 95%;
-}
-
-/* ===== TABLE ===== */
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 15px;
-}
-
-.table td,
-.table th {
-  padding: 10px;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
-}
-
-/* ===== BADGES ===== */
-.badge {
-  display: flex;
-  gap: 10px;
-  margin: 8px auto;
-  max-width: 600px;
-  padding: 8px 10px;
-  border-radius: 6px;
-}
-
-.green { background: #2ecc71; }
-.red { background: #e74c3c; }
-.yellow { background: #f1c40f; color:#000; }
-
-/* ===== FIX HEADERS ===== */
-.card h1, .card h2, .card h3,
-.card h4, .card h5, .card h6 {
-  margin: 0;
-  padding: 0;
 }

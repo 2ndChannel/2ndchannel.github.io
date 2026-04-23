@@ -4,176 +4,133 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ресурсы 2nd Channel</title>
-  <meta name="description" content="2nd Channel — площадка, посвящённая ретро играм NES / Dendy, Sega и других старых консолей, фан-игре Team Ninja Unkende 4 / Ninja Gaiden 4 (TNU4) и другим любительским проектам.">
-  <meta name="robots" content="index, follow">
-  <meta name="language" content="ru">
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="2nd Channel — ретро игры, TNU4 и иные фан-проекты">
-  <meta property="og:description" content="NES / Dendy, Sega, стримы и фан-проект TNU4 (Team Ninja Unkende 4)">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://2ndchannel.github.io/">
-  <meta property="og:image" content="https://2ndchannel.github.io/system/preview.jpg">
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="2nd Channel">
-  <meta name="twitter:description" content="Ретро игры, стримы и фан-проект TNU4">
-  <meta name="twitter:image" content="https://2ndchannel.github.io/system/preview.jpg">
-
+  <meta name="description" content="2nd Channel — площадка, посвящённая ретро играм NES/Dendy, Sega, фан-проекту TNU4 и стримам.">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="components.css">
 </head>
 <body>
 
 <div class="bg"></div>
 <div id="nav"></div>
-<script src="script.js"></script>
-<script>loadNavbar();</script>
 
 <div class="container">
 
-  <!-- NEWS -->
-  <div id="stream-news" style="display:none; background:#ffcc00; padding:12px; text-align:center; font-weight:bold; border-radius:8px; margin-bottom:15px; position:relative;">
+  <div id="news-block" class="alert-box">
     <span id="news-text"></span>
-    <div id="countdown" style="margin-top:5px; font-weight:normal;"></div>
-    <button id="close-news" style="position:absolute; right:10px; top:8px; background:none; border:none; font-weight:bold; cursor:pointer;">✖</button>
+    <div id="countdown" class="timer"></div>
+    <button id="close-news" class="alert-close">✖</button>
   </div>
 
-  <!-- INTRO SEO TEXT -->
   <div class="card">
     <h1>2nd Channel</h1>
     <p>
-      2nd Channel — это площадка, посвящённая ретро играм NES / Dendy и Sega (и не только),
-      фан-игре Team Ninja Unkende 4 / Ninja Gaiden 4 (TNU4), совместным кинопросмотрам
-      и связанным темам.
+      2nd Channel — это площадка, посвящённая ретро играм NES / Dendy и Sega,
+      фан-игре Team Ninja Unkende 4 (TNU4), совместным кинопросмотрам
+      и ретро-культуре.
     </p>
   </div>
 
-  <!-- LINKS -->
-  <div class="card links">
-    <h2>YouTube2</h2>
-    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">Канал 1</a>
-    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">Канал 2</a>
-    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">Канал 3</a>
-  </div>
+	<div class="card links">
+		<h1>YouTube</h1>
+		<a href="https://www.youtube.com/@2ndChannelGO" target="_blank" rel="noopener noreferrer">
+		  <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">Основной канал
+		</a>
+		<a href="https://www.youtube.com/@2ndChannel-Pirate" target="_blank" rel="noopener noreferrer">
+		  <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">Пиратский канал
+		</a>
+		<a href="https://www.youtube.com/@2ndChannel-Archive" target="_blank" rel="noopener noreferrer">
+		  <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">Архивный канал
+		</a>
+	</div>
 
   <div class="card links">
-    <h2>Стриминг</h2>
+    <h1>Стриминг</h1>
     <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/145/145813.png">VK Live</a>
     <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968819.png">Trovo</a>
   </div>
 
   <div class="card links">
-    <h2>Соцсети</h2>
-    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/145/145813.png">VK паблик</a>
-    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/747/747376.png">Форум</a>
+    <h1>Соцсети</h1>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/145/145813.png">Группа VK</a>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/747/747376.png">Форум проекта</a>
   </div>
 
 </div>
 
+<script src="script.js"></script>
 <script>
-const newsBlock = document.getElementById("stream-news");
-const newsText = document.getElementById("news-text");
-const countdownEl = document.getElementById("countdown");
-const closeBtn = document.getElementById("close-news");
+  // Загрузка навигации
+  loadNavbar();
 
-// Markdown-ссылки [text](url) → HTML
-function parseLinks(text) {
-  return text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
-}
+  // Логика новостей
+  const newsBlock = document.getElementById("news-block");
+  const newsText = document.getElementById("news-text");
+  const countdownEl = document.getElementById("countdown");
+  const closeBtn = document.getElementById("close-news");
 
-// Таймер обратного отсчёта
-function startCountdown(eventDate, finishedText) {
-  function updateTimer() {
-    const now = new Date();
-    let diff = Math.floor((eventDate - now) / 1000);
-    if (diff > 0) {
-      const h = Math.floor(diff / 3600);
-      diff %= 3600;
-      const m = Math.floor(diff / 60);
-      const s = diff % 60;
-      countdownEl.textContent = `До события: ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    } else {
-      countdownEl.textContent = finishedText || "Событие уже началось!";
-      clearInterval(timerInterval);
-    }
+  function parseLinks(text) {
+    return text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
   }
-  updateTimer();
-  const timerInterval = setInterval(updateTimer, 1000);
-}
 
-// Проверка активности новости по дате с учётом локальной даты
-function isNewsActive(news, now) {
-  let start = news.startDate ? new Date(news.startDate) : null;
-  let end = news.endDate ? new Date(news.endDate) : null;
-
-  if (start) start = new Date(start.getFullYear(), start.getMonth(), start.getDate(), start.getHours(), start.getMinutes(), start.getSeconds());
-  if (end) end = new Date(end.getFullYear(), end.getMonth(), end.getDate(), end.getHours(), end.getMinutes(), end.getSeconds());
-
-  return (!start || now >= start) && (!end || now <= end);
-}
-
-// Загрузка новостей
-fetch("news.json")
-  .then(r => r.json())
-  .then(newsArray => {
-    const now = new Date();
-    let shown = false;
-
-    for (const news of newsArray) {
-      if (!isNewsActive(news, now)) continue;
-
-      const closed = localStorage.getItem("newsClosed_" + news.id);
-      if (closed) continue;
-
-      let text = news.text;
-      let finishedText = news.startedText || "Событие уже началось!";
-
-      if (news.eventTime) {
-        const [hours, minutes] = news.eventTime.split(":").map(Number);
-        // Создаём дату события в локальной временной зоне
-        const eventDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
-
-        text = text.replace("{eventTime}", news.eventTime);
-
-        if (now < eventDate) {
-          startCountdown(eventDate, finishedText);
-        } else {
-          countdownEl.textContent = finishedText;
-        }
+  function startCountdown(eventDate, finishedText) {
+    function updateTimer() {
+      const now = new Date();
+      let diff = Math.floor((eventDate - now) / 1000);
+      if (diff > 0) {
+        const h = Math.floor(diff / 3600);
+        const m = Math.floor((diff % 3600) / 60);
+        const s = diff % 60;
+        countdownEl.textContent = `До начала: ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
       } else {
-        countdownEl.textContent = "";
+        countdownEl.textContent = finishedText || "Событие началось!";
+        clearInterval(timerInterval);
+      }
+    }
+    updateTimer();
+    const timerInterval = setInterval(updateTimer, 1000);
+  }
+
+  function isVisible(news, now) {
+    let start = news.startDate ? new Date(news.startDate) : null;
+    let end = news.endDate ? new Date(news.endDate) : null;
+    return (!start || now >= start) && (!end || now <= end);
+  }
+
+  fetch("news.json")
+    .then(r => r.json())
+    .then(newsArray => {
+      const now = new Date();
+      let activeNews = newsArray.find(n => n.id !== "always" && isVisible(n, now) && !localStorage.getItem("newsClosed_" + n.id));
+
+      if (!activeNews) {
+        activeNews = newsArray.find(n => n.id === "always" && !localStorage.getItem("newsClosed_always"));
       }
 
-      newsText.innerHTML = parseLinks(text);
-      newsBlock.style.display = "block";
-      closeBtn.dataset.newsId = news.id;
-      shown = true;
-      break;
-    }
-
-    // Если ни одна новость не подошла, показать always
-    if (!shown) {
-      for (const news of newsArray) {
-        if (news.id === "always") {
-          const closed = localStorage.getItem("newsClosed_" + news.id);
-          if (!closed) {
-            newsText.innerHTML = parseLinks(news.text);
-            countdownEl.textContent = "";
-            newsBlock.style.display = "block";
-            closeBtn.dataset.newsId = news.id;
+      if (activeNews) {
+        let text = activeNews.text;
+        
+        if (activeNews.eventTime) {
+          const [hours, minutes] = activeNews.eventTime.split(":").map(Number);
+          const eventDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
+          text = text.replace("{eventTime}", activeNews.eventTime);
+          
+          if (now < eventDate) {
+            startCountdown(eventDate, activeNews.startedText);
+          } else {
+            countdownEl.textContent = activeNews.startedText || "Уже в эфире / Началось!";
           }
-          break;
+        } else {
+          countdownEl.style.display = "none";
         }
-      }
-    }
-  });
 
-closeBtn.onclick = function() {
-  const newsId = this.dataset.newsId || "default";
-  newsBlock.style.display = "none";
-  localStorage.setItem("newsClosed_" + newsId, "true");
-};
+        newsText.innerHTML = parseLinks(text);
+        newsBlock.style.display = "block";
+        closeBtn.onclick = () => {
+          newsBlock.style.display = "none";
+          localStorage.setItem("newsClosed_" + activeNews.id, "true");
+        };
+      }
+    });
 </script>
 
 </body>
