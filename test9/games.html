@@ -39,7 +39,7 @@ function renderGrouped(data){
     const games = groups[streamName];
     const wrapper = document.createElement("div");
     wrapper.className = "card";
-    wrapper.style.marginBottom = "20px"; // Можно оставить инлайном или вынести в CSS
+    wrapper.style.marginBottom = "20px";
 
     wrapper.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px;">
@@ -56,7 +56,12 @@ function renderGrouped(data){
       div.innerHTML = `<a href="${game.stream}" target="_blank">🎥</a> <a href="${game.download}" target="_blank">⬇</a> ${game.name}`;
       list.appendChild(div);
     });
-  });
+  }); // <--- Конец цикла отрисовки
+
+  // ТЕПЕРЬ, когда все h3 и цифры уже в HTML, запускаем фикс:
+  if (typeof fixNumbers === 'function') {
+    fixNumbers();
+  }
 }
 
 function downloadStream(streamName){

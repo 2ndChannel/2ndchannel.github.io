@@ -115,9 +115,35 @@ function loadNavbar() {
       setTimeout(adjustMenu, 50);
       setTimeout(adjustMenu, 150);
       requestAnimationFrame(adjustMenu);
+	  fixNumbers();
     })
     .catch(err => console.error("Error loading navigation:", err));
 }
+
+
+// ===== ЦИФРЫ ШРИФТА MACHINA ТОЙ ЖЕ ВЫСОТЫ, ЧТО И БУКВЫ =====
+function fixNumbers() {
+  const headers = document.querySelectorAll('h1, h2, h3, .menu-links a');
+  
+  headers.forEach(header => {
+    // Получаем название шрифта, который реально сейчас применен к элементу
+    const currentFont = window.getComputedStyle(header).fontFamily;
+
+    // Проверяем: если в названии шрифта есть "Machina"
+    if (currentFont.includes("Machina")) {
+      
+      // Если мы еще не исправляли этот заголовок (чтобы не дублировать)
+      if (!header.querySelector('.num-fix')) {
+        header.innerHTML = header.innerHTML.replace(/(\d+)/g, '<span class="num-fix">$1</span>');
+      }
+      
+    } else {
+      // Если это другой шрифт — мы ничего не делаем.
+      // Скрипт просто пропустит этот заголовок.
+    }
+  });
+}
+
 
 // ===== INIT ON PAGE LOAD =====
 window.addEventListener("load", () => {
@@ -128,6 +154,7 @@ window.addEventListener("load", () => {
     initMenu();
     setActiveLink();
     adjustMenu();
+	fixNumbers();
     setTimeout(adjustMenu, 50);
     requestAnimationFrame(adjustMenu);
   }

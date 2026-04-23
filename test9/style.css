@@ -63,12 +63,15 @@ body {
   max-width: 800px;
 }
 
-/* Заголовки в карточках */
+/* Заголовки в карточках — теперь все выглядят одинаково ровно */
 .card h1, .card h2, .card h3 {
   font-family: "Machina", Arial, sans-serif;
-  font-weight: normal;
+  font-weight: normal; /* Обязательно: убирает жирность браузера */
+  font-size: 32px;      /* Задай размер, который тебе нравится (как у h1) */
   margin: 0 0 15px 0;
   padding: 0;
+  line-height: 1.1;    /* Фиксирует высоту строки, чтобы буквы не "прыгали" */
+  display: block;
 }
 
 .card p {
@@ -159,4 +162,10 @@ body {
 /* Скрытие точек в вертикальном режиме */
 .menu-links.vertical a::after {
   display: none;
+}
+
+/* Цифры сделать той же высоты, что и буквы*/
+.num-fix {
+  font-size: 1.14em;
+  line-height: 0;
 }
