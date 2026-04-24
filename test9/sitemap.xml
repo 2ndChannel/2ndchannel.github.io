@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://2ndchannel.github.io/index.html</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://2ndchannel.github.io/games.html</loc>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://2ndchannel.github.io/streams.html</loc>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://2ndchannel.github.io/tnu4.html</loc>
+    <changefreq>monthly</changefreq>
+  </url>
+</urlset>

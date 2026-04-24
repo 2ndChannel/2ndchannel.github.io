@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Sitemap: https://2ndchannel.github.io/sitemap.xml
+Disallow: /test/
+Disallow: /test*/
+Disallow: /aa/
