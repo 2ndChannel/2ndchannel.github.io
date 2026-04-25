@@ -1,3 +1,27 @@
+// ===== 1. АНАЛИТИКА (ЗАПУСК) =====
+(function() {
+    // Яндекс Метрика
+    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+    m[i].l=1*new Date();
+    k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+    ym(108755980, "init", { clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true });
+
+    // Google Analytics
+    var ga = document.createElement('script');
+    ga.async = true;
+    ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-GQ6ZY3PPVJ';
+    document.head.appendChild(ga);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-GQ6ZY3PPVJ');
+    
+    console.log("Аналитика подцеплена!");
+})();
+
 // ===== OPEN / CLOSE FULLSCREEN IMAGE =====
 function openImg(src){
   const fs = document.getElementById("fs");
