@@ -1,0 +1,171 @@
+/* ===== 1. ШРИФТЫ ===== */
+@font-face {
+  font-family: "Machina";
+  src: url("2F_MachinaOrto-Medium.ttf") format("truetype");
+}
+
+/* ===== 2. БАЗОВЫЕ НАСТРОЙКИ ===== */
+body {
+  margin: 0;
+  padding-top: 70px; /* Отступ под фиксированное меню */
+  font-family: Arial, sans-serif;
+  font-size: 24px;
+  color: #fff;
+  background: #000;
+  overflow-x: hidden;
+}
+
+/* ===== 3. АНИМИРОВАННЫЙ ФОН (ГОРОД) ===== */
+.bg {
+  position: fixed;
+  inset: 0;
+  background: url("city_vertical.gif") repeat-x;
+  background-size: cover;
+  animation: scrollBg 240s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+  background-position: center top;
+  will-change: background-position;
+}
+
+@keyframes scrollBg {
+  from { background-position: 0 0; }
+  to { background-position: -1280px 0; }
+}
+
+/* Адаптация фона под мобильные */
+@media (max-width: 768px) {
+  .bg { background-size: 150%; background-position: center center; }
+}
+@media (max-width: 480px) {
+  .bg { background-size: 200%; background-position: center center; }
+}
+
+/* ===== 4. СЛОИ И КОНТЕЙНЕРЫ ===== */
+.nav, .container, .card {
+  position: relative;
+  z-index: 1;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 15px;
+}
+
+/* Стили карточек (основной блок контента) */
+.card {
+  background: rgba(0, 120, 255, 0.4);
+  backdrop-filter: blur(3px);
+  padding: 18px;
+  border-radius: 18px;
+  margin: 10px auto;
+  max-width: 800px;
+}
+
+/* Заголовки в карточках — теперь все выглядят одинаково ровно */
+.card h1, .card h2, .card h3 {
+  font-family: "Machina", Arial, sans-serif;
+  font-weight: normal; /* Обязательно: убирает жирность браузера */
+  font-size: 32px;      /* Задай размер, который тебе нравится (как у h1) */
+  margin: 0 0 15px 0;
+  padding: 0;
+  line-height: 1.1;    /* Фиксирует высоту строки, чтобы буквы не "прыгали" */
+  display: block;
+}
+
+.card p {
+  margin: 10px 0;
+  line-height: 1.4;
+}
+
+/* ===== 5. НАВИГАЦИЯ (NAVBAR) ===== */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+/* Бургер-меню (появляется через JS) */
+.menu-toggle {
+  display: none;
+  cursor: pointer;
+  color: #fff;
+  font-weight: bold;
+  padding: 6px 10px;
+  user-select: none;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Ссылки меню */
+.menu-links {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-links a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  transition: color 0.3s;
+}
+
+.menu-links a:hover {
+  color: #2ecc71;
+}
+
+.menu-links a.active {
+  color: #2ecc71;
+}
+
+/* Горизонтальные разделители-точки */
+.menu-links.horizontal a:not(:last-child)::after {
+  content: "•";
+  margin-left: 16px;
+  font-size: 26px;
+  opacity: 0.7;
+  color: #fff;
+}
+
+/* Вертикальное меню для мобильных */
+.menu-links.vertical {
+  flex-direction: column;
+  display: none;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.menu-links.vertical.open {
+  display: flex;
+}
+
+.menu-links.vertical a {
+  width: 100%;
+  text-align: center;
+  padding: 12px 0;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Скрытие точек в вертикальном режиме */
+.menu-links.vertical a::after {
+  display: none;
+}
+
+/* Цифры сделать той же высоты, что и буквы*/
+.num-fix {
+  font-size: 1.14em;
+  line-height: 0;
+}
