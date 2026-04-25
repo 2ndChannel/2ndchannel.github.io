@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="canonical" href="https://2ndchannel.github.io/index.html">
+	<link rel="canonical" href="https://2ndchannel.github.io/">
 	<link rel="icon" href="/favicon.ico" type="image/x-icon">
 	<title>Ресурсы 2nd Channel</title>
 	<meta name="description" content="2nd Channel — площадка, посвящённая ретро играм NES / Dendy, Sega, фан-проекту TNU4 и стримам.">
@@ -16,16 +16,16 @@
 	<meta property="og:title" content="2nd Channel — ретро игры, TNU4 и иные фан-проекты">
 	<meta property="og:description" content="NES / Dendy, Sega, стримы и фан-проект TNU4 (Team Ninja Unkende 4)">
 	<meta property="og:type" content="website">
-	<meta property="og:url" content="https://2ndchannel.github.io/index.html">
-	<meta property="og:image" content="https://2ndchannel.github.io/system/preview.jpg">
+	<meta property="og:url" content="https://2ndchannel.github.io/">
+	<meta property="og:image" content="https://2ndchannel.github.io/a_data/system/preview.jpg">
 
 	<meta name="twitter:card" content="summary_large_image">
 	<meta name="twitter:title" content="2nd Channel">
 	<meta name="twitter:description" content="Ретро игры, стримы и фан-проект TNU4">
-	<meta name="twitter:image" content="https://2ndchannel.github.io/system/preview.jpg">
+	<meta name="twitter:image" content="https://2ndchannel.github.io/a_data/system/preview.jpg">
 	
-	<link rel="stylesheet" href="style.css">
-	<link rel="stylesheet" href="components.css">
+	<link rel="stylesheet" href="/a_data/system/style.css">
+	<link rel="stylesheet" href="/a_data/system/components.css">
 </head>
 <body>
 
@@ -77,7 +77,7 @@
 
 </div>
 
-<script src="script.js"></script>
+<script src="/a_data/system/script.js"></script>
 <script>
   // Загрузка навигации
   loadNavbar();
@@ -116,7 +116,7 @@
     return (!start || now >= start) && (!end || now <= end);
   }
 
-  fetch("news.json")
+  fetch("/a_data/news/news.json")
     .then(r => r.json())
     .then(newsArray => {
       const now = new Date();

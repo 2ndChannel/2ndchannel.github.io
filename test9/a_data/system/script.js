@@ -15,15 +15,11 @@ function closeImg(){
 
 // ===== MENU TITLE =====
 function getPageTitle(){
-  const current = location.href.split("/").pop().split("?")[0].toLowerCase();
-  const map = {
-    "index.html": "Главная",
-    "games.html": "Игры",
-    "streams.html": "Стримы",
-    "tnu4.html": "TNU4"
-  };
-  // Если адрес пустой (корень сайта), возвращаем Главная
-  return map[current] || (current === "" ? "Главная" : "Главная");
+  const path = location.pathname; // Берем путь вместо имени файла
+  if (path.includes("/games/")) return "Игры";
+  if (path.includes("/streams/")) return "Стримы";
+  if (path.includes("/tnu4/")) return "TNU4";
+  return "Главная";
 }
 
 function updateMenuTitle(){
@@ -97,7 +93,7 @@ function loadNavbar() {
   const navContainer = document.getElementById("nav");
   if (!navContainer) return;
 
-  fetch("nav.html")
+  fetch("/a_data/system/nav.html")
     .then(r => {
       if (!r.ok) throw new Error("Nav file not found");
       return r.text();
