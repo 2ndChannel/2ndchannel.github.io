@@ -93,27 +93,27 @@ function loadNavbar() {
   const navContainer = document.getElementById("nav");
   if (!navContainer) return;
 
-  fetch("/a_data/system/nav.html")
+  // Проверяем, находимся ли мы во вложенной папке (например, /games/)
+  // Если в пути есть подпапки, добавляем ../
+  const isSubPage = window.location.pathname.split('/').filter(Boolean).length > 1;
+  // Если мы в test9, то длина пути будет больше. Для универсальности:
+  const pathPrefix = (window.location.pathname.includes('/games/') || 
+                      window.location.pathname.includes('/streams/') || 
+                      window.location.pathname.includes('/tnu4/')) ? '../' : '';
+
+  fetch(pathPrefix + "a_data/system/nav.html")
     .then(r => {
       if (!r.ok) throw new Error("Nav file not found");
       return r.text();
     })
     .then(html => {
       navContainer.innerHTML = html;
-
-      // Инициализируем только после того, как HTML реально появился
       initMenu();
       setActiveLink();
       updateMenuTitle();
-      
-      // Запускаем серию замеров адаптивности
       adjustMenu();
-      setTimeout(adjustMenu, 50);
-      setTimeout(adjustMenu, 150);
-      requestAnimationFrame(adjustMenu);
-	  fixNumbers();
-    })
-    .catch(err => console.error("Error loading navigation:", err));
+      fixNumbers();
+    });
 }
 
 

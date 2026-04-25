@@ -1,7 +1,7 @@
 /* ===== 1. ШРИФТЫ ===== */
 @font-face {
   font-family: "Machina";
-  src: url("/a_data/system/2F_MachinaOrto-Medium.ttf") format("truetype");
+  src: url("2F_MachinaOrto-Medium.ttf") format("truetype");
 }
 
 /* ===== 2. БАЗОВЫЕ НАСТРОЙКИ ===== */
@@ -19,7 +19,7 @@ body {
 .bg {
   position: fixed;
   inset: 0;
-  background: url("/a_data/system/city_vertical.gif") repeat-x;
+  background: url("city_vertical.gif") repeat-x;
   background-size: cover;
   animation: scrollBg 240s linear infinite;
   pointer-events: none;

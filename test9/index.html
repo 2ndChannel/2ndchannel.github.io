@@ -24,8 +24,8 @@
 	<meta name="twitter:description" content="Ретро игры, стримы и фан-проект TNU4">
 	<meta name="twitter:image" content="https://2ndchannel.github.io/a_data/system/preview.jpg">
 	
-	<link rel="stylesheet" href="/a_data/system/style.css">
-	<link rel="stylesheet" href="/a_data/system/components.css">
+	<link rel="stylesheet" href="a_data/system/style.css">
+	<link rel="stylesheet" href="a_data/system/components.css">
 </head>
 <body>
 
@@ -77,7 +77,7 @@
 
 </div>
 
-<script src="/a_data/system/script.js"></script>
+<script src="a_data/system/script.js"></script>
 <script>
   // Загрузка навигации
   loadNavbar();
@@ -116,7 +116,7 @@
     return (!start || now >= start) && (!end || now <= end);
   }
 
-  fetch("/a_data/news/news.json")
+  fetch("a_data/news/news.json")
     .then(r => r.json())
     .then(newsArray => {
       const now = new Date();
