@@ -93,21 +93,37 @@ function loadNavbar() {
   const navContainer = document.getElementById("nav");
   if (!navContainer) return;
 
-  // Проверяем, находимся ли мы во вложенной папке (например, /games/)
-  // Если в пути есть подпапки, добавляем ../
-  const isSubPage = window.location.pathname.split('/').filter(Boolean).length > 1;
-  // Если мы в test9, то длина пути будет больше. Для универсальности:
-  const pathPrefix = (window.location.pathname.includes('/games/') || 
-                      window.location.pathname.includes('/streams/') || 
-                      window.location.pathname.includes('/tnu4/')) ? '../' : '';
+  // 1. Авто-определение пути к папке a_data
+  // Мы ищем, где в структуре проекта находится скрипт, чтобы понять, 
+  // сколько уровней ../ нужно добавить до корня сайта.
+  const scripts = document.getElementsByTagName('script');
+  let rootPath = "";
+  
+  for (let s of scripts) {
+    if (s.src.includes('a_data/system/script.js')) {
+      // Вырезаем путь до папки, в которой лежит скрипт
+      rootPath = s.src.split('a_data/system/script.js')[0];
+      break;
+    }
+  }
 
-  fetch(pathPrefix + "a_data/system/nav.html")
-    .then(r => {
-      if (!r.ok) throw new Error("Nav file not found");
-      return r.text();
-    })
+  // 2. Загружаем nav.html, используя вычисленный rootPath
+  fetch(rootPath + "a_data/system/nav.html")
+    .then(r => r.text())
     .then(html => {
       navContainer.innerHTML = html;
+      
+      // 3. Исправляем ссылки в меню, чтобы они ВСЕГДА вели в правильные папки
+      // независимо от того, в какой папке мы сейчас находимся
+      const links = navContainer.querySelectorAll("#menu a");
+      links.forEach(link => {
+        const href = link.getAttribute("href");
+        // Очищаем href от старых ../ если они там были (для чистоты)
+        const cleanHref = href.replace(/^(\.\.\/)+/, ""); 
+        // Ставим правильный путь от корня проекта
+        link.setAttribute("href", rootPath + cleanHref);
+      });
+
       initMenu();
       setActiveLink();
       updateMenuTitle();
