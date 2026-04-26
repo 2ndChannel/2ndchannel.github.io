@@ -61,21 +61,24 @@
 </script>
 
 <script>
-    const playLossSound = () => {
-        const audio = document.getElementById('error-audio');
-        if (audio) {
+    const audio = document.getElementById('error-audio');
+
+    // Функция запуска звука
+    const startAudio = () => {
+        if (audio && audio.paused) {
             audio.volume = 0.5;
-            audio.play().catch(() => {
-                // Если браузер заблокировал автоплей, ждем клика
-                document.addEventListener('click', () => {
-                    audio.play();
-                }, { once: true });
-            });
+            audio.play().catch(err => console.log("Ждем клика для звука"));
         }
     };
 
-    // Запуск при загрузке
-    window.addEventListener('DOMContentLoaded', playLossSound);
+    // 1. Пытаемся запустить сразу (сработает редко)
+    window.addEventListener('DOMContentLoaded', startAudio);
+
+    // 2. ГАРАНТИРОВАННЫЙ запуск при любом движении пользователя
+    // Как только юзер кликнет, нажмет кнопку или даже просто тронет экран (на мобилке)
+    ['click', 'touchstart', 'keydown'].forEach(event => {
+        document.addEventListener(event, startAudio, { once: true });
+    });
 </script>
 
 </body>
