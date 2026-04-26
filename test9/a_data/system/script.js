@@ -168,6 +168,12 @@ async function loadNavbar() {
         // Запуск проверки
         checkFitting();
         window.onresize = checkFitting;
+		
+		heckFitting();
+        window.onresize = checkFitting;
+        
+        // Добавь это здесь:
+        fixNumbers();
 
     } catch (err) {
         console.error('Ошибка загрузки меню:', err);
@@ -176,41 +182,34 @@ async function loadNavbar() {
 
 // ===== ЦИФРЫ ШРИФТА MACHINA ТОЙ ЖЕ ВЫСОТЫ, ЧТО И БУКВЫ =====
 function fixNumbers() {
-  const headers = document.querySelectorAll('h1, h2, h3, .menu-links a');
+  const targets = document.querySelectorAll('h1, h2, h3, .menu-links a');
   
-  headers.forEach(header => {
-    // Получаем название шрифта, который реально сейчас применен к элементу
-    const currentFont = window.getComputedStyle(header).fontFamily;
+  targets.forEach(el => {
+    const currentFont = window.getComputedStyle(el).fontFamily.toLowerCase();
 
-    // Проверяем: если в названии шрифта есть "Machina"
-    if (currentFont.includes("Machina")) {
-      
-      // Если мы еще не исправляли этот заголовок (чтобы не дублировать)
-      if (!header.querySelector('.num-fix')) {
-        header.innerHTML = header.innerHTML.replace(/(\d+)/g, '<span class="num-fix">$1</span>');
+    // Более надежная проверка на наличие слова "machina"
+    if (currentFont.indexOf("machina") !== -1) {
+      if (!el.querySelector('.num-fix')) {
+        el.innerHTML = el.innerHTML.replace(/(\d+)/g, '<span class="num-fix">$1</span>');
       }
-      
-    } else {
-      // Если это другой шрифт — мы ничего не делаем.
-      // Скрипт просто пропустит этот заголовок.
     }
   });
 }
 
 
 // ===== INIT ON PAGE LOAD =====
+// Запускаем как только готов HTML (не дожидаясь картинок)
+document.addEventListener("DOMContentLoaded", () => {
+    fixNumbers();
+});
+
+// Дублируем при полной загрузке на всякий случай
 window.addEventListener("load", () => {
-  // Если навигация уже есть в HTML (статическая), настраиваем её
-  // Если нет — её настроит loadNavbar после загрузки
-  if(document.getElementById("menu")) {
-    updateMenuTitle();
-    initMenu();
-    setActiveLink();
-    adjustMenu();
-	fixNumbers();
-    setTimeout(adjustMenu, 50);
-    requestAnimationFrame(adjustMenu);
-  }
+    fixNumbers();
+    // Тут твой старый код для меню...
+    if(document.getElementById("menu")) {
+        adjustMenu();
+    }
 });
 
 // ===== ADJUST MENU ON RESIZE =====

@@ -7,7 +7,7 @@
     background: rgba(0, 5, 15, 0.85);
     backdrop-filter: blur(8px);
     padding: 25px;
-    margin: 30px auto;
+    margin: 5px auto;
     max-width: 950px;
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -64,7 +64,7 @@
     text-align: center; 
     font-weight: bold; 
     border-radius: 12px; 
-    margin-bottom: 20px; 
+    margin-bottom: 10px; 
     position: relative; 
     box-shadow: 0 5px 20px rgba(0,0,0,0.4); 
     border: 2px solid #e6b800;

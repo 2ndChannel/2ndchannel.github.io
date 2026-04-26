@@ -166,6 +166,11 @@ a:hover { filter: brightness(1.2); }
 .nav.mobile-mode .menu-links a:not(:last-child)::after { content: ""; }
 
 .num-fix {
-    font-family: Arial, sans-serif; /* Или любой ровный шрифт для цифр */
-    font-variant-numeric: tabular-nums;
+    font-family: inherit !important; /* Строго берем шрифт заголовка */
+    font-size: 1.14em !important;   /* Твой размер */
+    line-height: 0;
+    display: inline-block;
+    vertical-align: baseline;       /* Выравнивание по нижней линии букв */
+    position: relative;
+
 }
