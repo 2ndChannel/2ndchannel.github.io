@@ -1,8 +1,7 @@
 /* ============================================================
-   СТИЛИ СТРАНИЦЫ ОШИБКИ (404) — СИНИЙ НЕОН И ЖЕЛТАЯ КНОПКА
+   СТИЛИ СТРАНИЦЫ ОШИБКИ (404)
    ============================================================ */
 
-/* Центральный контейнер */
 .center {
     display: flex;
     justify-content: center;
@@ -10,85 +9,95 @@
     min-height: calc(100vh - 150px);
 }
 
-/* Карточка ошибки (прозрачная с СИНИМ свечением) */
 .error-card {
-    background: rgba(0, 10, 30, 0.5); /* Очень прозрачный темно-синий */
-    backdrop-filter: blur(15px);     /* Сильное размытие */
+    background: rgba(0, 10, 30, 0.5);
+    backdrop-filter: blur(15px);
     padding: 40px 25px;
     margin: 20px auto;
     max-width: 600px;
     border-radius: 24px;
-    /* Синяя рамка */
-    border: 1px solid rgba(0, 150, 255, 0.3); 
-    /* Мощное синее свечение (Cyan/Blue) */
-    box-shadow: 0 0 50px rgba(0, 100, 255, 0.3); 
+    border: 1px solid rgba(35, 65, 182, 0.5);
     text-align: center;
-	padding-top: 60px; /* Чтобы навигация не нализала на текст 404 */
+    padding-top: 40px;
 }
 
-/* Огромные цифры 404 с синим свечением */
 .error-card h1 {
     font-family: "Machina", Arial, sans-serif;
     font-size: 100px !important;
     margin: 0;
     color: #fff;
     line-height: 1;
-    text-shadow: 0 0 30px rgba(0, 150, 255, 0.8); 
 }
 
-/* Заголовок YOU LOSE */
 .error-card h2 {
     font-family: "Machina", Arial, sans-serif;
     font-size: 32px;
     margin: 10px 0 20px 0;
-    color: #ffcc00; /* Тот самый желтый */
+    color: #2341B6;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
 
-/* Текст описания */
 .error-card p {
     font-family: Arial, sans-serif;
     line-height: 1.6;
     margin: 15px 0;
-    color: rgba(255, 255, 255, 0.9);
+    color: #fff;
     font-size: 18px;
 }
 
-/* Подсказка снизу */
+/* Блок с кнопками */
+.error-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+/* Общие стили кнопок */
+.error-card button, .btn-play-mini {
+    background: #2341B6;
+    color: #fff;
+    border: none;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.error-card button {
+    padding: 14px 30px;
+    font-size: 18px;
+    border-radius: 12px;
+}
+
+.btn-play-mini {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Состояния при наведении */
+.error-card button:hover, .btn-play-mini:hover {
+    background: #1a2e85;
+    transform: translateY(-2px);
+}
+
+.btn-play-mini.playing {
+    background: #1a2e85;
+}
+
 .error-hint {
     margin-top: 25px;
     font-size: 14px;
     opacity: 0.5;
     color: #fff;
-    border-top: 1px solid rgba(0, 150, 255, 0.2); /* Синяя полоска */
+    border-top: 1px solid rgba(35, 65, 182, 0.3);
     padding-top: 20px;
-}
-
-/* ============================================================
-   КНОПКА ДЕЙСТВИЯ (ЖЕЛТАЯ, как 404/YOU LOSE)
-   ============================================================ */
-.error-card button {
-    background: #ffcc00; /* Желтый цвет */
-    color: #000;         /* Черный текст для контраста */
-    border: none;
-    padding: 14px 30px;
-    font-size: 18px;
-    font-family: Arial, sans-serif;
-    font-weight: bold;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 5px 15px rgba(255, 204, 0, 0.3);
-    margin-top: 10px;
-}
-
-.error-card button:hover {
-    background: #ffe066; /* Чуть светлее при наведении */
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(255, 204, 0, 0.5);
-}
-
-.error-card button:active {
-    transform: translateY(0);
 }
