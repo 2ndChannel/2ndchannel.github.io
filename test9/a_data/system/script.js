@@ -118,62 +118,66 @@ async function loadNavbar() {
     if (!navCont) return;
 
     try {
-        // 1. Загружаем внешний HTML
-        const response = await fetch('../a_data/system/nav.html');
+        // Загружаем HTML код меню. 
+        // Важно: путь должен быть правильным относительно вызывающей страницы.
+        const response = await fetch('/a_data/system/nav.html'); 
         const html = await response.text();
         navCont.innerHTML = html;
 
-        // 2. Названия страниц
-        const titles = {
-            '/': 'Главная', '/tnu4/': 'TNU4',
-            '/streams/': 'Стримы', '/games/': 'Игры'
-        };
-        const path = window.location.pathname;
-        
-        // Элементы
         const navInner = document.getElementById('nav-inner');
-        const menuTitle = document.getElementById('menuTitle');
         const menuList = document.getElementById('menu-list');
         const menuBtn = document.getElementById('menu-btn');
+        const menuTitle = document.getElementById('menuTitle');
 
-        // Устанавливаем название
+        // 1. Устанавливаем текст текущей страницы
+        const path = window.location.pathname;
+        const titles = { 
+            '/': 'Главная', 
+            '/index.html': 'Главная',
+            '/tnu4/': 'TNU4', 
+            '/streams/': 'Стримы', 
+            '/games/': 'Игры' 
+        };
         if (menuTitle) menuTitle.textContent = titles[path] || 'Меню';
 
-        // 3. Функция "Умного адаптива"
+        // 2. Функция проверки на вшивость (влезает или нет)
         const checkFitting = () => {
+            // Сбрасываем режим, чтобы померить реальную ширину
             navInner.classList.remove('mobile-mode');
-            // Если ширина меню больше ширины окна - включаем гамбургер
-            if (menuList.scrollWidth > window.innerWidth - 40) {
+            
+            // Если ширина контента больше ширины окна (с запасом 20px)
+            if (menuList.scrollWidth > window.innerWidth - 20) {
                 navInner.classList.add('mobile-mode');
             }
         };
 
-        // 4. Логика клика
+        // 3. Открытие/закрытие по клику
         menuBtn.onclick = (e) => {
             e.stopPropagation();
             menuList.classList.toggle('active');
         };
-        document.addEventListener('click', () => menuList.classList.remove('active'));
-
-        // 5. Подсветка активной ссылки
-		document.querySelectorAll('.menu-links a').forEach(link => {
-			const href = link.getAttribute('href').replace('../', ''); // Убираем переход вверх для сравнения
-			const path = window.location.pathname;
-			
-			if (path.includes(href) && href !== "") {
-				link.classList.add('active');
-			}
-		});
-
-        // Запуск проверки
-        checkFitting();
-        window.onresize = checkFitting;
-		
-		heckFitting();
-        window.onresize = checkFitting;
         
-        // Добавь это здесь:
-        fixNumbers();
+        // Закрыть меню при клике в любое другое место
+        document.addEventListener('click', () => {
+            menuList.classList.remove('active');
+        });
+
+        // 4. Подсветка активной ссылки (селезень)
+        const links = document.querySelectorAll('.menu-links a');
+        links.forEach(link => {
+            const linkPath = link.getAttribute('href').replace(/^\.\.\//, '/'); 
+            // Если путь страницы совпадает с ссылкой
+            if (path === linkPath || (path === '/' && linkPath === '/')) {
+                link.classList.add('active');
+            }
+        });
+
+        // 5. Запуск проверки и подписка на ресайз
+        checkFitting();
+        window.addEventListener('resize', checkFitting);
+        
+        // Вызываем ваш фикс цифр
+        if (typeof fixNumbers === 'function') fixNumbers();
 
     } catch (err) {
         console.error('Ошибка загрузки меню:', err);

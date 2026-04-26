@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="a_data/system/style.css">
-	<link rel="stylesheet" href="a_data/system/components.css">
+    <link rel="stylesheet" href="a_data/system/style.css">
+    <link rel="stylesheet" href="a_data/system/nav.css">
+    <link rel="stylesheet" href="a_data/system/error.css">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <title>404 — Страница не найдена | 2nd Channel</title>
     <meta name="robots" content="noindex">
@@ -15,18 +16,18 @@
 <div id="nav"></div>
 
 <div class="container center">
-    <div class="card" style="text-align: center; margin-top: 50px;">
-        <h1 style="font-size: 80px; margin-bottom: 10px;">404</h1>
-        <h2 style="color: #ffcc00;">YOU LOSE</h2>
+    <div class="error-card">
+        <h1>404</h1>
+        <h2>YOU LOSE. Continue?</h2>
         <p>Похоже, эта страница была удалена, переименована <br> или никогда не существовала.</p>
         
-        <div style="margin-top: 30px;">
-            <a href="/" style="text-decoration: none;">
-                <button style="padding: 12px 25px; font-size: 20px;">Вернуться на главную</button>
+        <div class="error-actions">
+            <a href="/">
+                <button>Вернуться на главную</button>
             </a>
         </div>
         
-        <p style="margin-top: 20px; font-size: 16px; opacity: 0.7;">
+        <p class="error-hint">
             Если вы искали игры или стримы — воспользуйтесь меню выше.
         </p>
     </div>
@@ -34,7 +35,7 @@
 
 <script src="a_data/system/script.js"></script>
 <script>
-    // Загружаем навигацию, чтобы пользователь мог уйти с ошибки
+    // Загружаем навигацию
     loadNavbar();
 </script>
 

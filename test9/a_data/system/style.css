@@ -98,72 +98,7 @@ a:hover { filter: brightness(1.2); }
 /* ============================================================
    НАВИГАЦИЯ (Центрированный зеленый гамбургер и текст)
    ============================================================ */
-#nav { 
-    position: fixed !important; 
-    top: 0; left: 0; width: 100%; z-index: 9999; 
-}
 
-.nav { 
-    background: rgba(0, 0, 0, 0.9); 
-    display: flex; 
-    justify-content: center; /* Центрируем по умолчанию */
-    align-items: center; 
-    padding: 12px 20px;
-    min-height: 50px;
-    position: relative;
-}
-
-/* Элементы гамбургера (скрыты на ПК) */
-.menu-toggle, .current-page-name {
-    display: none; 
-}
-
-.menu-toggle {
-    background: none; border: none; cursor: pointer; padding: 5px;
-}
-
-.hamburger-icon span {
-    display: block; width: 28px; height: 3px; 
-    background: #2ecc71; /* Зеленый гамбургер */
-    margin: 5px 0; border-radius: 2px;
-}
-
-.current-page-name {
-    font-weight: bold; color: #fff; 
-    text-transform: uppercase; font-size: 20px; 
-    margin-left: 15px; /* Название справа от гамбургера */
-}
-
-/* Горизонтальные ссылки */
-.menu-links { 
-    display: flex; gap: 16px; align-items: center; 
-}
-
-.menu-links a { color: #fff; font-weight: bold; white-space: nowrap; }
-.menu-links a.active, .menu-links a:hover { color: #2ecc71; }
-
-.menu-links a:not(:last-child)::after {
-    content: " •"; margin-left: 12px; color: rgba(255, 255, 255, 0.4);
-}
-
-/* === УМНЫЙ АДАПТИВ (включается через JS) === */
-.nav.mobile-mode .menu-links {
-    display: none; 
-    flex-direction: column;
-    position: absolute;
-    top: 100%; left: 0; width: 100%;
-    background: rgba(0, 0, 0, 0.95);
-    padding: 20px 0; gap: 20px;
-    border-bottom: 2px solid #2ecc71;
-    text-align: center;
-}
-
-.nav.mobile-mode .menu-links.active { display: flex; }
-
-.nav.mobile-mode .menu-toggle, 
-.nav.mobile-mode .current-page-name { display: flex; }
-
-.nav.mobile-mode .menu-links a:not(:last-child)::after { content: ""; }
 
 .num-fix {
     font-family: inherit !important; /* Строго берем шрифт заголовка */

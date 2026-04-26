@@ -1,0 +1,139 @@
+/* ============================================================
+   ФИКСИРОВАННЫЙ КОНТЕЙНЕР
+   ============================================================ */
+#nav { 
+    position: fixed !important; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    z-index: 9999; 
+}
+
+.nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    padding: 10px 20px;
+    min-height: 60px; /* Немного увеличили высоту для кнопок */
+    position: relative;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================================
+   ОБЫЧНОЕ МЕНЮ (Горизонтальное - КНОПКИ)
+   ============================================================ */
+.menu-links {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+    align-items: center;
+    gap: 15px; /* Уменьшили зазор, так как кнопки сами по себе крупные */
+}
+
+.menu-links a {
+    color: #fff;
+    text-decoration: none;
+    font-family: Arial, Helvetica, sans-serif; 
+    font-weight: bold;
+    padding: 10px 20px; /* Внутренние отступы как у кнопки 404 */
+    border-radius: 12px; /* Закругление как в error.css */
+    transition: all 0.2s ease; /* Плавная анимация */
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.05); /* Едва заметный фон в обычном состоянии */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Эффект наведения (Hover) — копия стиля кнопки 404 */
+.menu-links a:hover {
+    background: #319B0F !important; /* Твой зеленый */
+    color: white !important;
+    transform: translateY(-2px); /* Всплытие вверх */
+    box-shadow: 0 5px 15px rgba(49, 155, 15, 0.4); /* Свечение */
+    border-color: transparent;
+}
+
+/* Активная страница — сразу подсвечена зеленым */
+.menu-links a.active {
+    background: #319B0F;
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Точки убрали, так как для кнопок-карточек они лишние */
+.menu-links a::after {
+    display: none !important;
+}
+
+/* ============================================================
+   ГАМБУРГЕР И НАДПИСЬ
+   ============================================================ */
+.mobile-header {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 15px;
+}
+
+.menu-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+}
+
+.hamburger-icon span {
+    display: block;
+    width: 28px;
+    height: 3px;
+    background: #319B0F;
+    margin: 4px 0;
+    border-radius: 2px;
+}
+
+.current-page-name {
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    text-transform: uppercase;
+    font-family: Arial, Helvetica, sans-serif; 
+}
+
+/* ============================================================
+   УМНЫЙ АДАПТИВ
+   ============================================================ */
+.nav.mobile-mode .mobile-header {
+    display: flex;
+}
+
+.nav.mobile-mode .menu-links {
+    display: none; 
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    padding: 20px 0;
+    gap: 12px !important;
+    border-bottom: 3px solid #319B0F;
+}
+
+.nav.mobile-mode .menu-links.active {
+    display: flex;
+}
+
+.nav.mobile-mode .menu-links a {
+    display: block;
+    width: 80%; /* Кнопки в мобилке не на весь экран, а по центру */
+    margin: 0 auto;
+    padding: 14px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+}
