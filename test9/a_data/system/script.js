@@ -119,7 +119,7 @@ async function loadNavbar() {
 
     try {
         // 1. Загружаем внешний HTML
-        const response = await fetch('/a_data/system/nav.html');
+        const response = await fetch('../a_data/system/nav.html');
         const html = await response.text();
         navCont.innerHTML = html;
 
@@ -156,9 +156,14 @@ async function loadNavbar() {
         document.addEventListener('click', () => menuList.classList.remove('active'));
 
         // 5. Подсветка активной ссылки
-        document.querySelectorAll('.menu-links a').forEach(link => {
-            if (link.getAttribute('href') === path) link.classList.add('active');
-        });
+		document.querySelectorAll('.menu-links a').forEach(link => {
+			const href = link.getAttribute('href').replace('../', ''); // Убираем переход вверх для сравнения
+			const path = window.location.pathname;
+			
+			if (path.includes(href) && href !== "") {
+				link.classList.add('active');
+			}
+		});
 
         // Запуск проверки
         checkFitting();
