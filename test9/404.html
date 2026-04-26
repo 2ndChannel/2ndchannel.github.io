@@ -28,62 +28,86 @@
 	<meta name="twitter:title" content="2nd Channel">
 	<meta name="twitter:description" content="Ретро игры, стримы и фан-проект TNU4">
 	<meta name="twitter:image" content="https://2ndchannel.github.io/a_data/system/preview.jpg">
+
+    <style>
+        .title-wrapper { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 10px; }
+        .btn-play-mini {
+            background: transparent; border: 2px solid #0ff; color: #0ff;
+            width: 45px; height: 45px; border-radius: 50%; cursor: pointer;
+            font-size: 20px; display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s ease; padding-left: 5px; flex-shrink: 0;
+        }
+        .btn-play-mini:hover { box-shadow: 0 0 15px #0ff; color: #fff; border-color: #fff; }
+        .btn-play-mini.playing { animation: pulse-cyan 0.8s infinite; border-color: #0ff; color: #fff; box-shadow: 0 0 20px #0ff; }
+        @keyframes pulse-cyan { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+    </style>
 </head>
 <body>
-
-<audio id="error-audio" src="/a_data/system/404.ogg" preload="auto"></audio>
 
 <div class="bg"></div>
 <div id="nav"></div>
 
 <div class="container center">
-<div style="margin-top: 20px; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; border: 1px solid #0ff;">
-    <p style="color: #0ff; font-size: 12px; margin-bottom: 5px; font-family: sans-serif;">Тестовый плеер (удалить потом):</p>
-    <audio controls src="/a_data/system/404.ogg" style="filter: invert(1); height: 30px;"></audio>
-</div>
     <div class="error-card">
-        <h1>404</h1>
-        <h2>YOU LOSE. Continue?</h2>
-        <p>Похоже, эта страница была удалена, переименована <br> или никогда не существовала.</p>
-        
-        <div class="error-actions">
-            <a href="/">
-                <button>YES • Продолжить</button>
-            </a>
+        <div class="title-wrapper">
+            <h1>404</h1>
+            <button id="rnd-sound" class="btn-play-mini">▶</button>
         </div>
-        
-        <p class="error-hint">
-            Если вы искали игры или стримы — воспользуйтесь меню выше.
-        </p>
+        <h2>YOU LOSE. Continue?</h2>
+        <p>Страница не найдена, но игра продолжается.</p>
+        <div class="error-actions">
+            <a href="/"><button>YES • Продолжить</button></a>
+        </div>
+        <p class="error-hint">Воспользуйтесь меню выше, чтобы вернуться в строй.</p>
     </div>
 </div>
 
 <script src="/a_data/system/script.js"></script>
 <script>
-    // Загружаем навигацию
     loadNavbar();
-</script>
 
-<script>
-    const audio = document.getElementById('error-audio');
+    const soundBtn = document.getElementById('rnd-sound');
+    const soundPath = '/a_data/system/se404/';
+    const maxFile = 20;
 
-    // Функция запуска звука
-    const startAudio = () => {
-        if (audio && audio.paused) {
-            audio.volume = 0.5;
-            audio.play().catch(err => console.log("Ждем клика для звука"));
+    function playRandomWithCheck() {
+        const rnd = Math.floor(Math.random() * maxFile) + 1;
+        const audio = new Audio(soundPath + rnd + '.ogg');
+        audio.volume = 0.5;
+
+        const playPromise = audio.play();
+
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                soundBtn.classList.add('playing');
+                soundBtn.innerText = "🔊";
+                
+                audio.onended = () => {
+                    soundBtn.classList.remove('playing');
+                    soundBtn.innerText = "▶";
+                };
+            }).catch(error => {
+                console.log(`Файл ${rnd}.ogg отсутствует, ищу дальше...`);
+                playRandomWithCheck(); 
+            });
         }
+    }
+
+    if (soundBtn) {
+        soundBtn.addEventListener('click', () => {
+            if (soundBtn.classList.contains('playing')) return;
+            playRandomWithCheck();
+        });
+    }
+
+    const autoAudio = new Audio('/a_data/system/404.ogg');
+    const playAuto = () => {
+        autoAudio.volume = 0.4;
+        autoAudio.play().then(() => {
+            ['click', 'mousemove', 'touchstart'].forEach(e => document.removeEventListener(e, playAuto));
+        }).catch(() => {});
     };
-
-    // 1. Пытаемся запустить сразу (сработает редко)
-    window.addEventListener('DOMContentLoaded', startAudio);
-
-    // 2. ГАРАНТИРОВАННЫЙ запуск при любом движении пользователя
-    // Как только юзер кликнет, нажмет кнопку или даже просто тронет экран (на мобилке)
-    ['click', 'touchstart', 'keydown'].forEach(event => {
-        document.addEventListener(event, startAudio, { once: true });
-    });
+    ['click', 'mousemove', 'touchstart'].forEach(e => document.addEventListener(e, playAuto));
 </script>
-
 </body>
 </html>
