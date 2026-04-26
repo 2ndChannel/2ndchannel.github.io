@@ -92,7 +92,7 @@
         </div>
 
         <h2>YOU LOSE. Continue?</h2>
-        <p>Страница не найдена, но игра продолжается.</p>
+        <p>Страница не найдена</p>
         
         <div class="error-actions">
             <a href="/">
@@ -101,7 +101,7 @@
         </div>
         
         <p class="error-hint">
-            Воспользуйтесь меню выше, чтобы вернуться в строй.
+            Воспользуйтесь меню выше, чтобы вернуться.
         </p>
     </div>
 </div>
@@ -114,7 +114,7 @@
     // 2. Логика случайных звуков по кнопке
     const soundBtn = document.getElementById('rnd-sound');
     const soundPath = '/a_data/system/se404/';
-    const maxFile = 20; // Ищем файлы от 1.ogg до 20.ogg
+    const maxFile = 50; // Ищем файлы от 1.ogg до 50.ogg
 
     function playRandomWithCheck() {
         const rnd = Math.floor(Math.random() * maxFile) + 1;
