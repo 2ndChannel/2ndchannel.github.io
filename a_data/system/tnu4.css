@@ -1,0 +1,85 @@
+/* ============================================================
+   СТИЛИ ПРОЕКТА TNU4 (tnu4/index.html)
+   ============================================================ */
+
+/* Основная карточка в стиле Ninja Gaiden */
+.tnu-card {
+    background: linear-gradient(135deg, rgba(40, 0, 0, 0.85), rgba(0, 0, 0, 0.95)) !important;
+    backdrop-filter: blur(10px);
+    border: 2px solid #ff0000;
+    padding: 30px;
+    margin: 20px auto;
+    max-width: 950px;
+    border-radius: 0px; /* Острые углы для ретро-стиля */
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+}
+
+/* Заголовки */
+.tnu-card h1, .tnu-card h2 {
+    font-family: "Machina", Arial, sans-serif;
+    color: #ff4444;
+    text-shadow: 3px 3px 0px #000;
+    text-transform: uppercase;
+    margin-top: 0;
+}
+
+.tnu-card h1 { font-size: 36px; border-bottom: 2px solid #ff4444; display: inline-block; margin-bottom: 20px; }
+.tnu-card h2 { font-size: 24px; margin-bottom: 15px; }
+
+/* Текст описания */
+.tnu-card p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #eee;
+}
+
+/* Галерея скриншотов */
+.gallery { 
+    display: flex; 
+    overflow-x: auto; 
+    gap: 15px; 
+    padding: 10px 0;
+    scrollbar-width: thin;
+    scrollbar-color: #ff4444 #000;
+}
+
+.gallery img { 
+    height: 180px; 
+    border: 2px solid #444; 
+    border-radius: 4px;
+    cursor: pointer; 
+    transition: 0.3s ease; 
+}
+
+.gallery img:hover { 
+    border-color: #ff4444; 
+    transform: scale(1.05); 
+    box-shadow: 0 0 15px rgba(255, 68, 68, 0.5);
+}
+
+/* ============================================================
+   ПОЛНОЭКРАННЫЙ ПРОСМОТР (Fullscreen)
+   ============================================================ */
+.fullscreen { 
+    position: fixed; 
+    inset: 0; 
+    background: rgba(0, 0, 0, 0.95); 
+    display: none; /* Включается через JS */
+    align-items: center; 
+    justify-content: center; 
+    z-index: 9999; 
+    cursor: zoom-out;
+}
+
+.fullscreen img { 
+    max-width: 90%; 
+    max-height: 90%; 
+    border: 3px solid #ff4444; 
+    box-shadow: 0 0 50px rgba(0,0,0,1);
+    animation: zoomIn 0.2s ease-out;
+}
+
+@keyframes zoomIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}

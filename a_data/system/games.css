@@ -1,0 +1,131 @@
+/* ============================================================
+   СТИЛИ СТРАНИЦЫ ИГР (games/index.html)
+   ============================================================ */
+
+/* Контейнер группы игр (Стрим) */
+.game-card {
+    background: rgba(10, 25, 50, 0.7) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(100, 200, 255, 0.3);
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 950px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Шапка стрима внутри карточки */
+.stream-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: baseline; 
+    border-bottom: 1px solid rgba(100, 200, 255, 0.2); 
+    margin-bottom: 20px; 
+    padding-bottom: 10px; 
+}
+
+.stream-header h3 { 
+    color: #fff !important; 
+    text-shadow: 2px 2px 4px #000; 
+    margin: 0 !important; 
+    font-size: 26px; 
+    font-family: "Machina", Arial, sans-serif;
+    text-transform: uppercase;
+}
+
+.stream-date-header { 
+    font-family: "Machina", Arial, sans-serif; 
+    color: #64c8ff; 
+    font-size: 20px; 
+}
+
+/* Сетка для плашек игр */
+.list-body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: flex-start;
+}
+
+/* Плашка отдельной игры (Badge) */
+.badge {
+    display: flex; 
+    align-items: center; 
+    padding: 4px 10px; 
+    height: 60px;
+    margin: 4px 0; 
+    border-radius: 6px; 
+    border-left: 6px solid #555;
+    background: rgba(20, 40, 80, 0.8) !important;
+    color: #fff !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+/* Иконка и метка платформы */
+.game-icon-box {
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+    gap: 3px; 
+    margin-right: 15px; 
+    width: 40px; 
+    flex-shrink: 0;
+}
+.game-icon { width: 40px; height: 40px; object-fit: contain; }
+
+.plat-label {
+    background: rgba(0, 0, 0, 0.4);
+    color: #fff !important;
+    padding: 1px 6px; 
+    border-radius: 4px; 
+    font-size: 8px; 
+    text-transform: uppercase;
+    font-weight: bold;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Название и ссылки */
+.game-content { 
+    display: flex; 
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+}
+.game-content strong { font-size: 14px; line-height: 1.2; white-space: nowrap; }
+
+.game-links { display: flex; gap: 10px; }
+.game-links a { text-decoration: none; font-size: 16px; opacity: 0.8; line-height: 1; color: #fff; }
+.game-links a:hover { opacity: 1; }
+
+/* Цвета статусов прохождения */
+.red { background: rgba(224, 102, 102, 0.9) !important; border-left-color: #ff0000 !important; }
+.yellow { background: rgba(241, 196, 15, 0.9) !important; color: #000 !important; border-left-color: #ffea00 !important; }
+.yellow a { color: #000 !important; }
+.green { background: rgba(46, 204, 113, 0.9) !important; border-left-color: #00ff62 !important; }
+
+/* Панель фильтров */
+.filters-panel {
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 15px; 
+    background: rgba(10, 25, 50, 0.8) !important;
+    padding: 20px; 
+    border-radius: 12px; 
+    margin-bottom: 30px; 
+    border: 1px solid rgba(100, 200, 255, 0.3);
+    justify-content: center; 
+    align-items: flex-end; 
+    backdrop-filter: blur(10px);
+}
+
+.filter-group { display: flex; flex-direction: column; gap: 5px; text-align: left; }
+.filter-group label { font-size: 0.7em; color: #64c8ff; text-transform: uppercase; font-weight: bold; }
+
+.filter-group select, .filter-group input { 
+    padding: 8px; 
+    border-radius: 5px; 
+    background: rgba(0,0,0,0.3); 
+    color: #fff; 
+    border: 1px solid rgba(100, 200, 255, 0.3); 
+    font-size: 16px; 
+}

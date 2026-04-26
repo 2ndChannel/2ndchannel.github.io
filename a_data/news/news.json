@@ -1,0 +1,24 @@
+[
+  {
+    "id": "stream1",
+    "text": "🔴 Прямой стрим сегодня в {eventTime}! Смотрите [таймкоды](https://www.youtube.com/watch?v=1GS7WTnDQhc).",
+    "startDate": "2026-04-11T00:00:00",
+    "endDate": "2026-04-11T23:59:59",
+    "eventTime": "18:00",
+    "startedText": "Стрим уже идёт!"
+  },
+  {
+    "id": "stream2",
+    "text": "Стрим вероятно, начнётся в какой-то из дней в {eventTime}",
+    "startDate": "2026-04-23T00:00:00",
+    "endDate": "2026-04-30T06:21:00",
+    "eventTime": "22:15",
+    "startedText": "Стрим уже идёт. Бегом на стрим!"
+  },
+  {
+    "id": "always",
+    "text": "💡 Стрим когда-нибудь будет. Я периодически пробую делать мелкие правки на сайте",
+    "startDate": null,
+    "endDate": null
+  }
+]

@@ -1,0 +1,93 @@
+/* ============================================================
+   СТИЛИ СТРАНИЦЫ ОШИБКИ (404) — СИНИЙ НЕОН И ЖЕЛТАЯ КНОПКА
+   ============================================================ */
+
+/* Центральный контейнер */
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 150px);
+}
+
+/* Карточка ошибки (прозрачная с СИНИМ свечением) */
+.error-card {
+    background: rgba(0, 10, 30, 0.5); /* Очень прозрачный темно-синий */
+    backdrop-filter: blur(15px);     /* Сильное размытие */
+    padding: 40px 25px;
+    margin: 20px auto;
+    max-width: 600px;
+    border-radius: 24px;
+    /* Синяя рамка */
+    border: 1px solid rgba(0, 150, 255, 0.3); 
+    /* Мощное синее свечение (Cyan/Blue) */
+    box-shadow: 0 0 50px rgba(0, 100, 255, 0.3); 
+    text-align: center;
+}
+
+/* Огромные цифры 404 с синим свечением */
+.error-card h1 {
+    font-family: "Machina", Arial, sans-serif;
+    font-size: 100px !important;
+    margin: 0;
+    color: #fff;
+    line-height: 1;
+    text-shadow: 0 0 30px rgba(0, 150, 255, 0.8); 
+}
+
+/* Заголовок YOU LOSE */
+.error-card h2 {
+    font-family: "Machina", Arial, sans-serif;
+    font-size: 32px;
+    margin: 10px 0 20px 0;
+    color: #ffcc00; /* Тот самый желтый */
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Текст описания */
+.error-card p {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 15px 0;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 18px;
+}
+
+/* Подсказка снизу */
+.error-hint {
+    margin-top: 25px;
+    font-size: 14px;
+    opacity: 0.5;
+    color: #fff;
+    border-top: 1px solid rgba(0, 150, 255, 0.2); /* Синяя полоска */
+    padding-top: 20px;
+}
+
+/* ============================================================
+   КНОПКА ДЕЙСТВИЯ (ЖЕЛТАЯ, как 404/YOU LOSE)
+   ============================================================ */
+.error-card button {
+    background: #ffcc00; /* Желтый цвет */
+    color: #000;         /* Черный текст для контраста */
+    border: none;
+    padding: 14px 30px;
+    font-size: 18px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 5px 15px rgba(255, 204, 0, 0.3);
+    margin-top: 10px;
+}
+
+.error-card button:hover {
+    background: #ffe066; /* Чуть светлее при наведении */
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 204, 0, 0.5);
+}
+
+.error-card button:active {
+    transform: translateY(0);
+}

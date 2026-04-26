@@ -1,171 +1,111 @@
-/* ===== 1. ШРИФТЫ ===== */
+/* ============================================================
+   ОБЩИЕ СТИЛИ (Фон, Базовые шрифты, Контейнер)
+   ============================================================ */
 @font-face {
-  font-family: "Machina";
-  src: url("2F_MachinaOrto-Medium.ttf") format("truetype");
+    font-family: "Machina";
+    src: url("2F_MachinaOrto-Medium.ttf") format("truetype");
 }
 
-/* ===== 2. БАЗОВЫЕ НАСТРОЙКИ ===== */
+/* ============================================================
+   ОБЩИЕ СТИЛИ
+   ============================================================ */
 body {
-  margin: 0;
-  padding-top: 70px; /* Отступ под фиксированное меню */
-  font-family: Arial, sans-serif;
-  font-size: 24px;
-  color: #fff;
-  background: #000;
-  overflow-x: hidden;
+    margin: 0;
+    padding-top: 70px;
+    font-family: Arial, sans-serif;
+    font-size: 24px;
+    color: #fff;
+    /* Цвет неба: всё, что выше и за зданиями */
+    background-color: #0f1b4c; 
+    overflow-x: hidden;
 }
 
-/* ===== 3. АНИМИРОВАННЫЙ ФОН (ГОРОД) ===== */
+/* ============================================================
+   ФОН (ИСПРАВЛЕННЫЙ)
+   ============================================================ */
 .bg {
-  position: fixed;
-  inset: 0;
-  background: url("city_vertical.gif") repeat-x;
-  background-size: cover;
-  animation: scrollBg 240s linear infinite;
-  pointer-events: none;
-  z-index: 0;
-  background-position: center top;
-  will-change: background-position;
+    position: fixed;
+    /* Опускаем контейнер чуть ниже, чтобы огромные здания не закрыли всё небо */
+    top: 30vh; 
+    left: 0;
+    width: 100vw;
+    /* Увеличиваем высоту вдвое (было 60vh, стало 120vh) */
+    /* Теперь здания станут в 2 раза крупнее */
+    height: 120vh; 
+    
+    background: url("city_vertical.gif") repeat-x;
+    /* Картинка растягивается по новой высоте, сохраняя пропорции */
+    background-size: auto 100%; 
+    
+    /* Скорость нужно еще немного замедлить, так как при приближении 
+       движение кажется быстрее. Поставим 600s. */
+    animation: scrollBg 600s linear infinite;
+    
+    pointer-events: none;
+    z-index: -1;
+    will-change: background-position;
+}
+
+.bg::after {
+    content: "";
+    display: block;
+    position: absolute;
+    /* Привязка к низу увеличенных зданий */
+    top: calc(100% - 5px); 
+    left: 0;
+    width: 100vw;
+    height: 200vh; 
+    background: #000;
 }
 
 @keyframes scrollBg {
-  from { background-position: 0 0; }
-  to { background-position: -1280px 0; }
-}
-
-/* Адаптация фона под мобильные */
-@media (max-width: 768px) {
-  .bg { background-size: 150%; background-position: center center; }
-}
-@media (max-width: 480px) {
-  .bg { background-size: 200%; background-position: center center; }
-}
-
-/* ===== 4. СЛОИ И КОНТЕЙНЕРЫ ===== */
-.nav, .container, .card {
-  position: relative;
-  z-index: 1;
+    from { background-position: 0 0; }
+    /* Увеличиваем дистанцию прокрутки, так как картинка стала шире 
+       из-за увеличения высоты */
+    to { background-position: -10000px 0; } 
 }
 
 .container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 15px;
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 15px;
 }
 
-/* Стили карточек (основной блок контента) */
-.card {
-  background: rgba(0, 120, 255, 0.4);
-  backdrop-filter: blur(3px);
-  padding: 18px;
-  border-radius: 18px;
-  margin: 10px auto;
-  max-width: 800px;
+/* ============================================================
+   КНОПКИ И ССЫЛКИ (Общие элементы)
+   ============================================================ */
+button { 
+    cursor: pointer; 
+    padding: 6px 14px; 
+    border-radius: 6px; 
+    border: none; 
+    background: #fff; 
+    color: #000; 
+    font-weight: bold; 
+    transition: background 0.2s, transform 0.1s; 
+    font-family: Arial, sans-serif;
+    font-size: 16px; 
 }
 
-/* Заголовки в карточках — теперь все выглядят одинаково ровно */
-.card h1, .card h2, .card h3 {
-  font-family: "Machina", Arial, sans-serif;
-  font-weight: normal; /* Обязательно: убирает жирность браузера */
-  font-size: 32px;      /* Задай размер, который тебе нравится (как у h1) */
-  margin: 0 0 15px 0;
-  padding: 0;
-  line-height: 1.1;    /* Фиксирует высоту строки, чтобы буквы не "прыгали" */
-  display: block;
-}
+button:hover { background: #e0e0e0; }
+button:active { transform: scale(0.98); }
 
-.card p {
-  margin: 10px 0;
-  line-height: 1.4;
-}
+a { color: #2ecc71; text-decoration: none; transition: 0.3s; }
+a:hover { filter: brightness(1.2); }
 
-/* ===== 5. НАВИГАЦИЯ (NAVBAR) ===== */
-.nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-  background: rgba(0,0,0,0.85);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 12px;
-  box-sizing: border-box;
-}
+/* ============================================================
+   НАВИГАЦИЯ (Центрированный зеленый гамбургер и текст)
+   ============================================================ */
 
-/* Бургер-меню (появляется через JS) */
-.menu-toggle {
-  display: none;
-  cursor: pointer;
-  color: #fff;
-  font-weight: bold;
-  padding: 6px 10px;
-  user-select: none;
-  align-items: center;
-  gap: 8px;
-}
 
-/* Ссылки меню */
-.menu-links {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  align-items: center;
-}
-
-.menu-links a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: bold;
-  letter-spacing: 1px;
-  white-space: nowrap;
-  transition: color 0.3s;
-}
-
-.menu-links a:hover {
-  color: #2ecc71;
-}
-
-.menu-links a.active {
-  color: #2ecc71;
-}
-
-/* Горизонтальные разделители-точки */
-.menu-links.horizontal a:not(:last-child)::after {
-  content: "•";
-  margin-left: 16px;
-  font-size: 26px;
-  opacity: 0.7;
-  color: #fff;
-}
-
-/* Вертикальное меню для мобильных */
-.menu-links.vertical {
-  flex-direction: column;
-  display: none;
-  width: 100%;
-  margin-top: 10px;
-}
-
-.menu-links.vertical.open {
-  display: flex;
-}
-
-.menu-links.vertical a {
-  width: 100%;
-  text-align: center;
-  padding: 12px 0;
-  border-top: 1px solid rgba(255,255,255,0.1);
-}
-
-/* Скрытие точек в вертикальном режиме */
-.menu-links.vertical a::after {
-  display: none;
-}
-
-/* Цифры сделать той же высоты, что и буквы*/
 .num-fix {
-  font-size: 1.14em;
-  line-height: 0;
+    font-family: inherit !important; /* Строго берем шрифт заголовка */
+    font-size: 1.14em !important;   /* Твой размер */
+    line-height: 0;
+    display: inline-block;
+    vertical-align: baseline;       /* Выравнивание по нижней линии букв */
+    position: relative;
+
 }

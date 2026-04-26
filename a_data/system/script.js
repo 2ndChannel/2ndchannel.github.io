@@ -1,3 +1,27 @@
+// ===== 1. АНАЛИТИКА (ЗАПУСК) =====
+(function() {
+    // Яндекс Метрика
+    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+    m[i].l=1*new Date();
+    k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+    ym(108755980, "init", { clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true });
+
+    // Google Analytics
+    var ga = document.createElement('script');
+    ga.async = true;
+    ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-GQ6ZY3PPVJ';
+    document.head.appendChild(ga);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-GQ6ZY3PPVJ');
+    
+    console.log("Аналитика подцеплена!");
+})();
+
 // ===== OPEN / CLOSE FULLSCREEN IMAGE =====
 function openImg(src){
   const fs = document.getElementById("fs");
@@ -89,88 +113,231 @@ function adjustMenu(){
 }
 
 // ===== UNIVERSAL NAV LOADER =====
-function loadNavbar() {
-  const navContainer = document.getElementById("nav");
-  if (!navContainer) return;
+async function loadNavbar() {
+    const navCont = document.getElementById('nav');
+    if (!navCont) return;
 
-  // 1. Авто-определение пути к папке a_data
-  // Мы ищем, где в структуре проекта находится скрипт, чтобы понять, 
-  // сколько уровней ../ нужно добавить до корня сайта.
-  const scripts = document.getElementsByTagName('script');
-  let rootPath = "";
-  
-  for (let s of scripts) {
-    if (s.src.includes('a_data/system/script.js')) {
-      // Вырезаем путь до папки, в которой лежит скрипт
-      rootPath = s.src.split('a_data/system/script.js')[0];
-      break;
+    try {
+        // --- УНИВЕРСАЛЬНЫЙ ПУТЬ ---
+        // Если в пути есть /test9/, используем его как базу, иначе корень
+        const isTest = window.location.pathname.includes('/test9/');
+        const basePath = isTest ? '/test9/' : '/';
+        
+        // Загружаем HTML код меню, используя basePath
+        const response = await fetch(basePath + 'a_data/system/nav.html'); 
+        const html = await response.text();
+        navCont.innerHTML = html;
+
+        const navInner = document.getElementById('nav-inner');
+        const menuList = document.getElementById('menu-list');
+        const menuBtn = document.getElementById('menu-btn');
+        const menuTitle = document.getElementById('menuTitle');
+
+        // 1. Устанавливаем текст текущей страницы
+        const path = window.location.pathname;
+        
+        // Массив заголовков (учитываем basePath для ключей)
+        const titles = { 
+            [basePath]: 'Главная', 
+            [basePath + 'index.html']: 'Главная',
+            [basePath + 'tnu4/']: 'TNU4', 
+            [basePath + 'streams/']: 'Стримы', 
+            [basePath + 'games/']: 'Игры' 
+        };
+        
+        if (menuTitle) menuTitle.textContent = titles[path] || 'Меню';
+
+        // 2. Функция проверки на вшивость (влезает или нет)
+        const checkFitting = () => {
+            // Сбрасываем режим, чтобы померить реальную ширину
+            navInner.classList.remove('mobile-mode');
+            
+            // Если ширина контента больше ширины окна (с запасом 20px)
+            if (menuList.scrollWidth > window.innerWidth - 20) {
+                navInner.classList.add('mobile-mode');
+            }
+        };
+
+        // 3. Открытие/закрытие по клику
+        menuBtn.onclick = (e) => {
+            e.stopPropagation();
+            menuList.classList.toggle('active');
+        };
+        
+        // Закрыть меню при клике в любое другое место
+        document.addEventListener('click', () => {
+            menuList.classList.remove('active');
+        });
+
+		// 4. Настройка ссылок и подсветка
+		const links = document.querySelectorAll('.menu-links a');
+		links.forEach(link => {
+			// Получаем чистый href (например, "streams/")
+			const rawHref = link.getAttribute('href');
+			
+			// Формируем правильный полный путь для перехода
+			// Если мы в подпапке test9, станет /test9/streams/
+			const fullPath = basePath + rawHref;
+			link.setAttribute('href', fullPath);
+
+			// Проверка для подсветки active
+			if (path === fullPath || (path === basePath && rawHref === 'index.html')) {
+				link.classList.add('active');
+			}
+		});
+
+        // 5. Запуск проверки и подписка на ресайз
+        checkFitting();
+        window.addEventListener('resize', checkFitting);
+        
+        // Вызываем ваш фикс цифр
+        if (typeof fixNumbers === 'function') fixNumbers();
+
+    } catch (err) {
+        console.error('Ошибка загрузки меню:', err);
     }
-  }
-
-  // 2. Загружаем nav.html, используя вычисленный rootPath
-  fetch(rootPath + "a_data/system/nav.html")
-    .then(r => r.text())
-    .then(html => {
-      navContainer.innerHTML = html;
-      
-      // 3. Исправляем ссылки в меню, чтобы они ВСЕГДА вели в правильные папки
-      // независимо от того, в какой папке мы сейчас находимся
-      const links = navContainer.querySelectorAll("#menu a");
-      links.forEach(link => {
-        const href = link.getAttribute("href");
-        // Очищаем href от старых ../ если они там были (для чистоты)
-        const cleanHref = href.replace(/^(\.\.\/)+/, ""); 
-        // Ставим правильный путь от корня проекта
-        link.setAttribute("href", rootPath + cleanHref);
-      });
-
-      initMenu();
-      setActiveLink();
-      updateMenuTitle();
-      adjustMenu();
-      fixNumbers();
-    });
 }
-
 
 // ===== ЦИФРЫ ШРИФТА MACHINA ТОЙ ЖЕ ВЫСОТЫ, ЧТО И БУКВЫ =====
 function fixNumbers() {
-  const headers = document.querySelectorAll('h1, h2, h3, .menu-links a');
+  const targets = document.querySelectorAll('h1, h2, h3, .menu-links a');
   
-  headers.forEach(header => {
-    // Получаем название шрифта, который реально сейчас применен к элементу
-    const currentFont = window.getComputedStyle(header).fontFamily;
+  targets.forEach(el => {
+    const currentFont = window.getComputedStyle(el).fontFamily.toLowerCase();
 
-    // Проверяем: если в названии шрифта есть "Machina"
-    if (currentFont.includes("Machina")) {
-      
-      // Если мы еще не исправляли этот заголовок (чтобы не дублировать)
-      if (!header.querySelector('.num-fix')) {
-        header.innerHTML = header.innerHTML.replace(/(\d+)/g, '<span class="num-fix">$1</span>');
+    // Более надежная проверка на наличие слова "machina"
+    if (currentFont.indexOf("machina") !== -1) {
+      if (!el.querySelector('.num-fix')) {
+        el.innerHTML = el.innerHTML.replace(/(\d+)/g, '<span class="num-fix">$1</span>');
       }
-      
-    } else {
-      // Если это другой шрифт — мы ничего не делаем.
-      // Скрипт просто пропустит этот заголовок.
     }
   });
 }
 
 
 // ===== INIT ON PAGE LOAD =====
+// Запускаем как только готов HTML (не дожидаясь картинок)
+document.addEventListener("DOMContentLoaded", () => {
+    fixNumbers();
+});
+
+// Дублируем при полной загрузке на всякий случай
 window.addEventListener("load", () => {
-  // Если навигация уже есть в HTML (статическая), настраиваем её
-  // Если нет — её настроит loadNavbar после загрузки
-  if(document.getElementById("menu")) {
-    updateMenuTitle();
-    initMenu();
-    setActiveLink();
-    adjustMenu();
-	fixNumbers();
-    setTimeout(adjustMenu, 50);
-    requestAnimationFrame(adjustMenu);
-  }
+    fixNumbers();
+    // Тут твой старый код для меню...
+    if(document.getElementById("menu")) {
+        adjustMenu();
+    }
 });
 
 // ===== ADJUST MENU ON RESIZE =====
 window.addEventListener("resize", adjustMenu);
+
+async function initGamesPage() {
+    const gamesContainer = document.getElementById("games");
+    if (!gamesContainer) return;
+
+    // Загружаем данные: стримы из папки выше, игры из текущей
+    const [streams, allGames] = await Promise.all([
+        fetch('../streams/streams.json').then(r => r.json()),
+        fetch('games.json').then(r => r.json())
+    ]);
+
+	function applyFilters() {
+		let filtered = [...allGames];
+		const plat = document.getElementById('f-plat').value;
+		const status = document.getElementById('f-status').value;
+		const dStart = document.getElementById('f-date-start').value;
+		const dEnd = document.getElementById('f-date-end').value;
+		const sortVal = document.getElementById('f-sort').value; // Получаем значение сортировки
+
+		// 1. Фильтрация по платформе и статусу
+		if(plat !== 'all') filtered = filtered.filter(g => g.platform === plat);
+		if(status !== 'all') filtered = filtered.filter(g => g.status === status);
+
+		// 2. Фильтрация по датам
+		if(dStart || dEnd) {
+			filtered = filtered.filter(g => {
+				const s = streams.find(st => st.id === g.streamId);
+				if (!s) return false;
+				const matchStart = dStart ? s.date >= dStart : true;
+				const matchEnd = dEnd ? s.date <= dEnd : true;
+				return matchStart && matchEnd;
+			});
+		}
+
+		// 3. ЛОГИКА СОРТИРОВКИ (Добавляем этот блок)
+		filtered.sort((a, b) => {
+			const streamA = streams.find(st => st.id === a.streamId);
+			const streamB = streams.find(st => st.id === b.streamId);
+			const dateA = streamA ? streamA.date : "";
+			const dateB = streamB ? streamB.date : "";
+
+			if (sortVal === 'date-desc') {
+				return dateB.localeCompare(dateA); // Новые сверху
+			} else if (sortVal === 'date-asc') {
+				return dateA.localeCompare(dateB); // Старые сверху
+			} else if (sortVal === 'name-asc') {
+				return a.name.localeCompare(b.name); // А-Я по названию
+			}
+			return 0;
+		});
+
+		renderList(filtered);
+	}
+
+    function renderList(data) {
+        gamesContainer.innerHTML = "";
+        if(data.length === 0) { gamesContainer.innerHTML = "<p style='text-align:center;'>Ничего не найдено</p>"; return; }
+        
+        // Группируем по стримам (используем порядок из streams.json)
+        streams.forEach(s => {
+            const gamesInStream = data.filter(g => g.streamId === s.id);
+            if (gamesInStream.length > 0) renderGroup(gamesContainer, s.title, s.date, gamesInStream);
+        });
+    }
+
+	function renderGroup(cont, title, date, games) {
+        const wrapper = document.createElement("div");
+        // Заменили "card" на "game-card"
+        wrapper.className = "game-card"; 
+        wrapper.innerHTML = `
+            <div class="stream-header">
+                <h3>${title}</h3>
+                <span class="stream-date-header">${date}</span>
+            </div>
+            <div class="list-body"></div>`;
+        const body = wrapper.querySelector(".list-body");
+        
+        games.forEach(g => {
+            const div = document.createElement("div");
+            div.className = `badge ${g.status}`;
+            div.innerHTML = `
+                <div class="game-icon-box">
+                    <img src="${g.icon}" class="game-icon">
+                    <span class="plat-label">${g.platform}</span>
+                </div>
+                <div class="game-content">
+                    <strong>${g.name}</strong>
+                    <div class="game-links">
+                        <a href="${g.stream}" target="_blank">🎥</a>
+                        <a href="${g.download}" target="_blank">⬇</a>
+                    </div>
+                </div>`;
+            body.appendChild(div);
+        });
+        cont.appendChild(wrapper);
+    }
+
+    document.querySelectorAll('.filters-panel select, .filters-panel input').forEach(el => el.addEventListener('change', applyFilters));
+    document.getElementById('resetFilters').onclick = () => {
+        document.getElementById('f-plat').value = 'all';
+        document.getElementById('f-status').value = 'all';
+        document.getElementById('f-date-start').value = '';
+        document.getElementById('f-date-end').value = '';
+        applyFilters();
+    };
+
+    renderList(allGames);
+}
+
