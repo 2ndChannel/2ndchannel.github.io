@@ -5,8 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
 	<script>
-		document.write('<base href="/">');
-	</script>
+        // ЭТОТ СКРИПТ ДОЛЖЕН БЫТЬ ПЕРВЫМ
+        (function() {
+            var path = window.location.pathname;
+            // Если в пути есть test9, база /test9/, если нет - корень /
+            var baseHref = path.indexOf('/test9/') !== -1 ? '/test9/' : '/';
+            
+            var base = document.createElement('base');
+            base.href = baseHref;
+            document.head.appendChild(base);
+            
+            console.log("Base set to: " + baseHref);
+        })();
+    </script>
 	
     <link rel="stylesheet" href="a_data/system/style.css">
     <link rel="stylesheet" href="a_data/system/nav.css">
