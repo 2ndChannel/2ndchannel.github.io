@@ -15,6 +15,7 @@
     --color-3: #c00000; /* Красный */
     --color-4: #d8a400; /* Желтый */
     --color-5: #2341b6; /* Синий */
+    --default-gray: #888888; /* Серый для 404 */
 }
 
 /* Присваиваем цвета кнопкам по порядку */
@@ -22,7 +23,6 @@
 .menu-links a:nth-child(2) { --btn-color: var(--color-2); }
 .menu-links a:nth-child(3) { --btn-color: var(--color-3); }
 .menu-links a:nth-child(4) { --btn-color: var(--color-4); }
-
 
 /* Динамическая линия под меню */
 .nav {
@@ -34,19 +34,18 @@
     padding: 10px 20px;
     min-height: 60px;
     position: relative;
-    /* УБРАЛИ !important здесь, чтобы была возможность перезаписи */
-	border-bottom: 3px solid rgba(255, 255, 255, 0.1); /* Оставляем как есть или делаем ярче */
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    border-bottom: 3px solid rgba(255, 255, 255, 0.1); 
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     transition: border-color 0.3s ease;
 }
 
-/* Этот класс будет добавляться через JS, и он будет переопределять цвет */
+/* Этот класс добавляется через JS */
 .nav.color-loaded {
-    border-bottom: 3px solid var(--active-color) !important;
+    border-bottom: 3px solid var(--active-color, var(--default-gray)) !important;
 }
 
 /* ============================================================
-   ОБЩИЕ СТИЛИ ССЫЛОК (иконки + текст)
+   ОБЩИЕ СТИЛИ ССЫЛОК
    ============================================================ */
 .menu-links a {
     display: flex;
@@ -65,18 +64,15 @@
     white-space: nowrap;
 }
 
-/* 1. Удалите !important и статические цвета отсюда */
-/* Общий стиль для всех кнопок при наведении */
 .menu-links a:hover {
     background: var(--btn-color);
-    color: white; /* Стандартный цвет для всех */
+    color: white;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     border-color: transparent;
 }
 
-/* Переопределение для ЖЕЛТОЙ кнопки (приоритет выше из-за класса) */
-/* Желтая кнопка: обычное состояние - стандартное, hover/active - желтый фон */
+/* Переопределение для ЖЕЛТОЙ кнопки */
 .menu-links a.is-yellow:hover,
 .menu-links a.is-yellow.active {
     background: var(--btn-color) !important;
@@ -89,18 +85,17 @@
 }
 
 .menu-links a.active {
-    background: var(--btn-color); /* Здесь было !important, удалите его */
+    background: var(--btn-color);
     color: white;
     border-color: transparent;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-
 .menu-icon {
     width: 20px;
     height: 20px;
     display: block;
-    flex-shrink: 0; /* Чтобы иконка не сжималась */
+    flex-shrink: 0;
     fill: none;
     stroke: currentColor;
     stroke-width: 2;
@@ -115,18 +110,6 @@
     gap: 15px;
 }
 
-.menu-links a.is-yellow:hover,
-.menu-links a.is-yellow.active {
-    color: #000 !important;
-}
-
-.menu-links a.is-yellow:hover .menu-icon,
-.menu-links a.is-yellow.active .menu-icon {
-    stroke: #000 !important;
-}
-
-
-
 /* ============================================================
    ГАМБУРГЕР И МОБИЛЬНЫЙ ЗАГОЛОВОК
    ============================================================ */
@@ -139,21 +122,36 @@
 }
 
 .menu-toggle {
-    background: none;
+    background: transparent;
     border: none;
     cursor: pointer;
-    padding: 5px;
+    padding: 8px;
     display: flex;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+    -webkit-tap-highlight-color: transparent; 
+    outline: none;
+}
+
+/* Инверсия при нажатии: фон красится, полоски становятся прозрачными */
+.menu-toggle:hover, 
+.menu-toggle:active {
+    background: var(--active-color, var(--default-gray));
 }
 
 .hamburger-icon span {
     display: block;
     width: 28px;
     height: 3px;
-    background: var(--active-color, #ffffff);
-    transition: background 0.3s;
+    background: var(--active-color, var(--default-gray));
+    transition: all 0.3s ease;
     margin: 4px 0;
     border-radius: 2px;
+}
+
+.menu-toggle:hover .hamburger-icon span,
+.menu-toggle:active .hamburger-icon span {
+    background: rgba(0, 0, 0, 0.3);
 }
 
 .current-page-name {
@@ -181,7 +179,7 @@
     background: rgba(0, 0, 0, 0.95);
     padding: 20px 0;
     gap: 12px;
-    border-bottom: 3px solid var(--active-color, #ffffff);
+    border-bottom: 3px solid var(--active-color, var(--default-gray));
 }
 
 .nav.mobile-mode .menu-links.active {
@@ -192,5 +190,5 @@
     width: 85%;
     margin: 0 auto;
     padding: 14px 20px;
-    justify-content: flex-start; /* Иконки выровнены по левому краю */
+    justify-content: flex-start;
 }

@@ -89,7 +89,7 @@ links.forEach(link => {
 
 // А ТЕПЕРЬ ГЛАВНОЕ: если страница не в меню (например, 404)
 if (!foundActive) {
-    navElement.style.setProperty('--active-color', '#ffffff'); // Линия станет белой
+    navElement.style.setProperty('--active-color', '#888888'); // Линия станет серой
     navElement.classList.add('color-loaded');
 }
 
