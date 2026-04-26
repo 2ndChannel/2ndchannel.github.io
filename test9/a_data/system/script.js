@@ -118,9 +118,13 @@ async function loadNavbar() {
     if (!navCont) return;
 
     try {
-        // Загружаем HTML код меню. 
-        // Важно: путь должен быть правильным относительно вызывающей страницы.
-        const response = await fetch('../a_data/system/nav.html'); 
+        // --- УНИВЕРСАЛЬНЫЙ ПУТЬ ---
+        // Если в пути есть /test9/, используем его как базу, иначе корень
+        const isTest = window.location.pathname.includes('/test9/');
+        const basePath = isTest ? '/test9/' : '/';
+        
+        // Загружаем HTML код меню, используя basePath
+        const response = await fetch(basePath + 'a_data/system/nav.html'); 
         const html = await response.text();
         navCont.innerHTML = html;
 
@@ -131,13 +135,16 @@ async function loadNavbar() {
 
         // 1. Устанавливаем текст текущей страницы
         const path = window.location.pathname;
+        
+        // Массив заголовков (учитываем basePath для ключей)
         const titles = { 
-            '/': 'Главная', 
-            '/index.html': 'Главная',
-            '/tnu4/': 'TNU4', 
-            '/streams/': 'Стримы', 
-            '/games/': 'Игры' 
+            [basePath]: 'Главная', 
+            [basePath + 'index.html']: 'Главная',
+            [basePath + 'tnu4/']: 'TNU4', 
+            [basePath + 'streams/']: 'Стримы', 
+            [basePath + 'games/']: 'Игры' 
         };
+        
         if (menuTitle) menuTitle.textContent = titles[path] || 'Меню';
 
         // 2. Функция проверки на вшивость (влезает или нет)
@@ -165,9 +172,13 @@ async function loadNavbar() {
         // 4. Подсветка активной ссылки (селезень)
         const links = document.querySelectorAll('.menu-links a');
         links.forEach(link => {
-            const linkPath = link.getAttribute('href').replace(/^\.\.\//, '/'); 
+            // Убираем относительные точки и заменяем их на наш актуальный basePath
+            // Это позволит подсветке работать и в /test9/, и в корне
+            let linkHref = link.getAttribute('href').replace(/^\.\.\//, '');
+            let linkPath = basePath + linkHref;
+
             // Если путь страницы совпадает с ссылкой
-            if (path === linkPath || (path === '/' && linkPath === '/')) {
+            if (path === linkPath || (path === basePath && linkPath === basePath + 'index.html')) {
                 link.classList.add('active');
             }
         });
