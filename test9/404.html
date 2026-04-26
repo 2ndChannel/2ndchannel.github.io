@@ -30,16 +30,52 @@
 	<meta name="twitter:image" content="https://2ndchannel.github.io/a_data/system/preview.jpg">
 
     <style>
-        .title-wrapper { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 10px; }
-        .btn-play-mini {
-            background: transparent; border: 2px solid #0ff; color: #0ff;
-            width: 45px; height: 45px; border-radius: 50%; cursor: pointer;
-            font-size: 20px; display: flex; align-items: center; justify-content: center;
-            transition: all 0.3s ease; padding-left: 5px; flex-shrink: 0;
+        /* Обёртка для 404 и кнопки в одну строку */
+        .title-wrapper { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 20px; 
+            margin-bottom: 10px; 
         }
-        .btn-play-mini:hover { box-shadow: 0 0 15px #0ff; color: #fff; border-color: #fff; }
-        .btn-play-mini.playing { animation: pulse-cyan 0.8s infinite; border-color: #0ff; color: #fff; box-shadow: 0 0 20px #0ff; }
-        @keyframes pulse-cyan { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+        /* Кнопка Play (неоновый круг) */
+        .btn-play-mini {
+            background: transparent; 
+            border: 2px solid #0ff; 
+            color: #0ff;
+            width: 45px; 
+            height: 45px; 
+            border-radius: 50%; 
+            cursor: pointer;
+            font-size: 20px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            transition: all 0.3s ease; 
+            padding-left: 5px; 
+            flex-shrink: 0;
+            box-shadow: none;
+        }
+
+        .btn-play-mini:hover { 
+            box-shadow: 0 0 15px #0ff; 
+            color: #fff; 
+            border-color: #fff; 
+        }
+
+        /* Состояние во время воспроизведения */
+        .btn-play-mini.playing { 
+            animation: pulse-cyan 0.8s infinite; 
+            border-color: #0ff; 
+            color: #fff; 
+            box-shadow: 0 0 20px #0ff; 
+        }
+
+        @keyframes pulse-cyan { 
+            0%, 100% { transform: scale(1); } 
+            50% { transform: scale(1.1); } 
+        }
     </style>
 </head>
 <body>
@@ -49,45 +85,59 @@
 
 <div class="container center">
     <div class="error-card">
+        
         <div class="title-wrapper">
             <h1>404</h1>
-            <button id="rnd-sound" class="btn-play-mini">▶</button>
+            <button id="rnd-sound" class="btn-play-mini" title="Случайный звук">▶</button>
         </div>
+
         <h2>YOU LOSE. Continue?</h2>
         <p>Страница не найдена, но игра продолжается.</p>
+        
         <div class="error-actions">
-            <a href="/"><button>YES • Продолжить</button></a>
+            <a href="/">
+                <button>YES • Продолжить</button>
+            </a>
         </div>
-        <p class="error-hint">Воспользуйтесь меню выше, чтобы вернуться в строй.</p>
+        
+        <p class="error-hint">
+            Воспользуйтесь меню выше, чтобы вернуться в строй.
+        </p>
     </div>
 </div>
 
 <script src="/a_data/system/script.js"></script>
 <script>
+    // 1. Подгружаем меню сайта
     loadNavbar();
 
+    // 2. Логика случайных звуков по кнопке
     const soundBtn = document.getElementById('rnd-sound');
     const soundPath = '/a_data/system/se404/';
-    const maxFile = 20;
+    const maxFile = 20; // Ищем файлы от 1.ogg до 20.ogg
 
     function playRandomWithCheck() {
         const rnd = Math.floor(Math.random() * maxFile) + 1;
         const audio = new Audio(soundPath + rnd + '.ogg');
         audio.volume = 0.5;
 
+        // Пытаемся запустить файл
         const playPromise = audio.play();
 
         if (playPromise !== undefined) {
             playPromise.then(() => {
+                // Если файл найден — включаем анимацию
                 soundBtn.classList.add('playing');
                 soundBtn.innerText = "🔊";
                 
                 audio.onended = () => {
+                    // Когда звук закончился — возвращаем иконку ▶
                     soundBtn.classList.remove('playing');
                     soundBtn.innerText = "▶";
                 };
             }).catch(error => {
-                console.log(`Файл ${rnd}.ogg отсутствует, ищу дальше...`);
+                // Если файла не существует (404 ошибка), ищем следующий рандомный
+                console.log(`Файл ${rnd}.ogg отсутствует, пробую другой...`);
                 playRandomWithCheck(); 
             });
         }
@@ -95,19 +145,11 @@
 
     if (soundBtn) {
         soundBtn.addEventListener('click', () => {
+            // Если звук уже играет — повторно не нажимается
             if (soundBtn.classList.contains('playing')) return;
             playRandomWithCheck();
         });
     }
-
-    const autoAudio = new Audio('/a_data/system/404.ogg');
-    const playAuto = () => {
-        autoAudio.volume = 0.4;
-        autoAudio.play().then(() => {
-            ['click', 'mousemove', 'touchstart'].forEach(e => document.removeEventListener(e, playAuto));
-        }).catch(() => {});
-    };
-    ['click', 'mousemove', 'touchstart'].forEach(e => document.addEventListener(e, playAuto));
 </script>
 </body>
 </html>
