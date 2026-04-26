@@ -120,7 +120,7 @@ async function loadNavbar() {
     try {
         // Загружаем HTML код меню. 
         // Важно: путь должен быть правильным относительно вызывающей страницы.
-        const response = await fetch('/a_data/system/nav.html'); 
+        const response = await fetch('../a_data/system/nav.html'); 
         const html = await response.text();
         navCont.innerHTML = html;
 
