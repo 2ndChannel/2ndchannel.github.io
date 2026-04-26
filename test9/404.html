@@ -31,6 +31,8 @@
 </head>
 <body>
 
+<audio id="error-audio" src="/a_data/system/404.ogg" preload="auto"></audio>
+
 <div class="bg"></div>
 <div id="nav"></div>
 
@@ -56,6 +58,24 @@
 <script>
     // Загружаем навигацию
     loadNavbar();
+</script>
+
+<script>
+    const playLossSound = () => {
+        const audio = document.getElementById('error-audio');
+        if (audio) {
+            audio.volume = 0.5;
+            audio.play().catch(() => {
+                // Если браузер заблокировал автоплей, ждем клика
+                document.addEventListener('click', () => {
+                    audio.play();
+                }, { once: true });
+            });
+        }
+    };
+
+    // Запуск при загрузке
+    window.addEventListener('DOMContentLoaded', playLossSound);
 </script>
 
 </body>
