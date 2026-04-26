@@ -63,22 +63,22 @@ async function loadNavbar() {
 // Настройка ссылок и цветов
 const links = document.querySelectorAll('.menu-links a');
 const navElement = document.querySelector('.nav');
+let foundActive = false; // Флаг: нашли ли мы текущую страницу в меню?
 
 links.forEach(link => {
-    // 1. Формируем путь (как было)
     const rawHref = link.getAttribute('href') ? link.getAttribute('href').replace(/^\//, '') : '';
     const fullPath = basePath + rawHref.replace(basePath.replace(/^\//, ''), '');
     link.setAttribute('href', fullPath);
 
-    // 2. ВСЕГДА проверяем цвет (добавляем класс, если кнопка желтая, даже если не активна)
     const btnColor = getComputedStyle(link).getPropertyValue('--btn-color').trim();
     if (btnColor === '#d8a400' || btnColor === 'rgb(216, 164, 0)') {
         link.classList.add('is-yellow');
     }
 
-    // 3. Подсветка активной ссылки (ваша исходная логика)
+    // Проверка на активность
     if (path === fullPath || (path === basePath && rawHref === 'index.html')) {
         link.classList.add('active');
+        foundActive = true; // Пометили, что страница есть в меню
         
         if (btnColor) {
             navElement.style.setProperty('--active-color', btnColor);
@@ -86,6 +86,12 @@ links.forEach(link => {
         }
     }
 });
+
+// А ТЕПЕРЬ ГЛАВНОЕ: если страница не в меню (например, 404)
+if (!foundActive) {
+    navElement.style.setProperty('--active-color', '#ffffff'); // Линия станет белой
+    navElement.classList.add('color-loaded');
+}
 
 // Завершение работы функции
 checkFitting();
