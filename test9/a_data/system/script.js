@@ -169,19 +169,22 @@ async function loadNavbar() {
             menuList.classList.remove('active');
         });
 
-        // 4. Подсветка активной ссылки (селезень)
-        const links = document.querySelectorAll('.menu-links a');
-        links.forEach(link => {
-            // Убираем относительные точки и заменяем их на наш актуальный basePath
-            // Это позволит подсветке работать и в /test9/, и в корне
-            let linkHref = link.getAttribute('href').replace(/^\.\.\//, '');
-            let linkPath = basePath + linkHref;
+		// 4. Настройка ссылок и подсветка
+		const links = document.querySelectorAll('.menu-links a');
+		links.forEach(link => {
+			// Получаем чистый href (например, "streams/")
+			const rawHref = link.getAttribute('href');
+			
+			// Формируем правильный полный путь для перехода
+			// Если мы в подпапке test9, станет /test9/streams/
+			const fullPath = basePath + rawHref;
+			link.setAttribute('href', fullPath);
 
-            // Если путь страницы совпадает с ссылкой
-            if (path === linkPath || (path === basePath && linkPath === basePath + 'index.html')) {
-                link.classList.add('active');
-            }
-        });
+			// Проверка для подсветки active
+			if (path === fullPath || (path === basePath && rawHref === 'index.html')) {
+				link.classList.add('active');
+			}
+		});
 
         // 5. Запуск проверки и подписка на ресайз
         checkFitting();
