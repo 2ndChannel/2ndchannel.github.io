@@ -1,10 +1,10 @@
 [
   {
-    "name": "Ice Climber",
-    "icon": "icons/ice_climber.png",
-    "stream": "#",
-    "download": "/a_data/downloads/games/nes/Ice%20Climber.nes",
-    "status": "yellow",
+    "name": "Circus Charlie",
+    "icon": "https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/gamepad.svg",
+    "stream": "https://www.youtube.com/live/1GS7WTnDQhc?t=25786",
+    "download": "/a_data/downloads/games/nes/Circus%20Charlie.nes",
+    "status": "red",
     "streamId": "s1",
     "platform": "NES"
   },
@@ -19,7 +19,7 @@
   },
   {
     "name": "Ice Climber",
-    "icon": "https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/snowflake.svg",
+	"icon": "icons/Ice%20Climber.png",
     "stream": "#",
     "download": "/a_data/downloads/games/nes/Ice%20Climber.nes",
     "status": "yellow",

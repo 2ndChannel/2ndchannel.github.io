@@ -113,49 +113,61 @@ function adjustMenu(){
 }
 
 // ===== UNIVERSAL NAV LOADER =====
-function loadNavbar() {
-  const navContainer = document.getElementById("nav");
-  if (!navContainer) return;
+async function loadNavbar() {
+    const navCont = document.getElementById('nav');
+    if (!navCont) return;
 
-  // 1. Авто-определение пути к папке a_data
-  // Мы ищем, где в структуре проекта находится скрипт, чтобы понять, 
-  // сколько уровней ../ нужно добавить до корня сайта.
-  const scripts = document.getElementsByTagName('script');
-  let rootPath = "";
-  
-  for (let s of scripts) {
-    if (s.src.includes('a_data/system/script.js')) {
-      // Вырезаем путь до папки, в которой лежит скрипт
-      rootPath = s.src.split('a_data/system/script.js')[0];
-      break;
+    try {
+        // 1. Загружаем внешний HTML
+        const response = await fetch('/a_data/system/nav.html');
+        const html = await response.text();
+        navCont.innerHTML = html;
+
+        // 2. Названия страниц
+        const titles = {
+            '/': 'Главная', '/tnu4/': 'TNU4',
+            '/streams/': 'Стримы', '/games/': 'Игры'
+        };
+        const path = window.location.pathname;
+        
+        // Элементы
+        const navInner = document.getElementById('nav-inner');
+        const menuTitle = document.getElementById('menuTitle');
+        const menuList = document.getElementById('menu-list');
+        const menuBtn = document.getElementById('menu-btn');
+
+        // Устанавливаем название
+        if (menuTitle) menuTitle.textContent = titles[path] || 'Меню';
+
+        // 3. Функция "Умного адаптива"
+        const checkFitting = () => {
+            navInner.classList.remove('mobile-mode');
+            // Если ширина меню больше ширины окна - включаем гамбургер
+            if (menuList.scrollWidth > window.innerWidth - 40) {
+                navInner.classList.add('mobile-mode');
+            }
+        };
+
+        // 4. Логика клика
+        menuBtn.onclick = (e) => {
+            e.stopPropagation();
+            menuList.classList.toggle('active');
+        };
+        document.addEventListener('click', () => menuList.classList.remove('active'));
+
+        // 5. Подсветка активной ссылки
+        document.querySelectorAll('.menu-links a').forEach(link => {
+            if (link.getAttribute('href') === path) link.classList.add('active');
+        });
+
+        // Запуск проверки
+        checkFitting();
+        window.onresize = checkFitting;
+
+    } catch (err) {
+        console.error('Ошибка загрузки меню:', err);
     }
-  }
-
-  // 2. Загружаем nav.html, используя вычисленный rootPath
-  fetch(rootPath + "a_data/system/nav.html")
-    .then(r => r.text())
-    .then(html => {
-      navContainer.innerHTML = html;
-      
-      // 3. Исправляем ссылки в меню, чтобы они ВСЕГДА вели в правильные папки
-      // независимо от того, в какой папке мы сейчас находимся
-      const links = navContainer.querySelectorAll("#menu a");
-      links.forEach(link => {
-        const href = link.getAttribute("href");
-        // Очищаем href от старых ../ если они там были (для чистоты)
-        const cleanHref = href.replace(/^(\.\.\/)+/, ""); 
-        // Ставим правильный путь от корня проекта
-        link.setAttribute("href", rootPath + cleanHref);
-      });
-
-      initMenu();
-      setActiveLink();
-      updateMenuTitle();
-      adjustMenu();
-      fixNumbers();
-    });
 }
-
 
 // ===== ЦИФРЫ ШРИФТА MACHINA ТОЙ ЖЕ ВЫСОТЫ, ЧТО И БУКВЫ =====
 function fixNumbers() {
@@ -203,85 +215,76 @@ async function initGamesPage() {
     const gamesContainer = document.getElementById("games");
     if (!gamesContainer) return;
 
+    // Загружаем данные: стримы из папки выше, игры из текущей
     const [streams, allGames] = await Promise.all([
         fetch('../streams/streams.json').then(r => r.json()),
         fetch('games.json').then(r => r.json())
     ]);
 
-    function formatDate(dateStr) {
-        const d = new Date(dateStr);
-        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        return `${months[d.getMonth()]} ${d.getDate()} '${String(d.getFullYear()).slice(-2)}`;
-    }
-
-	function getSelectedValues(id) {
-        const container = document.getElementById(id);
-        const allCb = container.querySelector('input[value="all"]');
-        
-        if (allCb.checked) {
-            container.querySelectorAll('input:not([value="all"])').forEach(cb => {
-                cb.disabled = true;
-                cb.parentElement.classList.add('disabled');
-            });
-            return 'all';
-        } else {
-            container.querySelectorAll('input').forEach(cb => {
-                cb.disabled = false;
-                cb.parentElement.classList.remove('disabled');
-            });
-            const checkboxes = container.querySelectorAll('input:checked');
-            return Array.from(checkboxes).map(cb => cb.value);
-        }
-    }
-
 	function applyFilters() {
-        let filtered = [...allGames];
-        const plats = getSelectedValues('f-plat');
-        const statuses = getSelectedValues('f-status');
-        const dStart = document.getElementById('f-date-start').value;
-        const dEnd = document.getElementById('f-date-end').value;
+		let filtered = [...allGames];
+		const plat = document.getElementById('f-plat').value;
+		const status = document.getElementById('f-status').value;
+		const dStart = document.getElementById('f-date-start').value;
+		const dEnd = document.getElementById('f-date-end').value;
+		const sortVal = document.getElementById('f-sort').value; // Получаем значение сортировки
 
-        // Фильтр платформ
-        if (plats !== 'all') {
-            filtered = filtered.filter(g => plats.includes(g.platform));
-        }
+		// 1. Фильтрация по платформе и статусу
+		if(plat !== 'all') filtered = filtered.filter(g => g.platform === plat);
+		if(status !== 'all') filtered = filtered.filter(g => g.status === status);
 
-        // Фильтр статусов
-        if (statuses !== 'all') {
-            filtered = filtered.filter(g => statuses.includes(g.status));
-        }
-        
-        // Фильтр дат
-        if (dStart || dEnd) {
-            filtered = filtered.filter(g => {
-                const s = streams.find(st => st.id === g.streamId);
-                if (!s) return false;
-                const matchStart = dStart ? s.date >= dStart : true;
-                const matchEnd = dEnd ? s.date <= dEnd : true;
-                return matchStart && matchEnd;
-            });
-        }
-        renderList(filtered);
-    }
+		// 2. Фильтрация по датам
+		if(dStart || dEnd) {
+			filtered = filtered.filter(g => {
+				const s = streams.find(st => st.id === g.streamId);
+				if (!s) return false;
+				const matchStart = dStart ? s.date >= dStart : true;
+				const matchEnd = dEnd ? s.date <= dEnd : true;
+				return matchStart && matchEnd;
+			});
+		}
+
+		// 3. ЛОГИКА СОРТИРОВКИ (Добавляем этот блок)
+		filtered.sort((a, b) => {
+			const streamA = streams.find(st => st.id === a.streamId);
+			const streamB = streams.find(st => st.id === b.streamId);
+			const dateA = streamA ? streamA.date : "";
+			const dateB = streamB ? streamB.date : "";
+
+			if (sortVal === 'date-desc') {
+				return dateB.localeCompare(dateA); // Новые сверху
+			} else if (sortVal === 'date-asc') {
+				return dateA.localeCompare(dateB); // Старые сверху
+			} else if (sortVal === 'name-asc') {
+				return a.name.localeCompare(b.name); // А-Я по названию
+			}
+			return 0;
+		});
+
+		renderList(filtered);
+	}
 
     function renderList(data) {
-        gamesContainer.innerHTML = data.length === 0 ? "<p style='text-align:center;'>Ничего не найдено</p>" : "";
+        gamesContainer.innerHTML = "";
+        if(data.length === 0) { gamesContainer.innerHTML = "<p style='text-align:center;'>Ничего не найдено</p>"; return; }
+        
+        // Группируем по стримам (используем порядок из streams.json)
         streams.forEach(s => {
             const gamesInStream = data.filter(g => g.streamId === s.id);
-            if (gamesInStream.length > 0) renderGroup(gamesContainer, s.title, formatDate(s.date), gamesInStream);
+            if (gamesInStream.length > 0) renderGroup(gamesContainer, s.title, s.date, gamesInStream);
         });
     }
 
 	function renderGroup(cont, title, date, games) {
         const wrapper = document.createElement("div");
-        wrapper.className = "card";
+        // Заменили "card" на "game-card"
+        wrapper.className = "game-card"; 
         wrapper.innerHTML = `
             <div class="stream-header">
                 <h3>${title}</h3>
                 <span class="stream-date-header">${date}</span>
             </div>
             <div class="list-body"></div>`;
-        
         const body = wrapper.querySelector(".list-body");
         
         games.forEach(g => {
@@ -289,45 +292,30 @@ async function initGamesPage() {
             div.className = `badge ${g.status}`;
             div.innerHTML = `
                 <div class="game-icon-box">
-                    <img src="${g.icon}" class="game-icon" onerror="this.src='icons/default.png'">
+                    <img src="${g.icon}" class="game-icon">
+                    <span class="plat-label">${g.platform}</span>
                 </div>
                 <div class="game-content">
                     <strong>${g.name}</strong>
-                    <span class="plat-label">${g.platform}</span>
                     <div class="game-links">
-                        <a href="${g.stream}" target="_blank" title="Смотреть стрим">🎥</a>
-                        <a href="${g.download}" target="_blank" title="Скачать">⬇</a>
+                        <a href="${g.stream}" target="_blank">🎥</a>
+                        <a href="${g.download}" target="_blank">⬇</a>
                     </div>
                 </div>`;
             body.appendChild(div);
         });
-        
         cont.appendChild(wrapper);
-        fixNumbers();
     }
 
-	// Слушаем изменения во всех инпутах фильтров
-    document.querySelectorAll('.filters-panel input').forEach(el => el.addEventListener('change', applyFilters));
-
-    // Логика кнопки "Сброс"
+    document.querySelectorAll('.filters-panel select, .filters-panel input').forEach(el => el.addEventListener('change', applyFilters));
     document.getElementById('resetFilters').onclick = () => {
-        // Снимаем галочки и ставим "Все"
-        document.querySelectorAll('.filters-panel input[type="checkbox"]').forEach(cb => {
-            cb.checked = (cb.value === 'all');
-        });
-        
-        // Очищаем даты
+        document.getElementById('f-plat').value = 'all';
+        document.getElementById('f-status').value = 'all';
         document.getElementById('f-date-start').value = '';
         document.getElementById('f-date-end').value = '';
-        
-        // Скрываем панель после сброса
-        document.getElementById('f-panel').classList.remove('open');
-        
-        // Перерисовываем список
         applyFilters();
     };
 
-    // Первоначальная отрисовка
     renderList(allGames);
-    applyFilters(); 
 }
+
