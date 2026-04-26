@@ -1,26 +1,38 @@
 [
   {
-    "name": "Charlie",
+    "name": "Circus Charlie",
+    "icon": "https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/gamepad-2.svg",
     "stream": "https://www.youtube.com/live/1GS7WTnDQhc?t=25786",
     "download": "/a_data/downloads/games/nes/Circus%20Charlie.nes",
     "status": "red",
-    "date": "2026-04-03",
-    "streamTitle": "NES Stream #1"
+    "streamId": "s1",
+    "platform": "NES"
+  },
+  {
+    "name": "Bomberman",
+    "icon": "https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/bomb.svg",
+    "stream": "#",
+    "download": "/a_data/downloads/games/nes/Bomberman.nes",
+    "status": "red",
+    "streamId": "s1",
+    "platform": "NES"
   },
   {
     "name": "Ice Climber",
+    "icon": "https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/snowflake.svg",
     "stream": "#",
     "download": "/a_data/downloads/games/nes/Ice%20Climber.nes",
-    "status": "green",
-    "date": "2026-04-05",
-    "streamTitle": "NES Stream #1"
+    "status": "yellow",
+    "streamId": "s1",
+    "platform": "NES"
   },
   {
-    "name": "Super Mario",
+    "name": "Master of Darkness",
+    "icon": "https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/castle.svg",
     "stream": "#",
-    "download": "/a_data/downloads/games/nes/Super%20Mario.nes",
-    "status": "yellow",
-    "date": "2026-04-07",
-    "streamTitle": "NES Stream #2"
+    "download": "/a_data/downloads/games/sms/MasterOfDarkness.sms",
+    "status": "green",
+    "streamId": "s2",
+    "platform": "SMS"
   }
 ]

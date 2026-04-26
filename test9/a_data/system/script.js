@@ -198,3 +198,88 @@ window.addEventListener("load", () => {
 
 // ===== ADJUST MENU ON RESIZE =====
 window.addEventListener("resize", adjustMenu);
+
+async function initGamesPage() {
+    const gamesContainer = document.getElementById("games");
+    if (!gamesContainer) return;
+
+    // Загружаем данные: стримы из папки выше, игры из текущей
+    const [streams, allGames] = await Promise.all([
+        fetch('../streams/streams.json').then(r => r.json()),
+        fetch('games.json').then(r => r.json())
+    ]);
+
+    function applyFilters() {
+        let filtered = [...allGames];
+        const plat = document.getElementById('f-plat').value;
+        const status = document.getElementById('f-status').value;
+        const dStart = document.getElementById('f-date-start').value;
+        const dEnd = document.getElementById('f-date-end').value;
+
+        if(plat !== 'all') filtered = filtered.filter(g => g.platform === plat);
+        if(status !== 'all') filtered = filtered.filter(g => g.status === status);
+        if(dStart || dEnd) {
+            filtered = filtered.filter(g => {
+                const s = streams.find(st => st.id === g.streamId);
+                if (!s) return false;
+                const matchStart = dStart ? s.date >= dStart : true;
+                const matchEnd = dEnd ? s.date <= dEnd : true;
+                return matchStart && matchEnd;
+            });
+        }
+        renderList(filtered);
+    }
+
+    function renderList(data) {
+        gamesContainer.innerHTML = "";
+        if(data.length === 0) { gamesContainer.innerHTML = "<p style='text-align:center;'>Ничего не найдено</p>"; return; }
+        
+        // Группируем по стримам (используем порядок из streams.json)
+        streams.forEach(s => {
+            const gamesInStream = data.filter(g => g.streamId === s.id);
+            if (gamesInStream.length > 0) renderGroup(gamesContainer, s.title, s.date, gamesInStream);
+        });
+    }
+
+    function renderGroup(cont, title, date, games) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "card";
+        wrapper.innerHTML = `
+            <div class="stream-header">
+                <h3>${title}</h3>
+                <span class="stream-date-header">${date}</span>
+            </div>
+            <div class="list-body"></div>`;
+        const body = wrapper.querySelector(".list-body");
+        
+        games.forEach(g => {
+            const div = document.createElement("div");
+            div.className = `badge ${g.status}`;
+            div.innerHTML = `
+                <div class="game-icon-box">
+                    <img src="${g.icon}" class="game-icon">
+                    <span class="plat-label">${g.platform}</span>
+                </div>
+                <div class="game-content">
+                    <strong>${g.name}</strong>
+                    <div class="game-links">
+                        <a href="${g.stream}" target="_blank">🎥</a>
+                        <a href="${g.download}" target="_blank">⬇</a>
+                    </div>
+                </div>`;
+            body.appendChild(div);
+        });
+        cont.appendChild(wrapper);
+    }
+
+    document.querySelectorAll('.filters-panel select, .filters-panel input').forEach(el => el.addEventListener('change', applyFilters));
+    document.getElementById('resetFilters').onclick = () => {
+        document.getElementById('f-plat').value = 'all';
+        document.getElementById('f-status').value = 'all';
+        document.getElementById('f-date-start').value = '';
+        document.getElementById('f-date-end').value = '';
+        applyFilters();
+    };
+
+    renderList(allGames);
+}
