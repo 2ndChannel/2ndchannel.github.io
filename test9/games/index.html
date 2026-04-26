@@ -16,35 +16,34 @@
 <div id="nav"></div>
 
 <div class="container">
-	<div class="filters-panel">
-		<div class="filter-group"><label>Платформа</label>
-			<select id="f-plat">
-				<option value="all">Все</option>
-				<option value="NES">NES</option><option value="SMD">SMD</option>
-				<option value="SMS">SMS</option><option value="PC">PC</option>
-			</select>
-		</div>
-		<div class="filter-group"><label>Статус</label>
-			<select id="f-status">
-				<option value="all">Все</option>
-				<option value="red">Красный</option>
-				<option value="yellow">Желтый</option>
-				<option value="green">Зеленый</option>
-			</select>
-		</div>
-		<div class="filter-group"><label>С даты</label><input type="date" id="f-date-start"></div>
-		<div class="filter-group"><label>По дату</label><input type="date" id="f-date-end"></div>
-		<div class="filter-group"><label>Сортировка</label>
-			<select id="f-sort">
-				<option value="date-desc">Новые сверху</option>
-				<option value="date-asc">Старые сверху</option>
-				<option value="name-asc">А-Я (Имя)</option>
-			</select>
-		</div>
-		<button id="resetFilters">Сброс</button>
-	</div>
-
-	<div id="games"></div>
+    <div class="filters-container">
+        <button class="filters-toggle" onclick="document.getElementById('f-panel').classList.toggle('open')">⚙ Настройки поиска</button>
+        <div class="filters-panel" id="f-panel">
+            <div class="filter-group"><label>Платформа</label>
+                <div class="checkbox-group" id="f-plat">
+                    <label><input type="checkbox" value="all" checked> Все</label>
+                    <label><input type="checkbox" value="NES"> NES</label>
+                    <label><input type="checkbox" value="SMD"> SMD</label>
+                    <label><input type="checkbox" value="SMS"> SMS</label>
+                    <label><input type="checkbox" value="PC"> PC</label>
+                </div>
+            </div>
+            <div class="filter-group"><label>Статус</label>
+                <div class="checkbox-group" id="f-status">
+                    <label><input type="checkbox" value="all" checked> Все</label>
+                    <label><input type="checkbox" value="red"> Red</label>
+                    <label><input type="checkbox" value="yellow"> Yellow</label>
+                    <label><input type="checkbox" value="green"> Green</label>
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <div class="filter-group"><label>С даты</label><input type="date" id="f-date-start"></div>
+                <div class="filter-group"><label>По дату</label><input type="date" id="f-date-end"></div>
+            </div>
+            <button id="resetFilters" style="margin-top:10px; background:#c0392b; color:#fff;">Сбросить всё</button>
+        </div>
+    </div>
+    <div id="games"></div>
 </div>
 
 <script src="../a_data/system/script.js"></script>

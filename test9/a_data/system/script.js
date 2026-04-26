@@ -203,22 +203,56 @@ async function initGamesPage() {
     const gamesContainer = document.getElementById("games");
     if (!gamesContainer) return;
 
-    // Загружаем данные: стримы из папки выше, игры из текущей
     const [streams, allGames] = await Promise.all([
         fetch('../streams/streams.json').then(r => r.json()),
         fetch('games.json').then(r => r.json())
     ]);
 
-    function applyFilters() {
+    function formatDate(dateStr) {
+        const d = new Date(dateStr);
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        return `${months[d.getMonth()]} ${d.getDate()} '${String(d.getFullYear()).slice(-2)}`;
+    }
+
+	function getSelectedValues(id) {
+        const container = document.getElementById(id);
+        const allCb = container.querySelector('input[value="all"]');
+        
+        if (allCb.checked) {
+            container.querySelectorAll('input:not([value="all"])').forEach(cb => {
+                cb.disabled = true;
+                cb.parentElement.classList.add('disabled');
+            });
+            return 'all';
+        } else {
+            container.querySelectorAll('input').forEach(cb => {
+                cb.disabled = false;
+                cb.parentElement.classList.remove('disabled');
+            });
+            const checkboxes = container.querySelectorAll('input:checked');
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+    }
+
+	function applyFilters() {
         let filtered = [...allGames];
-        const plat = document.getElementById('f-plat').value;
-        const status = document.getElementById('f-status').value;
+        const plats = getSelectedValues('f-plat');
+        const statuses = getSelectedValues('f-status');
         const dStart = document.getElementById('f-date-start').value;
         const dEnd = document.getElementById('f-date-end').value;
 
-        if(plat !== 'all') filtered = filtered.filter(g => g.platform === plat);
-        if(status !== 'all') filtered = filtered.filter(g => g.status === status);
-        if(dStart || dEnd) {
+        // Фильтр платформ
+        if (plats !== 'all') {
+            filtered = filtered.filter(g => plats.includes(g.platform));
+        }
+
+        // Фильтр статусов
+        if (statuses !== 'all') {
+            filtered = filtered.filter(g => statuses.includes(g.status));
+        }
+        
+        // Фильтр дат
+        if (dStart || dEnd) {
             filtered = filtered.filter(g => {
                 const s = streams.find(st => st.id === g.streamId);
                 if (!s) return false;
@@ -231,17 +265,14 @@ async function initGamesPage() {
     }
 
     function renderList(data) {
-        gamesContainer.innerHTML = "";
-        if(data.length === 0) { gamesContainer.innerHTML = "<p style='text-align:center;'>Ничего не найдено</p>"; return; }
-        
-        // Группируем по стримам (используем порядок из streams.json)
+        gamesContainer.innerHTML = data.length === 0 ? "<p style='text-align:center;'>Ничего не найдено</p>" : "";
         streams.forEach(s => {
             const gamesInStream = data.filter(g => g.streamId === s.id);
-            if (gamesInStream.length > 0) renderGroup(gamesContainer, s.title, s.date, gamesInStream);
+            if (gamesInStream.length > 0) renderGroup(gamesContainer, s.title, formatDate(s.date), gamesInStream);
         });
     }
 
-    function renderGroup(cont, title, date, games) {
+	function renderGroup(cont, title, date, games) {
         const wrapper = document.createElement("div");
         wrapper.className = "card";
         wrapper.innerHTML = `
@@ -250,6 +281,7 @@ async function initGamesPage() {
                 <span class="stream-date-header">${date}</span>
             </div>
             <div class="list-body"></div>`;
+        
         const body = wrapper.querySelector(".list-body");
         
         games.forEach(g => {
@@ -257,29 +289,45 @@ async function initGamesPage() {
             div.className = `badge ${g.status}`;
             div.innerHTML = `
                 <div class="game-icon-box">
-                    <img src="${g.icon}" class="game-icon">
-                    <span class="plat-label">${g.platform}</span>
+                    <img src="${g.icon}" class="game-icon" onerror="this.src='icons/default.png'">
                 </div>
                 <div class="game-content">
                     <strong>${g.name}</strong>
+                    <span class="plat-label">${g.platform}</span>
                     <div class="game-links">
-                        <a href="${g.stream}" target="_blank">🎥</a>
-                        <a href="${g.download}" target="_blank">⬇</a>
+                        <a href="${g.stream}" target="_blank" title="Смотреть стрим">🎥</a>
+                        <a href="${g.download}" target="_blank" title="Скачать">⬇</a>
                     </div>
                 </div>`;
             body.appendChild(div);
         });
+        
         cont.appendChild(wrapper);
+        fixNumbers();
     }
 
-    document.querySelectorAll('.filters-panel select, .filters-panel input').forEach(el => el.addEventListener('change', applyFilters));
+	// Слушаем изменения во всех инпутах фильтров
+    document.querySelectorAll('.filters-panel input').forEach(el => el.addEventListener('change', applyFilters));
+
+    // Логика кнопки "Сброс"
     document.getElementById('resetFilters').onclick = () => {
-        document.getElementById('f-plat').value = 'all';
-        document.getElementById('f-status').value = 'all';
+        // Снимаем галочки и ставим "Все"
+        document.querySelectorAll('.filters-panel input[type="checkbox"]').forEach(cb => {
+            cb.checked = (cb.value === 'all');
+        });
+        
+        // Очищаем даты
         document.getElementById('f-date-start').value = '';
         document.getElementById('f-date-end').value = '';
+        
+        // Скрываем панель после сброса
+        document.getElementById('f-panel').classList.remove('open');
+        
+        // Перерисовываем список
         applyFilters();
     };
 
+    // Первоначальная отрисовка
     renderList(allGames);
+    applyFilters(); 
 }
