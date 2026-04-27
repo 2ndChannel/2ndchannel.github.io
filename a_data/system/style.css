@@ -16,7 +16,8 @@ body {
     font-size: 24px;
     color: #fff;
     /* Цвет неба: всё, что выше и за зданиями */
-    background-color: #0f1b4c; 
+    background: linear-gradient(to bottom, #09143f 0%, #000000 90%) no-repeat fixed;
+    background-color: #000; /* Запасной цвет для длинных страниц */
     overflow-x: hidden;
 }
 

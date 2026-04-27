@@ -109,7 +109,10 @@ function fixNumbers() {
     });
 }
 
-document.addEventListener("DOMContentLoaded", () => { loadNavbar(); fixNumbers(); });
+
+
+
+document.addEventListener("DOMContentLoaded", () => {loadNavbar(); fixNumbers(); });
 window.addEventListener("load", fixNumbers);
 
 // ===== GAMES PAGE LOGIC =====
