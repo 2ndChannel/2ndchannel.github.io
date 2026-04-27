@@ -16,7 +16,9 @@ body {
     font-size: 24px;
     color: #fff;
     /* Цвет неба: всё, что выше и за зданиями */
-    background: linear-gradient(to bottom, #09143f 0%, #000000 100%) no-repeat fixed;
+    /* Черный начнется далеко внизу, поэтому на экране будет больше синего */
+	/* Синий -> Темно-синий -> УБРАЛ Черный */
+	background: linear-gradient(to bottom, #09143f 0%, #050a1f 100%) no-repeat fixed;
     background-color: #000; /* Запасной цвет для длинных страниц */
     overflow-x: hidden;
 }
