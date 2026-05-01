@@ -1,0 +1,292 @@
+/* ============================================================
+   ФИКСИРОВАННЫЙ КОНТЕЙНЕР
+   ============================================================ */
+#nav { 
+    position: fixed !important; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    z-index: 9999; 
+}
+
+:root {
+    --color-1: #319b0f; /* Зеленый */
+    --color-2: #cf4100; /* Оранжевый */
+    --color-3: #c00000; /* Красный */
+    --color-4: #d8a400; /* Желтый */
+    --color-5: #2341b6; /* Синий */
+    --default-gray: #888888; /* Серый для 404 */
+}
+
+/* Присваиваем цвета кнопкам по порядку */
+.menu-links a:nth-child(1) { --btn-color: var(--color-1); }
+.menu-links a:nth-child(2) { --btn-color: var(--color-2); }
+.menu-links a:nth-child(3) { --btn-color: var(--color-3); }
+.menu-links a:nth-child(4) { --btn-color: var(--color-4); }
+
+/* Динамическая линия под меню */
+.nav {
+    display: flex;
+    justify-content: space-between; /* Логотип влево, кнопки вправо */
+    align-items: center;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    padding: 5px 40px;
+    min-height: 80px;
+    position: relative;
+    border-bottom: 3px solid rgba(255, 255, 255, 0.1); 
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    transition: border-color 0.3s ease;
+}
+
+/* Этот класс добавляется через JS */
+
+
+/* Если активна Главная (1-я кнопка), запускаем мигание цветов */
+.nav:has(.menu-links a:nth-child(1).active) {
+    animation: gradientBreath 10s infinite ease-in-out;
+    border-bottom: 3px solid; /* Убеждаемся, что линия есть */
+}
+
+/* На других страницах анимация НЕ сработает, там будет обычный цвет из JS */
+.nav.color-loaded:not(:has(.menu-links a:nth-child(1).active)) {
+    border-bottom: 3px solid var(--active-color, var(--default-gray)) !important;
+}
+
+/* ============================================================
+   ОБЩИЕ СТИЛИ ССЫЛОК
+   ============================================================ */
+.menu-links a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #fff;
+    text-decoration: none;
+    font-family: Arial, Helvetica, sans-serif; 
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    white-space: nowrap;
+}
+
+.menu-links a:hover {
+    background: var(--btn-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    border-color: transparent;
+}
+
+/* Переопределение для ЖЕЛТОЙ кнопки */
+.menu-links a.is-yellow:hover,
+.menu-links a.is-yellow.active {
+    background: var(--btn-color) !important;
+    color: #000 !important;
+}
+
+.menu-links a.is-yellow:hover .menu-icon,
+.menu-links a.is-yellow.active .menu-icon {
+    stroke: #000 !important;
+}
+
+.menu-links a.active {
+    background: var(--btn-color);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.menu-icon {
+    width: 20px;
+    height: 20px;
+    display: block;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+}
+
+.menu-links {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    gap: 15px;
+}
+
+/* ============================================================
+   ГАМБУРГЕР И МОБИЛЬНЫЙ ЗАГОЛОВОК
+   ============================================================ */
+.mobile-header {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 15px;
+}
+
+.menu-toggle {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+    -webkit-tap-highlight-color: transparent; 
+    outline: none;
+}
+
+/* Инверсия при нажатии: фон красится, полоски становятся прозрачными */
+.menu-toggle:hover, 
+.menu-toggle:active {
+    background: var(--active-color, var(--default-gray));
+}
+
+.hamburger-icon span {
+    display: block;
+    width: 28px;
+    height: 3px;
+    background: var(--active-color, var(--default-gray));
+    transition: all 0.3s ease;
+    margin: 4px 0;
+    border-radius: 2px;
+}
+
+.menu-toggle:hover .hamburger-icon span,
+.menu-toggle:active .hamburger-icon span {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.current-page-name {
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    text-transform: uppercase;
+    font-family: Arial, Helvetica, sans-serif; 
+}
+
+/* ============================================================
+   АДАПТИВ (Мобильный режим)
+   ============================================================ */
+
+.nav.mobile-mode .menu-links {
+    display: none; 
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    padding: 20px 0;
+    gap: 12px;
+    border-bottom: 3px solid var(--active-color, var(--default-gray));
+}
+
+.nav.mobile-mode .menu-links.active {
+    display: flex;
+}
+
+.nav.mobile-mode .menu-links a {
+    width: 85%;
+    margin: 0 auto;
+    padding: 14px 20px;
+    justify-content: flex-start;
+}
+
+/* ============================================================
+   ЛОГОТИП И ЦЕНТРАЛЬНЫЙ МОБИЛЬНЫЙ HEADER
+   ============================================================ */
+
+/* ПК версия: лого теперь просто элемент флекс-контейнера */
+.nav-logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0; /* Чтобы логотип не сжимался */
+}
+.nav-logo img {
+    height: 65px; /* Увеличили с 40 до 65 */
+    width: auto;
+    display: block;
+    object-fit: contain;
+}
+
+/* Скрываем мобильное лого на ПК */
+.mobile-logo { display: none; }
+
+/* --- МОБИЛЬНЫЙ РЕЖИМ (ОБНОВЛЕННЫЙ) --- */
+.nav.mobile-mode { 
+    justify-content: center; 
+}
+
+.nav.mobile-mode .nav-logo { display: none; } /* Прячем ПК лого */
+
+.nav.mobile-mode .mobile-header {
+    display: flex !important;
+    flex-wrap: wrap;       /* Разрешаем перенос */
+    justify-content: flex-start; /* Выравнивание всего по левому краю */
+    align-items: center;
+    gap: 5px 20px;         /* 5px между строками, 20px между кнопкой и лого */
+    width: 100%;
+    padding-left: 15%;     /* Этот отступ подвинет всю конструкцию к центру, сохраняя левый край у текста */
+}
+
+.nav.mobile-mode .mobile-logo {
+    display: flex;
+    align-items: center;
+}
+
+.nav.mobile-mode .mobile-logo img {
+    height: 45px;          /* Оптимальный размер для двухстрочного режима */
+    width: auto;
+    display: block;
+    object-fit: contain;
+}
+
+.nav.mobile-mode .menu-toggle {
+    margin: 0; 
+}
+
+/* Это заставляет название страницы уйти под лого и гамбургер */
+.nav.mobile-mode .current-page-name {
+    display: block;
+    width: 100%;           
+    text-align: left;      /* Выравнивание текста по левому краю (под гамбургер) */
+    font-size: 13px;
+    letter-spacing: 1px;
+    margin-top: 0px;
+    padding-left: 5px;     /* Небольшая корректировка, чтобы буквы стояли красиво под иконкой */
+}
+
+/* Выпадающий список (под меню) */
+.nav.mobile-mode .menu-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    padding: 20px 0;
+    gap: 12px;
+    border-bottom: 3px solid var(--active-color, var(--default-gray));
+}
+.nav.mobile-mode .menu-links.active { display: flex; }
+
+@keyframes gradientBreath {
+    0%, 100% { border-color: rgba(0,0,0,0.8); } /* Темный старт */
+    10%  { border-color: #319b0f; } /* Зеленый */
+    20%  { border-color: rgba(0,0,0,0.8); } /* Темный */
+    30%  { border-color: #cf4100; } /* Оранжевый */
+    40%  { border-color: rgba(0,0,0,0.8); } /* Темный */
+    50%  { border-color: #c00000; } /* Красный */
+    60%  { border-color: rgba(0,0,0,0.8); } /* Темный */
+    70%  { border-color: #d8a400; } /* Желтый */
+    80%  { border-color: rgba(0,0,0,0.8); } /* Темный */
+    90%  { border-color: #2341b6; } /* Синий */
+}

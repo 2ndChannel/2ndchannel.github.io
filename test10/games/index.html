@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<!-- Чтобы работало на ПК и test9 надо такой путь писать. В корне сайта – не знаю. НО У ГЛАВНОЙ СТРАНИЦЫ ЗАПИСЬ ПУТЕЙ ОТЛИЧАЮТСЯ -->
+	<link rel="stylesheet" href="../a_data/system/style.css">
+	<link rel="stylesheet" href="../a_data/system/nav.css">
+	<link rel="stylesheet" href="../a_data/system/games.css">
+	
+	<link rel="canonical" href="https://2ndchannel.github.io/games/">
+	<link rel="icon" href="/favicon.ico" type="image/x-icon">
+	
+	<title>Игры на стримах | 2nd Channel</title>
+	<meta name="description" content="2nd Channel — площадка, посвящённая ретро играм NES / Dendy, Sega и другим старым консолям. Архив игр со стримов с возможностью скачивания.">
+	
+	<meta name="robots" content="noindex, nofollow"> <!-- УДАЛИТЬ ЭТУ СТРОКУ, когда перенесу страницу в корень!-->
+	<!-- А ЭТУ СТРОКУ РАССКОММЕНТИРОВАТЬ: <meta name="robots" content="index, follow"> -->
+	
+	<meta name="language" content="ru">
+
+	<meta property="og:title" content="Игры со стримов — 2nd Channel">
+	<meta property="og:description" content="NES / Dendy / Sega игры со стримов и архив прохождений 2nd Channel">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://2ndchannel.github.io/games/">
+	<meta property="og:image" content="https://2ndchannel.github.io/a_data/system/preview.jpg">
+
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Игры со стримов | 2nd Channel">
+	<meta name="twitter:description" content="Архив игр со стримов NES, Dendy и Sega с возможностью скачивания">
+	<meta name="twitter:image" content="https://2ndchannel.github.io/a_data/system/preview.jpg">
+</head>
+<body>
+
+<div class="bg"></div>
+<div id="nav"></div>
+
+<div class="container">
+    <div class="filters-panel">
+        <div class="filter-group">
+            <label>Платформа</label>
+            <select id="f-plat">
+                <option value="all">Все</option>
+                <option value="NES">NES</option>
+                <option value="SMD">SMD</option>
+                <option value="SMS">SMS</option>
+                <option value="PC">PC</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label>Статус</label>
+            <select id="f-status">
+                <option value="all">Все</option>
+                <option value="red">Красный</option>
+                <option value="yellow">Желтый</option>
+                <option value="green">Зеленый</option>
+            </select>
+        </div>
+        
+        <div class="filter-group"><label>С даты</label><input type="date" id="f-date-start"></div>
+        <div class="filter-group"><label>По дату</label><input type="date" id="f-date-end"></div>
+        
+        <div class="filter-group">
+            <label>Сортировка</label>
+            <select id="f-sort">
+                <option value="date-desc">Новые сверху</option>
+                <option value="date-asc">Старые сверху</option>
+                <option value="name-asc">А-Я (Имя)</option>
+            </select>
+        </div>
+        
+        <button id="resetFilters">Сброс</button>
+    </div>
+
+    <div id="games"></div>
+</div>
+
+<script src="../a_data/system/script.js"></script>
+<script>
+    loadNavbar();
+    initGamesPage();
+</script>
+</body>
+</html>

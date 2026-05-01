@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<!-- Здесь, в отличие от других HTML, надо именно такой путь, чтобы на ПК и test9 работало. В корне сайта – не знаю -->
+	<link rel="stylesheet" href="a_data/system/style.css">
+	<link rel="stylesheet" href="a_data/system/nav.css">
+	<link rel="stylesheet" href="a_data/system/home.css">
+	
+	<link rel="canonical" href="https://2ndchannel.github.io/">
+	<link rel="icon" href="/favicon.ico" type="image/x-icon">
+	
+	<title>Ресурсы 2nd Channel</title>
+	<meta name="description" content="2nd Channel — площадка, посвящённая ретро играм NES / Dendy, Sega, фан-проекту TNU4 и стримам.">
+	
+	<meta name="robots" content="noindex, nofollow"> <!-- УДАЛИТЬ ЭТУ СТРОКУ, когда перенесу страницу в корень!-->
+	<!-- А ЭТУ СТРОКУ РАССКОММЕНТИРОВАТЬ: <meta name="robots" content="index, follow"> -->
+	
+	<meta name="language" content="ru">
+
+	<meta property="og:title" content="2nd Channel — ретро игры, TNU4 и иные фан-проекты">
+	<meta property="og:description" content="NES / Dendy, Sega, стримы и фан-проект TNU4 (Team Ninja Unkende 4)">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://2ndchannel.github.io/">
+	<meta property="og:image" content="https://2ndchannel.github.io/a_data/system/preview.jpg">
+
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="2nd Channel">
+	<meta name="twitter:description" content="Ретро игры, стримы и фан-проект TNU4">
+	<meta name="twitter:image" content="https://2ndchannel.github.io/a_data/system/preview.jpg">
+</head>
+<body>
+
+<div class="bg"></div>
+<div id="nav"></div>
+
+<div class="container">
+
+  <div id="news-block" class="alert-box">
+    <span id="news-text"></span>
+    <div id="countdown" class="timer"></div>
+    <button id="close-news" class="alert-close">✖</button>
+  </div>
+
+  <div class="home-card">
+    <!-- <h1>2nd Channel</h1> -->
+	<h1>2nd Channel</h1>
+    <p>
+      2nd Channel — это площадка, посвящённая ретро играм NES / Dendy и Sega,
+      фан-игре Team Ninja Unkende 4 (TNU4), совместным кинопросмотрам
+      и ретро-культуре.
+    </p>
+  </div>
+
+	<div class="home-card links">
+		<h2>YouTube</h2>
+		<a href="https://www.youtube.com/@2ndChannelGO" target="_blank" rel="noopener noreferrer">
+		  <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="Основной 2nd Channel на Youtube">Основной канал
+		</a>
+		<a href="https://www.youtube.com/@2ndChannel-Pirate" target="_blank" rel="noopener noreferrer">
+		  <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="Пиратский 2nd Channel на Youtube">Пиратский канал
+		</a>
+		<a href="https://www.youtube.com/@2ndChannel-Archive" target="_blank" rel="noopener noreferrer">
+		  <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="Дополнительный 2nd Channel на Youtube">Архивный канал
+		</a>
+	</div>
+
+  <div class="home-card links">
+    <h2>Стриминг</h2>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/145/145813.png">VK Live</a>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968819.png">Trovo</a>
+  </div>
+
+  <div class="home-card links">
+    <h2>Соцсети</h2>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/145/145813.png">Группа VK</a>
+    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/747/747376.png">Форум проекта</a>
+  </div>
+
+</div>
+
+<script src="a_data/system/script.js"></script>
+<script>
+  // Загрузка навигации
+  loadNavbar();
+
+  // Логика новостей
+  const newsBlock = document.getElementById("news-block");
+  const newsText = document.getElementById("news-text");
+  const countdownEl = document.getElementById("countdown");
+  const closeBtn = document.getElementById("close-news");
+
+  function parseLinks(text) {
+    return text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+  }
+
+  function startCountdown(eventDate, finishedText) {
+    function updateTimer() {
+      const now = new Date();
+      let diff = Math.floor((eventDate - now) / 1000);
+      if (diff > 0) {
+        const h = Math.floor(diff / 3600);
+        const m = Math.floor((diff % 3600) / 60);
+        const s = diff % 60;
+        countdownEl.textContent = `До начала: ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      } else {
+        countdownEl.textContent = finishedText || "Событие началось!";
+        clearInterval(timerInterval);
+      }
+    }
+    updateTimer();
+    const timerInterval = setInterval(updateTimer, 1000);
+  }
+
+  function isVisible(news, now) {
+    let start = news.startDate ? new Date(news.startDate) : null;
+    let end = news.endDate ? new Date(news.endDate) : null;
+    return (!start || now >= start) && (!end || now <= end);
+  }
+
+  fetch("a_data/news/news.json")
+    .then(r => r.json())
+    .then(newsArray => {
+      const now = new Date();
+      let activeNews = newsArray.find(n => n.id !== "always" && isVisible(n, now) && !localStorage.getItem("newsClosed_" + n.id));
+
+      if (!activeNews) {
+        activeNews = newsArray.find(n => n.id === "always" && !localStorage.getItem("newsClosed_always"));
+      }
+
+      if (activeNews) {
+        let text = activeNews.text;
+        
+        if (activeNews.eventTime) {
+          const [hours, minutes] = activeNews.eventTime.split(":").map(Number);
+          const eventDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
+          text = text.replace("{eventTime}", activeNews.eventTime);
+          
+          if (now < eventDate) {
+            startCountdown(eventDate, activeNews.startedText);
+          } else {
+            countdownEl.textContent = activeNews.startedText || "Уже в эфире / Началось!";
+          }
+        } else {
+          countdownEl.style.display = "none";
+        }
+
+        newsText.innerHTML = parseLinks(text);
+        newsBlock.style.display = "block";
+        closeBtn.onclick = () => {
+          newsBlock.style.display = "none";
+          localStorage.setItem("newsClosed_" + activeNews.id, "true");
+        };
+      }
+    });
+</script>
+
+</body>
+</html>
