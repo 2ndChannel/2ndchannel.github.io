@@ -44,48 +44,55 @@ async function loadNavbar() {
         const menuTitle = document.getElementById('menuTitle');
         const path = window.location.pathname;
 
-        const titles = { 
-            [basePath]: 'Главная', [basePath + 'index.html']: 'Главная',
-            [basePath + 'tnu4/']: 'TNU4', [basePath + 'streams/']: 'Стримы', [basePath + 'games/']: 'Игры' 
-        };
-        if (menuTitle) menuTitle.textContent = titles[path] || 'Меню';
-
-        // Логика гамбургера
+// Логика гамбургера
         const checkFitting = () => {
+            // 1. Сбрасываем всё в десктоп
             navInner.classList.remove('mobile-mode');
-            if (menuList.scrollWidth > navInner.clientWidth - 40) navInner.classList.add('mobile-mode');
+            document.body.classList.remove('is-mobile');
+
+            // 2. Если контент меню шире места в навигации
+            if (menuList.scrollWidth > navInner.clientWidth - 40) {
+                navInner.classList.add('mobile-mode');
+                document.body.classList.add('is-mobile');
+            } else {
+                // 3. Трюк: даем 10мс на перерисовку, прежде чем пинать YouTube-плашки
+                setTimeout(() => {
+                    window.dispatchEvent(new Event('resize'));
+                }, 10);
+            }
         };
 
-        menuBtn.onclick = (e) => { e.stopPropagation(); menuList.classList.toggle('active'); };
-        document.addEventListener('click', () => menuList.classList.remove('active'));
+		menuBtn.onclick = (e) => { e.stopPropagation(); menuList.classList.toggle('active'); };
+		document.addEventListener('click', () => menuList.classList.remove('active'));
 
-        // Настройка ссылок и цветов
-// Настройка ссылок и цветов
-const links = document.querySelectorAll('.menu-links a');
-const navElement = document.querySelector('.nav');
-let foundActive = false; // Флаг: нашли ли мы текущую страницу в меню?
+		// Настройка ссылок и цветов
+		// Настройка ссылок и цветов
+		const links = document.querySelectorAll('.menu-links a');
+		const navElement = document.querySelector('.nav');
+		let foundActive = false; // Флаг: нашли ли мы текущую страницу в меню?
 
-links.forEach(link => {
-    const rawHref = link.getAttribute('href') ? link.getAttribute('href').replace(/^\//, '') : '';
-    const fullPath = basePath + rawHref.replace(basePath.replace(/^\//, ''), '');
-    link.setAttribute('href', fullPath);
+		links.forEach(link => {
+		const rawHref = link.getAttribute('href') ? link.getAttribute('href').replace(/^\//, '') : '';
+		const fullPath = basePath + rawHref.replace(basePath.replace(/^\//, ''), '');
+		link.setAttribute('href', fullPath);
 
-    const btnColor = getComputedStyle(link).getPropertyValue('--btn-color').trim();
-    if (btnColor === '#d8a400' || btnColor === 'rgb(216, 164, 0)') {
-        link.classList.add('is-yellow');
-    }
+		const btnColor = getComputedStyle(link).getPropertyValue('--btn-color').trim();
+		if (btnColor === '#d8a400' || btnColor === 'rgb(216, 164, 0)') {
+			link.classList.add('is-yellow');
+		}
 
-    // Проверка на активность
-    if (path === fullPath || (path === basePath && rawHref === 'index.html')) {
-        link.classList.add('active');
-        foundActive = true; // Пометили, что страница есть в меню
-        
-        if (btnColor) {
-            navElement.style.setProperty('--active-color', btnColor);
-            navElement.classList.add('color-loaded');
-        }
-    }
-});
+		// Проверка на активность
+		if (path === fullPath || (path === basePath && rawHref === 'index.html')) {
+			link.classList.add('active');
+			if (menuTitle) menuTitle.textContent = link.innerText.trim();
+			foundActive = true; // Пометили, что страница есть в меню
+			
+			if (btnColor) {
+				navElement.style.setProperty('--active-color', btnColor);
+				navElement.classList.add('color-loaded');
+			}
+		}
+	});
 
 // А ТЕПЕРЬ ГЛАВНОЕ: если страница не в меню (например, 404)
 if (!foundActive) {
@@ -103,8 +110,21 @@ if (typeof fixNumbers === 'function') fixNumbers();
 // ===== FIX NUMBERS =====
 function fixNumbers() {
     document.querySelectorAll('h1, h2, h3, .menu-links a').forEach(el => {
+        // Проверяем, что это шрифт Machina и мы еще не обрабатывали этот элемент
         if (window.getComputedStyle(el).fontFamily.toLowerCase().includes("machina") && !el.querySelector('.num-fix')) {
-            el.innerHTML = el.innerHTML.replace(/(\d+)/g, '<span class="num-fix">$1</span>');
+            
+            // Проходим по всем дочерним узлам
+            Array.from(el.childNodes).forEach(node => {
+                // Работаем ТОЛЬКО с текстом, не трогаем <img> и другие теги
+                if (node.nodeType === Node.TEXT_NODE) {
+                    const text = node.textContent;
+                    if (/\d+/.test(text)) {
+                        const span = document.createElement('span');
+                        span.innerHTML = text.replace(/(\d+)/g, '<span class="num-fix">$1</span>');
+                        el.replaceChild(span, node);
+                    }
+                }
+            });
         }
     });
 }

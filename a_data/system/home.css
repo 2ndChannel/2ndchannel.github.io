@@ -1,8 +1,8 @@
 /* ============================================================
-   СТИЛИ ГЛАВНОЙ СТРАНИЦЫ (index.html)
+   ОСНОВНЫЕ СТИЛИ (ОБЩИЕ)
    ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
 
-/* Основная карточка-контейнер */
 .home-card {
     background: rgba(0, 5, 15, 0.85);
     backdrop-filter: blur(8px);
@@ -14,26 +14,27 @@
     box-shadow: 0 15px 35px rgba(0,0,0,0.7);
 }
 
-/* Заголовки внутри карточек */
 .home-card h1, .home-card h2 {
     font-family: "Machina", Arial, sans-serif;
-    margin: 0 0 15px 0;
+    margin: 0 0 5px 0;
     color: #fff;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
 .home-card h1 { font-size: 32px; }
-.home-card h2 { font-size: 28px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
-
-/* Текст */
-.home-card p {
-    line-height: 1.4;
-    margin: 10px 0;
+.home-card h2 { 
+    font-size: 28px; 
+    border-bottom: 1px solid rgba(255,255,255,0.1); 
+    padding-bottom: 8px; 
 }
 
-/* Блок ссылок (YouTube, Стриминг, Соцсети) */
-.links a { 
+.home-card p { line-height: 1.4; margin: 10px 0; }
+
+/* ============================================================
+   БЛОК ССЫЛОК И YOUTUBE СЕТКА
+   ============================================================ */
+.links > a { 
     display: flex; 
     align-items: center; 
     margin: 12px 0; 
@@ -42,22 +43,78 @@
     transition: transform 0.2s, opacity 0.2s; 
 }
 
-.links a:hover { 
-    opacity: 0.8; 
-    transform: translateX(5px); 
-}
+.links a:hover { opacity: 0.8; transform: translateX(5px); }
 
-.links img { 
+/* Иконки в обычных ссылках (VK, Trovo) */
+.links > a > img { 
     width: 28px; 
-    height: 28px;
+    height: 28px; 
     margin-right: 15px; 
 }
 
+/* Сетка YouTube */
+.youtube-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px; /* Расстояние МЕЖДУ плашками */
+    margin-top: 10px; /* Расстояние ОТ заголовка ДО сетки */
+}
+
+.yt-item {
+    /* Уменьшаем базовый порог с 280px до 200px */
+    /* Теперь они встанут в два ряда, даже если ширина карточки всего 450-500px */
+    flex: 1 1 200px; 
+    background: transparent;
+    padding: 12px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-decoration: none !important;
+    max-width: 100%;
+    margin: 0;
+}
+
+/* Добавим легкую подсветку при наведении, чтобы было понятно, что это кнопка */
+.yt-item:hover {
+    background: rgba(255, 255, 255, 0.05); /* Едва заметный фон при наведении */
+    transform: translateX(5px);
+}
+
+.yt-img-box {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.yt-img-box img { width: 100% !important; height: 100% !important; object-fit: cover !important; margin: 0 !important; }
+
+.yt-info { display: flex; flex-direction: column; overflow: hidden; }
+.yt-title { font-weight: bold; font-size: 18px; color: #ff4444; margin-bottom: 4px; }
+.yt-desc { font-size: 13px; color: #aaa; line-height: 1.2; transform: none !important; }
+
+/* Заголовок YouTube с иконкой (Исправлено: убраны дубли) */
+.title-with-icon { 
+    display: flex !important; 
+    align-items: center !important; 
+    gap: 12px !important; 
+    flex-wrap: nowrap !important;
+}
+
+.h2-icon { 
+    width: 32px !important; 
+    height: 32px !important; 
+    flex-shrink: 0 !important; 
+    margin: 0 !important; 
+}
+
 /* ============================================================
-   АЛЕРТ-БОКС (Система новостей)
+   АЛЕРТ-БОКС
    ============================================================ */
 .alert-box {
-    display: none; /* Управляется скриптом */
+    display: none;
     background: #ffcc00; 
     color: #000; 
     padding: 15px; 
@@ -70,15 +127,9 @@
     border: 2px solid #e6b800;
 }
 
-.alert-box a { 
-    color: #000; 
-    text-decoration: underline; 
-}
-
-/* Таймер обратного отсчета */
+.alert-box a { color: #000; text-decoration: underline; }
 .alert-box .timer { 
     margin-top: 8px; 
-    font-weight: normal; 
     font-family: 'Courier New', monospace; 
     font-size: 22px; 
     background: rgba(0,0,0,0.07); 
@@ -87,19 +138,66 @@
     border-radius: 4px; 
 }
 
-/* Кнопка закрытия новости */
 .alert-close { 
-    position: absolute; 
-    right: 12px; 
-    top: 10px; 
-    background: none; 
-    border: none; 
-    font-size: 24px; 
-    cursor: pointer; 
-    color: #000; 
-    opacity: 0.6; 
+    position: absolute; right: 12px; top: 10px; 
+    background: none; border: none; font-size: 24px; 
+    cursor: pointer; opacity: 0.6; 
 }
 
-.alert-close:hover { 
-    opacity: 1; 
+/* ============================================================
+   МОБИЛЬНЫЙ РЕЖИМ (ИСПОЛЬЗУЕТСЯ ПРИ ГАМБУРГЕРЕ)
+   ============================================================ */
+
+/* ============================================================
+   МОБИЛЬНЫЙ РЕЖИМ (СИНХРОНИЗАЦИЯ С ГАМБУРГЕРОМ)
+   ============================================================ */
+
+/* Этот блок срабатывает, когда script.js понимает, что меню тесно */
+body.is-mobile .home-card {
+    width: 95%;
+    margin: 4px auto !important;
+    padding: 15px !important;
+    border-radius: 12px;
+}
+
+/* Уменьшаем заголовки, чтобы не вылезали на узких экранах */
+body.is-mobile .home-card h1 { font-size: 24px; }
+body.is-mobile .home-card h2 { font-size: 20px; }
+
+/* Компактная сетка YouTube */
+body.is-mobile .youtube-grid {
+    gap: 2px !important;
+    margin-top: 5px !important;
+}
+
+body.is-mobile .yt-item {
+    flex: 1 1 100% !important; /* Строго одна колонка */
+    margin: 0 !important;
+    padding: 8px !important;
+}
+
+/* Компактные отступы для остальных ссылок (VK, Форум и т.д.) */
+body.is-mobile .links a {
+    margin: 2px 0 !important;
+}
+
+/* Уменьшаем текст внутри плашек YouTube */
+body.is-mobile .yt-title { font-size: 16px; }
+body.is-mobile .yt-desc { font-size: 12px; }
+
+/* Цвета для названий каналов */
+
+/* Основной: Желтый (#d8a400) */
+.yt-main .yt-title {
+    color: #d8a400 !important;
+}
+
+/* Пиратский: Белый (#ffffff) */
+.yt-pirate .yt-title {
+    color: #ffffff !important;
+}
+
+/* Архивный: Оранжевый (#cf4100) */
+.yt-archive .yt-title {
+    color: #cf4100 !important;
 }
