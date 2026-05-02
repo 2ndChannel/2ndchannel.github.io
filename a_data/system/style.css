@@ -1,71 +1,21 @@
 /* ============================================================
-   ОБЩИЕ СТИЛИ (Фон, Базовые шрифты, Контейнер)
+   ОБЩИЕ СТИЛИ И ШРИФТЫ
    ============================================================ */
 @font-face {
     font-family: "Machina";
     src: url("2F_MachinaOrto-Medium.ttf") format("truetype");
 }
 
-/* ============================================================
-   ОБЩИЕ СТИЛИ
-   ============================================================ */
 body {
     margin: 0;
     padding-top: 70px;
     font-family: Arial, sans-serif;
     font-size: 24px;
     color: #fff;
-    /* Цвет неба: всё, что выше и за зданиями */
-    /* Черный начнется далеко внизу, поэтому на экране будет больше синего */
-	/* Синий -> Темно-синий -> УБРАЛ Черный */
-	background: linear-gradient(to bottom, #09143f 0%, #050a1f 100%) no-repeat fixed;
-    background-color: #000; /* Запасной цвет для длинных страниц */
+    /* Фон неба: Синий -> Темно-синий */
+    background: linear-gradient(to bottom, #09143f 0%, #050a1f 100%) no-repeat fixed;
+    background-color: #000; /* Запасной цвет */
     overflow-x: hidden;
-}
-
-/* ============================================================
-   ФОН (ИСПРАВЛЕННЫЙ)
-   ============================================================ */
-.bg {
-    position: fixed;
-    /* Опускаем контейнер чуть ниже, чтобы огромные здания не закрыли всё небо */
-    top: 30vh; 
-    left: 0;
-    width: 100vw;
-    /* Увеличиваем высоту вдвое (было 60vh, стало 120vh) */
-    /* Теперь здания станут в 2 раза крупнее */
-    height: 120vh; 
-    
-    background: url("city_vertical.gif") repeat-x;
-    /* Картинка растягивается по новой высоте, сохраняя пропорции */
-    background-size: auto 100%; 
-    
-    /* Скорость нужно еще немного замедлить, так как при приближении 
-       движение кажется быстрее. Поставим 600s. */
-    animation: scrollBg 600s linear infinite;
-    
-    pointer-events: none;
-    z-index: -1;
-    will-change: background-position;
-}
-
-.bg::after {
-    content: "";
-    display: block;
-    position: absolute;
-    /* Привязка к низу увеличенных зданий */
-    top: calc(100% - 5px); 
-    left: 0;
-    width: 100vw;
-    height: 200vh; 
-    background: #000;
-}
-
-@keyframes scrollBg {
-    from { background-position: 0 0; }
-    /* Увеличиваем дистанцию прокрутки, так как картинка стала шире 
-       из-за увеличения высоты */
-    to { background-position: -10000px 0; } 
 }
 
 .container {
@@ -77,7 +27,40 @@ body {
 }
 
 /* ============================================================
-   КНОПКИ И ССЫЛКИ (Общие элементы)
+   ФОН (ЗДАНИЯ И АНИМАЦИЯ)
+   ============================================================ */
+.bg {
+    position: fixed;
+    top: 30vh; 
+    left: 0;
+    width: 100vw;
+    height: 120vh; 
+    background: url("city_vertical.gif") repeat-x;
+    background-size: auto 100%; 
+    animation: scrollBg 600s linear infinite;
+    pointer-events: none;
+    z-index: -1;
+    will-change: background-position;
+}
+
+.bg::after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: calc(100% - 5px); 
+    left: 0;
+    width: 100vw;
+    height: 200vh; 
+    background: #000;
+}
+
+@keyframes scrollBg {
+    from { background-position: 0 0; }
+    to { background-position: -10000px 0; } 
+}
+
+/* ============================================================
+   КНОПКИ И ССЫЛКИ
    ============================================================ */
 button { 
     cursor: pointer; 
@@ -98,167 +81,32 @@ button:active { transform: scale(0.98); }
 a { color: #2ecc71; text-decoration: none; transition: 0.3s; }
 a:hover { filter: brightness(1.2); }
 
-/* ============================================================
-   НАВИГАЦИЯ (Центрированный зеленый гамбургер и текст)
-   ============================================================ */
-
-
 .num-fix {
-    font-family: inherit !important; /* Строго берем шрифт заголовка */
-    font-size: 1.14em !important;   /* Твой размер */
+    font-family: inherit !important;
+    font-size: 1.14em !important;
     line-height: 0;
     display: inline-block;
-    vertical-align: baseline;       /* Выравнивание по нижней линии букв */
+    vertical-align: baseline;
     position: relative;
-
-}
-
-
-/* ============================================================
-   ОБЩИЕ СТИЛИ (Фон, Базовые шрифты, Контейнер)
-   ============================================================ */
-@font-face {
-    font-family: "Machina";
-    src: url("2F_MachinaOrto-Medium.ttf") format("truetype");
 }
 
 /* ============================================================
-   ОБЩИЕ СТИЛИ
+   МОБИЛЬНАЯ АДАПТАЦИЯ ФОНА
    ============================================================ */
-body {
-    margin: 0;
-    padding-top: 70px;
-    font-family: Arial, sans-serif;
-    font-size: 24px;
-    color: #fff;
-    /* Цвет неба: всё, что выше и за зданиями */
-    /* Черный начнется далеко внизу, поэтому на экране будет больше синего */
-	/* Синий -> Темно-синий -> УБРАЛ Черный */
-	background: linear-gradient(to bottom, #09143f 0%, #050a1f 100%) no-repeat fixed;
-    background-color: #000; /* Запасной цвет для длинных страниц */
-    overflow-x: hidden;
-}
-
-/* ============================================================
-   ФОН (ИСПРАВЛЕННЫЙ)
-   ============================================================ */
-.bg {
-    position: fixed;
-    /* Опускаем контейнер чуть ниже, чтобы огромные здания не закрыли всё небо */
-    top: 30vh; 
-    left: 0;
-    width: 100vw;
-    /* Увеличиваем высоту вдвое (было 60vh, стало 120vh) */
-    /* Теперь здания станут в 2 раза крупнее */
-    height: 120vh; 
-    
-    background: url("city_vertical.gif") repeat-x;
-    /* Картинка растягивается по новой высоте, сохраняя пропорции */
-    background-size: auto 100%; 
-    
-    /* Скорость нужно еще немного замедлить, так как при приближении 
-       движение кажется быстрее. Поставим 600s. */
-    animation: scrollBg 600s linear infinite;
-    
-    pointer-events: none;
-    z-index: -1;
-    will-change: background-position;
-}
-
-.bg::after {
-    content: "";
-    display: block;
-    position: absolute;
-    /* Привязка к низу увеличенных зданий */
-    top: calc(100% - 5px); 
-    left: 0;
-    width: 100vw;
-    height: 200vh; 
-    background: #000;
-}
-
-@keyframes scrollBg {
-    from { background-position: 0 0; }
-    /* Увеличиваем дистанцию прокрутки, так как картинка стала шире 
-       из-за увеличения высоты */
-    to { background-position: -10000px 0; } 
-}
-
-.container {
-    position: relative;
-    z-index: 1;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 15px;
-}
-
-/* ============================================================
-   КНОПКИ И ССЫЛКИ (Общие элементы)
-   ============================================================ */
-button { 
-    cursor: pointer; 
-    padding: 6px 14px; 
-    border-radius: 6px; 
-    border: none; 
-    background: #fff; 
-    color: #000; 
-    font-weight: bold; 
-    transition: background 0.2s, transform 0.1s; 
-    font-family: Arial, sans-serif;
-    font-size: 16px; 
-}
-
-button:hover { background: #e0e0e0; }
-button:active { transform: scale(0.98); }
-
-a { color: #2ecc71; text-decoration: none; transition: 0.3s; }
-a:hover { filter: brightness(1.2); }
-
-/* ============================================================
-   НАВИГАЦИЯ (Центрированный зеленый гамбургер и текст)
-   ============================================================ */
-
-
-.num-fix {
-    font-family: inherit !important; /* Строго берем шрифт заголовка */
-    font-size: 1.14em !important;   /* Твой размер */
-    line-height: 0;
-    display: inline-block;
-    vertical-align: baseline;       /* Выравнивание по нижней линии букв */
-    position: relative;
-
-}
-
-/* =====================================================================
-   ГОРОД НА ФОНЕ В МОБИЛЬНОЙ ВЕРСИИ ПОМЕНЬШЕ (ранее был слишком большим)
-   ===================================================================== */
-
-/* Если навигация перешла в мобильный режим, меняем масштаб фона */
 #nav-inner.mobile-mode ~ .bg, 
 body:has(#nav-inner.mobile-mode) .bg {
-    /* "Отдаляем" город (70% высоты вместо 100%) */
     background-size: auto 80%; 
-    
-    /* ОПУСКАЕМ НИЖЕ: Увеличиваем top (был 30vh, ставим 50vh) */
     top: 40vh; 
-    
-    /* Уменьшаем высоту контейнера, чтобы он не лез вверх */
     height: 70vh;
-    
-    /* Прижимаем картинку к низу блока .bg */
     background-position: 0 bottom;
-    
-    /* Используем общую анимацию, но с фиксацией внизу */
     animation: scrollBgMobile 600s linear infinite;
 }
 
-/* Корректируем анимацию, чтобы она всегда держала картинку ВНИЗУ (bottom) */
 @keyframes scrollBgMobile {
     from { background-position: 0 bottom; }
     to { background-position: -10000px bottom; }
 }
 
-/* Фикс черной подложки (чтобы не было щели) */
 #nav-inner.mobile-mode ~ .bg::after,
 body:has(#nav-inner.mobile-mode) .bg::after {
     top: calc(100% - 2px);
