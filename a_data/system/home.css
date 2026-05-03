@@ -55,15 +55,22 @@
 /* Сетка YouTube */
 .youtube-grid {
     display: flex;
-    flex-wrap: wrap;
-    gap: 12px; /* Расстояние МЕЖДУ плашками */
-    margin-top: 10px; /* Расстояние ОТ заголовка ДО сетки */
+    flex-wrap: wrap;         /* Перенос разрешен */
+    gap: 15px;               /* Расстояние между кнопками */
+    margin-top: 15px;
+    justify-content: center;  /* Центрирует кнопки в рядах */
 }
 
 .yt-item {
-    /* Уменьшаем базовый порог с 280px до 200px */
-    /* Теперь они встанут в два ряда, даже если ширина карточки всего 450-500px */
-    flex: 1 1 200px; 
+    /* 
+       flex: 0 0 260px; 
+       Первый 0: не растягиваться. 
+       Второй 0: не сжиматься. 
+       300px: фиксированная база. 
+       Подбери это число один раз под самый длинный текст (обычно 280-300px).
+    */
+    flex: 0 0 260px; 
+    
     background: transparent;
     padding: 12px;
     border-radius: 12px;
@@ -71,14 +78,13 @@
     align-items: center;
     gap: 15px;
     text-decoration: none !important;
-    max-width: 100%;
-    margin: 0;
+    transition: background 0.2s, transform 0.2s;
+    box-sizing: border-box;
 }
 
-/* Добавим легкую подсветку при наведении, чтобы было понятно, что это кнопка */
 .yt-item:hover {
-    background: rgba(255, 255, 255, 0.05); /* Едва заметный фон при наведении */
-    transform: translateX(5px);
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
 }
 
 .yt-img-box {
@@ -148,10 +154,6 @@
    МОБИЛЬНЫЙ РЕЖИМ (ИСПОЛЬЗУЕТСЯ ПРИ ГАМБУРГЕРЕ)
    ============================================================ */
 
-/* ============================================================
-   МОБИЛЬНЫЙ РЕЖИМ (СИНХРОНИЗАЦИЯ С ГАМБУРГЕРОМ)
-   ============================================================ */
-
 /* Этот блок срабатывает, когда script.js понимает, что меню тесно */
 body.is-mobile .home-card {
     width: 95%;
@@ -166,16 +168,14 @@ body.is-mobile .home-card h2 { font-size: 20px; }
 
 /* Компактная сетка YouTube */
 body.is-mobile .youtube-grid {
-    gap: 2px !important;
-    margin-top: 5px !important;
+    gap: 15px !important; /* Держим дистанцию */
 }
 
 body.is-mobile .yt-item {
-    flex: 1 1 100% !important; /* Строго одна колонка */
-    margin: 0 !important;
-    padding: 8px !important;
+    flex: 0 0 260px !important; /* Размер остается тем же! */
+    width: 260px !important;
+    margin: 0 !important; /* Убираем лишние отступы, если были */
 }
-
 /* Компактные отступы для остальных ссылок (VK, Форум и т.д.) */
 body.is-mobile .links a {
     margin: 2px 0 !important;
@@ -200,4 +200,11 @@ body.is-mobile .yt-desc { font-size: 12px; }
 /* Архивный: Оранжевый (#cf4100) */
 .yt-archive .yt-title {
     color: #cf4100 !important;
+}
+
+@media (max-width: 340px) {
+    .yt-item {
+        flex: 0 0 100% !important; /* Только тут разрешаем занять всю ширину */
+        min-width: 0;
+    }
 }
