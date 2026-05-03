@@ -7,7 +7,7 @@
     background: rgba(0, 5, 15, 0.85);
     backdrop-filter: blur(8px);
     padding: 25px;
-    margin: 5px auto;
+    margin: 15px auto;
     max-width: 950px;
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -32,7 +32,7 @@
 .home-card p { line-height: 1.4; margin: 10px 0; }
 
 /* ============================================================
-   БЛОК ССЫЛОК И YOUTUBE СЕТКА
+   БЛОК ССЫЛОК И YOUTUBE СЕТКА (Базовые стили)
    ============================================================ */
 .links > a { 
     display: flex; 
@@ -45,32 +45,23 @@
 
 .links a:hover { opacity: 0.8; transform: translateX(5px); }
 
-/* Иконки в обычных ссылках (VK, Trovo) */
 .links > a > img { 
     width: 28px; 
     height: 28px; 
     margin-right: 15px; 
 }
 
-/* Сетка YouTube */
 .youtube-grid {
     display: flex;
-    flex-wrap: wrap;         /* Перенос разрешен */
-    gap: 15px;               /* Расстояние между кнопками */
+    flex-wrap: wrap;
+    gap: 15px;
     margin-top: 15px;
-    justify-content: center;  /* Центрирует кнопки в рядах */
+    justify-content: flex-start;
+    align-content: flex-start; /* Убирает лишнее пространство между рядами */
 }
 
+/* БАЗОВЫЕ СТИЛИ КНОПОК */
 .yt-item {
-    /* 
-       flex: 0 0 260px; 
-       Первый 0: не растягиваться. 
-       Второй 0: не сжиматься. 
-       300px: фиксированная база. 
-       Подбери это число один раз под самый длинный текст (обычно 280-300px).
-    */
-    flex: 0 0 260px; 
-    
     background: transparent;
     padding: 12px;
     border-radius: 12px;
@@ -87,6 +78,30 @@
     transform: translateY(-2px);
 }
 
+/* ============================================================
+   НАСТРОЙКА РАЗМЕРОВ КНОПОК (ИСПРАВЛЕНО ГИБКОСТЬЮ)
+   ============================================================ */
+
+/* 1. Основной YouTube блок - заменяем жесткий 0 0 280px на min-width */
+.home-card:not(.split-card) .yt-item { 
+    flex: 1 1 280px; 
+    max-width: 100%; 
+}
+
+/* 2. Левая плашка (Публичные страницы) */
+.horizontal-container .split-card:first-child .yt-item { 
+    flex: 1 1 292px; 
+}
+
+/* 3. Правая плашка (Видеопросмотры) */
+.horizontal-container .split-card:nth-child(2) .yt-item { 
+    flex: 1 1 292px; 
+}
+
+
+/* ============================================================
+   ОСТАЛЬНЫЕ СТИЛИ
+   ============================================================ */
 .yt-img-box {
     width: 60px;
     height: 60px;
@@ -101,7 +116,6 @@
 .yt-title { font-weight: bold; font-size: 18px; color: #ff4444; margin-bottom: 4px; }
 .yt-desc { font-size: 13px; color: #aaa; line-height: 1.2; transform: none !important; }
 
-/* Заголовок YouTube с иконкой (Исправлено: убраны дубли) */
 .title-with-icon { 
     display: flex !important; 
     align-items: center !important; 
@@ -116,9 +130,6 @@
     margin: 0 !important; 
 }
 
-/* ============================================================
-   АЛЕРТ-БОКС
-   ============================================================ */
 .alert-box {
     display: none;
     background: #ffcc00; 
@@ -127,7 +138,7 @@
     text-align: center; 
     font-weight: bold; 
     border-radius: 12px; 
-    margin-bottom: 10px; 
+    margin: 15px auto;
     position: relative; 
     box-shadow: 0 5px 20px rgba(0,0,0,0.4); 
     border: 2px solid #e6b800;
@@ -151,60 +162,85 @@
 }
 
 /* ============================================================
-   МОБИЛЬНЫЙ РЕЖИМ (ИСПОЛЬЗУЕТСЯ ПРИ ГАМБУРГЕРЕ)
+   МОБИЛЬНЫЙ РЕЖИМ
    ============================================================ */
-
-/* Этот блок срабатывает, когда script.js понимает, что меню тесно */
 body.is-mobile .home-card {
     width: 95%;
-    margin: 4px auto !important;
+    margin: 15px auto !important;
     padding: 15px !important;
     border-radius: 12px;
 }
 
-/* Уменьшаем заголовки, чтобы не вылезали на узких экранах */
 body.is-mobile .home-card h1 { font-size: 24px; }
 body.is-mobile .home-card h2 { font-size: 20px; }
 
-/* Компактная сетка YouTube */
 body.is-mobile .youtube-grid {
-    gap: 15px !important; /* Держим дистанцию */
+    gap: 8px !important; 
+    justify-content: flex-start;
 }
 
-body.is-mobile .yt-item {
-    flex: 0 0 260px !important; /* Размер остается тем же! */
-    width: 260px !important;
-    margin: 0 !important; /* Убираем лишние отступы, если были */
-}
-/* Компактные отступы для остальных ссылок (VK, Форум и т.д.) */
-body.is-mobile .links a {
-    margin: 2px 0 !important;
+/* Мобильные размеры: убираем flex-basis, даем кнопкам занять всё пространство, чтобы не было пустот */
+body.is-mobile .home-card:not(.split-card) .yt-item,
+body.is-mobile .horizontal-container .split-card:first-child .yt-item,
+body.is-mobile .horizontal-container .split-card:nth-child(2) .yt-item { 
+    flex: 1 1 100% !important; 
+    width: 100% !important; 
+    margin: 0 !important; 
 }
 
-/* Уменьшаем текст внутри плашек YouTube */
+body.is-mobile .links a { margin: 2px 0 !important; }
 body.is-mobile .yt-title { font-size: 16px; }
 body.is-mobile .yt-desc { font-size: 12px; }
 
-/* Цвета для названий каналов */
-
-/* Основной: Желтый (#d8a400) */
-.yt-main .yt-title {
-    color: #d8a400 !important;
-}
-
-/* Пиратский: Белый (#ffffff) */
-.yt-pirate .yt-title {
-    color: #ffffff !important;
-}
-
-/* Архивный: Оранжевый (#cf4100) */
-.yt-archive .yt-title {
-    color: #cf4100 !important;
-}
+.yt-main .yt-title { color: #d8a400 !important; }
+.yt-pirate .yt-title { color: #ffffff !important; }
+.yt-archive .yt-title { color: #cf4100 !important; }
 
 @media (max-width: 340px) {
     .yt-item {
-        flex: 0 0 100% !important; /* Только тут разрешаем занять всю ширину */
+        flex: 1 1 100% !important;
+        width: 100% !important;
         min-width: 0;
     }
 }
+
+/* ============================================================
+   БЛОК VK И ПРОСМОТРЫ
+   ============================================================ */
+.horizontal-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    max-width: 950px;
+    margin: 15px auto;
+}
+
+.split-card {
+    flex: 1 1 calc(50% - 8px); 
+    max-width: 950px;
+    margin: 0 !important;
+}
+
+@media (max-width: 940px) {
+    .horizontal-container {
+        display: block;
+        margin: 15px auto;
+    }
+    .split-card {
+        width: 100%;    
+        margin: 15px 0 !important;
+    }
+    .split-card .youtube-grid {
+        justify-content: flex-start;
+    }
+    /* Убираем пустоты между кнопками в вертикальном стеке */
+    .split-card .yt-item {
+        flex: 1 1 100% !important;
+    }
+}
+
+.youtube-grid .yt-item { margin: 0 !important; }
+
+.vk-plat-vk .yt-title { color: #0077ff !important; }
+.vk-plat-live .yt-title { color: #ff2b42 !important; }
+.vk-plat-twitch .yt-title { color: #a970ff !important; }
