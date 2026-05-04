@@ -32,8 +32,9 @@ async function loadNavbar() {
     if (!navCont) return;
 
     try {
-        const isTest = window.location.pathname.includes('/test9/');
-        const basePath = isTest ? '/test9/' : '/';
+        // Убираем проверку на test9, так как теперь корень — это основное место сайта
+        const basePath = '/'; 
+        
         const response = await fetch(basePath + 'a_data/system/nav.html'); 
         const html = await response.text();
         navCont.innerHTML = html;

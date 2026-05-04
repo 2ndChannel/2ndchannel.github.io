@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+	<!-- Чтобы работало на ПК и test9 надо такой путь писать. В корне сайта – не знаю. НО У ГЛАВНОЙ СТРАНИЦЫ ЗАПИСЬ ПУТЕЙ ОТЛИЧАЮТСЯ -->
+	<link rel="stylesheet" href="../a_data/system/style.css">
+	<link rel="stylesheet" href="../a_data/system/nav.css">
+    <link rel="stylesheet" href="../a_data/system/tnu4.css">
+    
+    <link rel="canonical" href="https://2ndchannel.github.io/tnu4/">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    
+    <title>Team Ninja Unkende 4 • Ninja Gaiden 4 | 2nd Channel</title>
+    <meta name="description" content="TNU4 — фанатское продолжение Ninja Gaiden на NES. Разработка на GameMaker, новые уровни, персонажи, боссы и расширенный геймплей.">
+    
+	<meta name="robots" content="index, follow"> 
+    
+	<meta name="language" content="ru">
+	
+	<meta property="og:title" content="Team Ninja Unkende 4 | 2nd Channel">
+	<meta property="og:description" content="TNU4 — фанатское продолжение Ninja Gaiden на NES. Разработка на GameMaker, новые уровни и боссы.">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://2ndchannel.github.io/tnu4/">
+	<meta property="og:image" content="https://2ndchannel.github.io/a_data/system/preview.jpg">
+	
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="2nd Channel">
+	<meta name="twitter:description" content="Ретро игры, стримы и фан-проект TNU4">
+	<meta name="twitter:image" content="https://2ndchannel.github.io/a_data/system/preview.jpg">
+</head>
+<body>
+
+<div class="bg"></div>
+<div id="nav"></div>
+
+<div class="container">
+    <div class="tnu-card">
+        <h1>Фан-игра</h1>
+        <p>
+            Описание проекта Team Ninja Unkende 4. Это фанатское продолжение легендарной серии Ninja Gaiden, 
+            создаваемое с любовью к оригиналу на движке GameMaker.
+        </p>
+        <img src="https://picsum.photos/1000/500" alt="TNU4 Gameplay" style="width:100%;">
+    </div>
+
+    <div class="tnu-card">
+        <h2>Скриншоты</h2>
+        <div class="gallery">
+            <img src="https://picsum.photos/300/200?1" alt="Screenshot 1" onclick="openImg(this.src)">
+            <img src="https://picsum.photos/300/200?2" alt="Screenshot 2" onclick="openImg(this.src)">
+            <img src="https://picsum.photos/300/200?3" alt="Screenshot 3" onclick="openImg(this.src)">
+        </div>
+    </div>
+</div>
+
+<div id="fs" class="fullscreen" onclick="closeImg()">
+    <img src="" alt="Fullscreen view">
+</div>
+
+<script src="../a_data/system/script.js"></script>
+<script>
+    // Инициализация навигации
+    loadNavbar();
+
+    // Функции галереи (если они не вынесены в script.js, оставляем здесь)
+    function openImg(src) {
+        const fs = document.getElementById("fs");
+        fs.querySelector("img").src = src;
+        fs.style.display = "flex";
+    }
+
+    function closeImg() {
+        document.getElementById("fs").style.display = "none";
+    }
+</script>
+
+</body>
+</html>
