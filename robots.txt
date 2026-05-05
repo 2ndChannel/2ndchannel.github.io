@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 Sitemap: https://2ndchannel.github.io/sitemap.xml
-Disallow: /zz_test9/
+Disallow: /zz_test/

@@ -141,8 +141,8 @@ async function initGamesPage() {
     const gamesContainer = document.getElementById("games");
     if (!gamesContainer) return;
     const [streams, allGames] = await Promise.all([
-        fetch('../streams/streams.json').then(r => r.json()),
-        fetch('games.json').then(r => r.json())
+        fetch('/streams/streams.json').then(r => r.json()),
+        fetch('/games/games.json').then(r => r.json())
     ]);
 
     function applyFilters() {
