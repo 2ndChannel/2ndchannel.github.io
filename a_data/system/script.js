@@ -32,10 +32,13 @@ async function loadNavbar() {
     if (!navCont) return;
 
     try {
-        // Убираем проверку на test9, так как теперь корень — это основное место сайта
-        const basePath = '/'; 
+        // 1. Умное определение базового пути
+        const isSubDir = window.location.pathname.includes('/games/') || 
+                         window.location.pathname.includes('/streams/') || 
+                         window.location.pathname.includes('/tnu4/');
+        const relPath = isSubDir ? '../' : './';
         
-        const response = await fetch(basePath + 'a_data/system/nav.html'); 
+        const response = await fetch(relPath + 'a_data/system/nav.html'); 
         const html = await response.text();
         navCont.innerHTML = html;
 
@@ -43,69 +46,85 @@ async function loadNavbar() {
         const menuList = document.getElementById('menu-list');
         const menuBtn = document.getElementById('menu-btn');
         const menuTitle = document.getElementById('menuTitle');
-        const path = window.location.pathname;
 
-// Логика гамбургера
+        // 2. Логика компактности и мобильного режима
         const checkFitting = () => {
-            // 1. Сбрасываем всё в десктоп
             navInner.classList.remove('mobile-mode');
-            document.body.classList.remove('is-mobile');
-
-            // 2. Если контент меню шире места в навигации
-            if (menuList.scrollWidth > navInner.clientWidth - 40) {
+            // Если экран узкий ИЛИ кнопки начинают не влезать в строку
+            if (window.innerWidth < 850 || menuList.scrollWidth > navInner.clientWidth - 20) {
                 navInner.classList.add('mobile-mode');
-                document.body.classList.add('is-mobile');
-            } else {
-                // 3. Трюк: даем 10мс на перерисовку, прежде чем пинать YouTube-плашки
-                setTimeout(() => {
-                    window.dispatchEvent(new Event('resize'));
-                }, 10);
             }
         };
 
-		menuBtn.onclick = (e) => { e.stopPropagation(); menuList.classList.toggle('active'); };
-		document.addEventListener('click', () => menuList.classList.remove('active'));
+        // 3. Управление гамбургером
+        menuBtn.onclick = (e) => { 
+            e.stopPropagation(); 
+            menuList.classList.toggle('active'); 
+        };
+        
+        // Закрытие меню при клике в любое место экрана
+        document.addEventListener('click', () => {
+            menuList.classList.remove('active');
+        });
 
-		// Настройка ссылок и цветов
-		// Настройка ссылок и цветов
-		const links = document.querySelectorAll('.menu-links a');
-		const navElement = document.querySelector('.nav');
-		let foundActive = false; // Флаг: нашли ли мы текущую страницу в меню?
+        // 4. Настройка кнопок и определение активной страницы
+        const links = document.querySelectorAll('.menu-links a');
+        const currentPath = window.location.pathname.replace(/\/$/, "").toLowerCase();
+        let foundActive = false;
 
-		links.forEach(link => {
-		const rawHref = link.getAttribute('href') ? link.getAttribute('href').replace(/^\//, '') : '';
-		const fullPath = basePath + rawHref.replace(basePath.replace(/^\//, ''), '');
-		link.setAttribute('href', fullPath);
+        links.forEach(link => {
+            // Приводим ссылки к правильному пути относительно текущей папки
+            const rawHref = link.getAttribute('href');
+            link.href = relPath + rawHref;
 
-		const btnColor = getComputedStyle(link).getPropertyValue('--btn-color').trim();
-		if (btnColor === '#d8a400' || btnColor === 'rgb(216, 164, 0)') {
-			link.classList.add('is-yellow');
-		}
+            // Получаем "чистый" путь ссылки для сравнения
+            const linkPath = link.pathname.replace(/\/$/, "").toLowerCase();
 
-		// Проверка на активность
-		if (path === fullPath || (path === basePath && rawHref === 'index.html')) {
-			link.classList.add('active');
-			if (menuTitle) menuTitle.textContent = link.innerText.trim();
-			foundActive = true; // Пометили, что страница есть в меню
-			
-			if (btnColor) {
-				navElement.style.setProperty('--active-color', btnColor);
-				navElement.classList.add('color-loaded');
-			}
-		}
-	});
+            // Определяем цвет кнопки из CSS переменной
+            const btnColor = getComputedStyle(link).getPropertyValue('--btn-color').trim();
+            
+            // Специальный класс для желтой кнопки (черный текст при наведении)
+            if (btnColor.includes('216, 164, 0') || btnColor.includes('#d8a400')) {
+                link.classList.add('is-yellow');
+            }
 
-// А ТЕПЕРЬ ГЛАВНОЕ: если страница не в меню (например, 404)
-if (!foundActive) {
-    navElement.style.setProperty('--active-color', '#888888'); // Линия станет серой
-    navElement.classList.add('color-loaded');
-}
+            // ПРОВЕРКА НА АКТИВНОСТЬ (чтобы не горело лишнее)
+            const isHome = (currentPath === "" || currentPath.endsWith("index.html")) && 
+                           (rawHref === "./" || rawHref === "index.html");
+            const isCurrent = (currentPath === linkPath && rawHref !== "./");
 
-// Завершение работы функции
-checkFitting();
-window.addEventListener('resize', checkFitting);
-if (typeof fixNumbers === 'function') fixNumbers();
-} catch (err) { console.error('Ошибка загрузки меню:', err); }
+            if (isHome || isCurrent) {
+                link.classList.add('active');
+                foundActive = true;
+                
+                // Ставим название страницы в мобильную шапку
+                if (menuTitle) menuTitle.textContent = link.innerText.trim();
+                
+                // Красим нижнюю полоску в цвет активной кнопки
+                if (btnColor) {
+                    navInner.style.setProperty('--active-color', btnColor);
+                    navInner.classList.add('color-loaded');
+                }
+            }
+        });
+
+        // 5. ЛОГИКА ДЛЯ 404 (Страница не найдена)
+        if (!foundActive) {
+            if (menuTitle) menuTitle.textContent = "Страница не найдена";
+            navInner.style.setProperty('--active-color', '#888888'); // Серая полоска
+            navInner.classList.add('color-loaded');
+        }
+
+        // Запуск проверок при загрузке и ресайзе
+        checkFitting();
+        window.addEventListener('resize', checkFitting);
+        
+        // Перезапуск фикса цифр, если меню подгрузилось позже
+        if (typeof fixNumbers === 'function') fixNumbers();
+
+    } catch (err) { 
+        console.error('Ошибка загрузки навигации:', err); 
+    }
 }
 
 // ===== FIX NUMBERS =====

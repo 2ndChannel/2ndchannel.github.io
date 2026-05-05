@@ -178,7 +178,7 @@ body.is-mobile .no-title-card {
 /* ============================================================
    КНОПКА ПЕРЕХОДА НА СТАРУЮ СТРАНИЦУ
    ============================================================ */
-/* Контейнер строки */
+/*
 .news-row {
     display: flex;
     align-items: stretch;
@@ -190,7 +190,7 @@ body.is-mobile .no-title-card {
     margin: 0 !important;
 }
 
-/* Обновленная кнопка «Старая версия» */
+
 .old-version-card {
     display: flex;
     align-items: center;
@@ -198,13 +198,13 @@ body.is-mobile .no-title-card {
     backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
-    padding: 10px 25px; /* Увеличили размер за счет отступов */
+    padding: 10px 25px;
     color: #fff !important;
     text-decoration: none !important;
     transition: 0.2s;
     margin-left: 5px;
-    min-width: 280px; /* Сделали кнопку шире */
-    gap: 15px; /* Расстояние между картинкой и текстом */
+    min-width: 280px;
+    gap: 15px;
 }
 
 .old-version-card:hover {
@@ -213,7 +213,6 @@ body.is-mobile .no-title-card {
     border-color: rgba(255, 255, 255, 0.3);
 }
 
-/* Контейнер для иконки */
 .old-v-icon {
     width: 40px;
     height: 40px;
@@ -229,12 +228,12 @@ body.is-mobile .no-title-card {
 .old-v-content {
     display: flex;
     flex-direction: column;
-    text-align: left; /* Текст теперь по левому краю от иконки */
+    text-align: left;
 }
 
 .old-v-title {
     font-weight: bold;
-    font-size: 16px; /* Чуть крупнее заголовок */
+    font-size: 16px;
     color: #fff;
 }
 
@@ -243,7 +242,6 @@ body.is-mobile .no-title-card {
     color: #aaa;
 }
 
-/* Адаптив */
 @media (max-width: 940px) {
     .news-row {
         flex-direction: column;
@@ -254,4 +252,4 @@ body.is-mobile .no-title-card {
         min-width: auto;
         width: 100%;
     }
-}
+}*/
