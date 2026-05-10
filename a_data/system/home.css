@@ -164,6 +164,18 @@
     }
 }
 
+/* Если навигация перешла в мобильный режим, уменьшаем текст в карточке */
+body:has(#nav-inner.mobile-mode) .home-card p {
+    font-size: 14px; /* Исходный у тебя 24px, ставим 18px */
+    line-height: 1.4;
+}
+
+/* Опционально: уменьшаем заголовок, чтобы тоже не был слишком огромным */
+body:has(#nav-inner.mobile-mode) .home-card h1 {
+    font-size: 24px; 
+    margin-bottom: 10px;
+}
+
 body.is-mobile .home-card {
     width: 95%;
     padding: 15px !important;
