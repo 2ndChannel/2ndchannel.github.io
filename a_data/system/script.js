@@ -122,9 +122,16 @@ async function loadNavbar() {
             navInner.classList.add('color-loaded');
         }
 
-        // Запуск проверок при загрузке и ресайзе
-        checkFitting();
+        // Запуск проверок при загрузке и ресайзе        checkFitting();
         window.addEventListener('resize', checkFitting);
+
+        const onNavScroll = () => {
+            const y = window.scrollY || document.documentElement.scrollTop;
+            if (y > 40) navInner.classList.add('compact');
+            else if (y < 10) navInner.classList.remove('compact');
+        };
+        window.addEventListener('scroll', onNavScroll, { passive: true });
+        onNavScroll();
         
         // Перезапуск фикса цифр, если меню подгрузилось позже
         if (typeof fixNumbers === 'function') fixNumbers();

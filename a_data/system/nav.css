@@ -190,7 +190,89 @@
 }
 
 .nav.mobile-mode .menu-links a {
-    width: 90%;    margin: 0 auto;
-    padding: 12px 20px;
+    width: 90%;    margin: 0 auto;    padding: 12px 20px;
     justify-content: flex-start;
+}
+
+.dev-badge {
+    display: none;
+}
+
+#nav:has(.mobile-mode) {
+    height: auto;
+}
+
+.nav.mobile-mode {
+    height: 56px;
+    transition: height 0.25s ease;
+}
+
+.nav.mobile-mode .menu-links {
+    top: 56px;
+    z-index: 2;
+}
+
+.nav.mobile-mode .menu-toggle {
+    padding: 8px;
+    transition: padding 0.25s ease, background 0.3s ease;
+}
+
+.nav.mobile-mode .hamburger-icon span {
+    transition: all 0.25s ease;
+}
+
+.nav.mobile-mode .current-page-name {
+    transition: font-size 0.25s ease;
+}
+
+.nav.mobile-mode .dev-badge {
+    display: block;
+    position: absolute;
+    top: calc(100% + 3px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    padding: 2px 14px 3px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    font-style: italic;
+    line-height: 1.3;
+    white-space: nowrap;
+    color: #d4af37;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    pointer-events: none;
+}
+
+.nav.mobile-mode.compact {
+    height: 36px;
+}
+
+.nav.mobile-mode.compact .menu-links {
+    top: 36px;
+}
+
+.nav.mobile-mode.compact .menu-toggle {
+    padding: 4px 8px;
+}
+
+.nav.mobile-mode.compact .hamburger-icon span {
+    width: 20px;
+    height: 2px;
+    margin: 3px 0;
+}
+
+.nav.mobile-mode.compact .current-page-name {
+    font-size: 13px;
+}
+
+.nav.mobile-mode.compact .dev-badge {
+    font-size: 10px;
+    padding: 1px 12px 2px;
+}
+
+body:has(#nav-inner.mobile-mode) {
+    padding-top: 88px;
 }

@@ -382,3 +382,93 @@ margin-top: 0;
 .home-card { padding: 12px; }
 .yt-img-box { width: 36px; height: 36px; }
 }
+
+@media (max-width: 850px) {
+.home-card.links .title-with-icon {
+flex-direction: row-reverse;
+justify-content: flex-start;
+text-align: right;
+gap: 12px;
+}
+.home-card.links h2 { font-size: 19px; }
+.home-warn { display: none; }
+}
+
+body:has(#nav-inner.mobile-mode) .home-card.links .title-with-icon {
+flex-direction: row-reverse;
+justify-content: flex-start;
+text-align: right;
+gap: 12px;
+}
+body:has(#nav-inner.mobile-mode) .home-card.links h2 { font-size: 19px; }
+body:has(#nav-inner.mobile-mode) .home-warn { display: none; }
+
+.triple-title { display: none; }
+
+@media (max-width: 850px) {
+.triple-layout {
+grid-template-columns: 1fr;
+gap: 8px;
+padding: 16px;
+border-radius: 16px;
+background: rgba(0, 5, 15, 0.85);
+backdrop-filter: blur(8px);
+-webkit-backdrop-filter: blur(8px);
+border: 1px solid rgba(255, 255, 255, 0.1);
+box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65);
+}
+.triple-layout .triple-title {
+display: block;
+margin: 0 0 4px 0;
+padding-bottom: 8px;
+font-family: "Machina", Arial, sans-serif;
+font-size: 19px;
+text-align: right;
+text-transform: uppercase;
+letter-spacing: 1px;
+color: #fff;
+border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.triple-layout .home-card.no-title-card {
+padding: 0;
+border: none;
+border-radius: 0;
+background: none;
+box-shadow: none;
+backdrop-filter: none;
+-webkit-backdrop-filter: none;
+}
+}
+
+body:has(#nav-inner.mobile-mode) .triple-layout {
+grid-template-columns: 1fr;
+gap: 8px;
+padding: 16px;
+border-radius: 16px;
+background: rgba(0, 5, 15, 0.85);
+backdrop-filter: blur(8px);
+-webkit-backdrop-filter: blur(8px);
+border: 1px solid rgba(255, 255, 255, 0.1);
+box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65);
+}
+body:has(#nav-inner.mobile-mode) .triple-layout .triple-title {
+display: block;
+margin: 0 0 4px 0;
+padding-bottom: 8px;
+font-family: "Machina", Arial, sans-serif;
+font-size: 19px;
+text-align: right;
+text-transform: uppercase;
+letter-spacing: 1px;
+color: #fff;
+border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+body:has(#nav-inner.mobile-mode) .triple-layout .home-card.no-title-card {
+padding: 0;
+border: none;
+border-radius: 0;
+background: none;
+box-shadow: none;
+backdrop-filter: none;
+-webkit-backdrop-filter: none;
+}
