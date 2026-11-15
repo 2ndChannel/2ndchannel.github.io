@@ -51,11 +51,19 @@ async function loadNavbar() {
 
         const navInner = document.getElementById('nav-inner');
         const menuList = document.getElementById('menu-list');
-        const menuBtn = document.getElementById('menu-btn');
-        const menuTitle = document.getElementById('menuTitle');
+        const menuBtn = document.getElementById('menu-btn');        const menuTitle = document.getElementById('menuTitle');
+
+        function isSmallTouch() {
+            const touch = navigator.maxTouchPoints > 0 || window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+            return touch && Math.min(window.screen.width, window.screen.height) < 600;
+        }
+        if (isSmallTouch()) navInner.classList.add('mobile-mode');
 
         // 2. Логика компактности и мобильного режима
-        const checkFitting = () => {
+        const checkFitting = () => {            if (isSmallTouch()) {
+                navInner.classList.add('mobile-mode');
+                return;
+            }
             navInner.classList.remove('mobile-mode');
             // Если экран узкий ИЛИ кнопки начинают не влезать в строку            const isTouchPhone = window.matchMedia('(hover: none) and (pointer: coarse)').matches &&
                                  Math.min(window.screen.width, window.screen.height) < 600;
