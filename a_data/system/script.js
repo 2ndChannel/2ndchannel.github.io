@@ -59,15 +59,13 @@ async function loadNavbar() {
         }
         if (isSmallTouch()) navInner.classList.add('mobile-mode');
 
-        // 2. Логика компактности и мобильного режима
-        const checkFitting = () => {            if (isSmallTouch()) {
+        // 2. Логика компактности и мобильного режима        const checkFitting = () => {
+            if (isSmallTouch()) {
                 navInner.classList.add('mobile-mode');
                 return;
             }
             navInner.classList.remove('mobile-mode');
-            // Если экран узкий ИЛИ кнопки начинают не влезать в строку            const isTouchPhone = window.matchMedia('(hover: none) and (pointer: coarse)').matches &&
-                                 Math.min(window.screen.width, window.screen.height) < 600;
-            if (window.innerWidth < 850 || isTouchPhone || menuList.scrollWidth > navInner.clientWidth - 20) {
+            if (window.innerWidth < 850 || menuList.scrollWidth > navInner.clientWidth - 20) {
                 navInner.classList.add('mobile-mode');
             }
         };
