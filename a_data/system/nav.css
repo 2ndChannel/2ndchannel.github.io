@@ -190,8 +190,7 @@
 }
 
 .nav.mobile-mode .menu-links a {
-    width: 90%;
-    margin: 0 auto;
+    width: 90%;    margin: 0 auto;
     padding: 12px 20px;
     justify-content: flex-start;
 }
