@@ -1,0 +1,6 @@
+:root { --scrollbar-color: #319b0f; --scrollbar-color-hover: #3cb814; --scrollbar-track: #111113; }
+* { scrollbar-width: thin; scrollbar-color: var(--scrollbar-color) var(--scrollbar-track); }
+*::-webkit-scrollbar { width: 6px; height: 6px; }
+*::-webkit-scrollbar-track { background: var(--scrollbar-track); border-radius: 4px; }
+*::-webkit-scrollbar-thumb { background: var(--scrollbar-color); border-radius: 4px; }
+*::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-color-hover); }

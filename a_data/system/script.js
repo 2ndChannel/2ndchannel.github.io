@@ -1,4 +1,5 @@
 (function() {
+if (/^(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\]|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|.+\.local)$/.test(location.hostname) || location.protocol === 'file:') return;
 (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
 m[i].l=1*new Date();
 k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
@@ -124,63 +125,202 @@ el.replaceChild(span, node);
 }
 document.addEventListener("DOMContentLoaded", () => {loadNavbar(); fixNumbers(); });
 window.addEventListener("load", fixNumbers);
+
+function escHtml(t) {
+  return String(t == null ? "" : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function safeUrl(u) {
+  return /^https?:\/\//i.test(u || "") ? escHtml(u) : "";
+}
+function fmtDate(iso) {
+  const p = iso.split('-');
+  return p[2] + '.' + p[1] + '.' + p[0];
+}
+function plural(n, a, b, c) {
+  const m = Math.abs(n) % 100, d = m % 10;
+  if (m > 10 && m < 20) return c;
+  if (d > 1 && d < 5) return b;
+  return d === 1 ? a : c;
+}
+function fillSelect(sel, values, first) {
+  sel.innerHTML = '<option value="all">' + first + '</option>' + values.map(v => '<option value="' + escHtml(v) + '">' + escHtml(v) + '</option>').join('');
+}
+
+
+function setupStickyBar() {
+const card = document.querySelector('.top-card');
+if (!card || card._sticky) return;
+card._sticky = true;
+const anchor = document.createElement('div');
+anchor.className = 'sticky-anchor';
+card.parentNode.insertBefore(anchor, card);
+let stuck = false, timer = null;
+function update() {
+const nav = document.getElementById('nav-inner');
+const nb = nav ? Math.round(nav.getBoundingClientRect().bottom) : 66;
+document.documentElement.style.setProperty('--nav-h', nb + 'px');
+const want = anchor.getBoundingClientRect().top <= nb + 2;
+if (want === stuck) return;
+stuck = want;
+if (want) {
+anchor.style.height = (card.offsetHeight + 4) + 'px';
+card.classList.add('stuck');
+const tb = document.getElementById('toggleFilters');
+if (tb && tb.getAttribute('aria-expanded') === 'true') tb.click();
+} else {
+card.classList.remove('stuck');
+anchor.style.height = '0';
+}
+}
+function later() { update(); clearTimeout(timer); timer = setTimeout(update, 320); }
+window.addEventListener('scroll', later, { passive: true });
+window.addEventListener('resize', later);
+update();
+}
+function setupFilters(render, defaults, extra) {
+  const $ = id => document.getElementById(id);
+  const panel = $('filters'), btn = $('toggleFilters'), cnt = $('fcount');  const ids = Object.keys(defaults);
+  if (window.CustomSelect) document.querySelectorAll('#filters select').forEach(el => window.CustomSelect.attach(el));
+  function updateCount() {
+    const n = ids.filter(id => $(id).value !== defaults[id]).length + (extra && extra.active() ? 1 : 0);
+    cnt.textContent = n ? n : '';
+  }
+  btn.onclick = () => {
+    const open = panel.hasAttribute('hidden');
+    if (open) panel.removeAttribute('hidden'); else panel.setAttribute('hidden', '');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  };
+  document.querySelectorAll('#filters select, #filters input:not(.plat-cb)').forEach(el => el.addEventListener('change', () => { updateCount(); render(); }));
+if (extra) extra.el.addEventListener('change', () => { updateCount(); render(); });
+setupStickyBar();
+  $('f-search').addEventListener('input', render);
+  $('resetFilters').onclick = () => {
+    $('f-search').value = '';
+    ids.forEach(id => $(id).value = defaults[id]);
+if (extra) extra.reset();
+    updateCount(); render();
+  };
+  updateCount(); render();
+}
+
+async function initStreamsPage() {
+  const box = document.getElementById("streams-list");
+  if (!box) return;
+  const all = (await fetch('streams.json').then(r => r.json())).filter(s => !s.hidden);
+  const $ = id => document.getElementById(id);
+  fillSelect($('f-year'), [...new Set(all.map(s => s.date.slice(0, 4)))].sort().reverse(), 'Все');
+  fillSelect($('f-channel'), [...new Set(all.map(s => s.channel))], 'Все');
+  const people = new Set();
+  all.forEach(s => (s.frame + ',' + s.voice).split(',').map(x => x.trim()).filter(Boolean).forEach(x => people.add(x.toLowerCase() === 'blood_man' ? 'Blood_Man' : x)));
+  fillSelect($('f-person'), [...people].sort((a, b) => a.localeCompare(b, 'ru')), 'Все');
+  const norm = x => x.toLowerCase();
+
+  function render() {
+    const q = norm($('f-search').value.trim());
+    const year = $('f-year').value, ch = $('f-channel').value, person = $('f-person').value, sort = $('f-sort').value;
+    let list = all.filter(s =>
+      (!q || norm(s.title).includes(q)) &&
+      (year === 'all' || s.date.startsWith(year)) &&
+      (ch === 'all' || s.channel === ch) &&
+      (person === 'all' || norm(s.frame + ',' + s.voice).includes(norm(person))));
+    list.sort((a, b) => sort === 'date-asc' ? a.date.localeCompare(b.date) || a.num - b.num : b.date.localeCompare(a.date) || b.num - a.num);
+    $('summary').innerHTML = '<b>' + list.length + '</b> ' + plural(list.length, 'стрим', 'стрима', 'стримов') + ' из ' + all.length;
+    if (!list.length) { box.innerHTML = '<div class="empty">Ничего не найдено</div>'; return; }
+    let html = '', lastYear = '';
+    list.forEach(s => {
+      const y = s.date.slice(0, 4);
+      if (y !== lastYear) { html += '<div class="year-sep">' + y + '</div>'; lastYear = y; }
+      const url = safeUrl(s.link);
+      const title = url ? '<a class="stream-title" href="' + url + '" target="_blank" rel="noopener noreferrer">' + escHtml(s.title) + '</a>'
+                        : '<span class="stream-title">' + escHtml(s.title) + '</span>';
+      const meta = [];
+      if (s.frame) meta.push('В кадре: ' + escHtml(s.frame));
+      if (s.voice) meta.push('В голосе: ' + escHtml(s.voice));
+      html += '<div class="stream-row"><div class="stream-num">#' + s.num + '</div><div class="stream-main">' + title +
+        (meta.length ? '<div class="stream-meta">' + meta.join(' • ') + '</div>' : '') + '</div>' +
+        '<div class="stream-side"><span class="stream-date">' + fmtDate(s.date) + '</span>' +
+        (s.duration ? '<span>⏱ ' + s.duration + '</span>' : '') +
+        '<span class="channel-badge channel-' + s.channel.toLowerCase() + '">' + escHtml(s.channel) + '</span></div></div>';
+    });
+    box.innerHTML = html;
+  }
+  setupFilters(render, { 'f-year': 'all', 'f-channel': 'all', 'f-person': 'all', 'f-sort': 'date-desc' });
+}
+
 async function initGamesPage() {
-const gamesContainer = document.getElementById("games");
-if (!gamesContainer) return;
-const [streams, allGames] = await Promise.all([
-fetch('/streams/streams.json').then(r => r.json()),
-fetch('/games/games.json').then(r => r.json())
-]);
-function applyFilters() {
-let filtered = [...allGames];
-const plat = document.getElementById('f-plat').value;
-const status = document.getElementById('f-status').value;
-const dStart = document.getElementById('f-date-start').value;
-const dEnd = document.getElementById('f-date-end').value;
-const sortVal = document.getElementById('f-sort').value;
-if(plat !== 'all') filtered = filtered.filter(g => g.platform === plat);
-if(status !== 'all') filtered = filtered.filter(g => g.status === status);
-if(dStart || dEnd) {
-filtered = filtered.filter(g => {
-const s = streams.find(st => st.id === g.streamId);
-return s && (dStart ? s.date >= dStart : true) && (dEnd ? s.date <= dEnd : true);
-});
-}
-filtered.sort((a, b) => {
-const dateA = (streams.find(s => s.id === a.streamId) || {}).date || "";
-const dateB = (streams.find(s => s.id === b.streamId) || {}).date || "";
-if (sortVal === 'date-desc') return dateB.localeCompare(dateA);
-if (sortVal === 'date-asc') return dateA.localeCompare(dateB);
-if (sortVal === 'name-asc') return a.name.localeCompare(b.name);
-return 0;
-});
-renderList(filtered);
-}
-function renderList(data) {
-gamesContainer.innerHTML = "";
-if(data.length === 0) { gamesContainer.innerHTML = "<p style='text-align:center;'>Ничего не найдено</p>"; return; }
-streams.forEach(s => {
-const gamesInStream = data.filter(g => g.streamId === s.id);
-if (gamesInStream.length > 0) renderGroup(gamesContainer, s.title, s.date, gamesInStream);
-});
-}
-function renderGroup(cont, title, date, games) {
-const wrapper = document.createElement("div");
-wrapper.className = "game-card";
-wrapper.innerHTML = `<div class="stream-header"><h3>${title}</h3><span class="stream-date-header">${date}</span></div><div class="list-body"></div>`;
-const body = wrapper.querySelector(".list-body");
-games.forEach(g => {
-const div = document.createElement("div");
-div.className = `badge ${g.status}`;
-div.innerHTML = `<div class="game-icon-box"><img src="${g.icon}" class="game-icon"><span class="plat-label">${g.platform}</span></div><div class="game-content"><strong>${g.name}</strong><div class="game-links"><a href="${g.stream}" target="_blank">🎥</a><a href="${g.download}" target="_blank">⬇</a></div></div>`;
-body.appendChild(div);
-});
-cont.appendChild(wrapper);
-}
-document.querySelectorAll('.filters-panel select, .filters-panel input').forEach(el => el.addEventListener('change', applyFilters));
-document.getElementById('resetFilters').onclick = () => {
-['f-plat', 'f-status', 'f-date-start', 'f-date-end'].forEach(id => document.getElementById(id).value = 'all' || '');
-applyFilters();
-};
-renderList(allGames);
+  const gamesContainer = document.getElementById("games");
+  if (!gamesContainer) return;
+  const [streams, allGames] = await Promise.all([
+    fetch('../streams/streams.json').then(r => r.json()),
+    fetch('games.json').then(r => r.json())
+  ]);
+  const $ = id => document.getElementById(id);
+  const sById = {};
+  streams.forEach(s => sById[s.id] = s);
+  const platforms = [...new Set(allGames.map(g => g.platform).filter(Boolean))].sort();
+const platBox = $('f-plat');
+platBox.innerHTML = platforms.map(p => '<label class="plat-chip"><input type="checkbox" class="plat-cb" value="' + escHtml(p) + '" checked>' + escHtml(p) + '</label>').join('');
+const platBoxes = () => [...platBox.querySelectorAll('.plat-cb')];
+const platSelected = () => new Set(platBoxes().filter(c => c.checked).map(c => c.value));
+const setAllPlat = on => { platBoxes().forEach(c => c.checked = on); platBox.dispatchEvent(new Event('change', { bubbles: true })); };
+$('plat-all').onclick = () => setAllPlat(true);
+$('plat-none').onclick = () => setAllPlat(false);
+  const statusIcon = { red: 'не пройдено', yellow: 'просто смотрели', green: 'пройдено' };
+
+  function applyFilters() {
+    const q = $('f-search').value.trim().toLowerCase();
+    const platSel = platSelected(), platAll = platSel.size === platforms.length, status = $('f-status').value;
+    const dStart = $('f-date-start').value, dEnd = $('f-date-end').value, sortVal = $('f-sort').value;
+    let list = allGames.filter(g => {
+      const s = sById[g.streamId];
+      if (!s) return false;
+      return (!q || g.name.toLowerCase().includes(q)) &&
+        (platAll || platSel.has(g.platform)) &&
+        (status === 'all' || g.status === status) &&
+        (!dStart || s.date >= dStart) && (!dEnd || s.date <= dEnd);
+    });
+    const total = list.length;
+    $('summary').innerHTML = '<b>' + total + '</b> ' + plural(total, 'игра', 'игры', 'игр') + ' из ' + allGames.length;
+    if (sortVal === 'name-asc') {
+      list.sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
+      renderFlat(list);
+      return;
+    }
+    renderGrouped(list, sortVal === 'date-asc');
+  }
+
+  function badge(g) {
+    const dl = safeUrl(g.download), tc = safeUrl(g.timecode);
+    const s = sById[g.streamId];
+    return '<div class="badge ' + g.status + '" title="' + escHtml(statusIcon[g.status] || '') + '">' +
+      (g.icon ? '<img class="game-icon" src="' + escHtml(g.icon) + '" alt="" loading="lazy">' : '') + '<div class="game-content"><span class="game-name">' + escHtml(g.name) + '</span>' +
+      (g.platform ? '<span class="plat-label">' + escHtml(g.platform) + '</span>' : '') + '</div>' +
+      '<div class="game-links">' +
+      '<a ' + (tc ? 'href="' + tc + '" target="_blank" rel="noopener noreferrer"' : 'class="off"') + ' title="Момент на стриме">🎥</a>' +
+      '<a ' + (dl ? 'href="' + dl + '" target="_blank" rel="noopener noreferrer"' : 'class="off"') + ' title="Скачать / страница игры">⬇</a>' +
+      '</div></div>';
+  }
+
+  function renderGrouped(list, asc) {
+    if (!list.length) { gamesContainer.innerHTML = '<div class="empty">Ничего не найдено</div>'; return; }
+    const groups = new Map();
+    list.forEach(g => { if (!groups.has(g.streamId)) groups.set(g.streamId, []); groups.get(g.streamId).push(g); });
+    const order = [...groups.keys()].map(id => sById[id]).sort((a, b) => {
+      const c = a.date.localeCompare(b.date) || a.num - b.num;
+      return asc ? c : -c;
+    });
+    gamesContainer.innerHTML = order.map(s => {
+      const url = safeUrl(s.link);
+      const title = url ? '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + escHtml(s.title) + '</a>' : escHtml(s.title);
+      return '<div class="game-card"><div class="stream-header"><h3>' + title + '</h3><span class="stream-date-header">' + fmtDate(s.date) + '</span></div>' +
+        '<div class="list-body">' + groups.get(s.id).map(badge).join('') + '</div></div>';
+    }).join('');
+  }
+
+  function renderFlat(list) {
+    if (!list.length) { gamesContainer.innerHTML = '<div class="empty">Ничего не найдено</div>'; return; }
+    gamesContainer.innerHTML = '<div class="game-card"><div class="list-body">' + list.map(badge).join('') + '</div></div>';
+  }
+
+  setupFilters(applyFilters, { 'f-status': 'all', 'f-date-start': '', 'f-date-end': '', 'f-sort': 'date-desc' }, { el: platBox, active: () => platSelected().size !== platforms.length, reset: () => platBoxes().forEach(c => c.checked = true) });
 }

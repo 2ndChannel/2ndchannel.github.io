@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="../a_data/system/style.css">
 <link rel="stylesheet" href="../a_data/system/nav.css">
+<link rel="stylesheet" href="../a_data/system/scrollbar.css">
+<link rel="stylesheet" href="../a_data/system/custom-select.css">
 <link rel="stylesheet" href="../a_data/system/streams.css">
 <link rel="canonical" href="https://2ndchannel.github.io/streams/">
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -32,30 +34,27 @@
 </noscript>
 </div>
 <div class="container">
-<div class="streams-card">
-<table class="table">
-<thead>
-<tr>
-<th>Стрим</th>
-<th>Дата</th>
-<th>Канал</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="#">Стрим рисования</a></td>
-<td>01.04.2026</td>
-<td><span class="channel-youtube">YouTube</span></td>
-</tr>
-<tr>
-<td><a href="#">Игровой стрим</a></td>
-<td>05.04.2026</td>
-<td><span class="channel-trovo">Trovo</span></td>
-</tr>
-</tbody>
-</table>
+<div class="page-card top-card">
+<div class="head-row"><h1>Статистика по стримам</h1><span class="hint">Эфиры после бана прежнего канала (с 22.09.2021). Название ведёт на запись.</span></div>
+<div class="search-row">
+<input type="search" id="f-search" placeholder="Поиск по названию…" aria-label="Поиск">
+<button id="toggleFilters" type="button" aria-expanded="false">⚙ Фильтры<span id="fcount"></span></button>
+<span class="summary" id="summary"></span>
+</div>
+<div class="filters-panel" id="filters" hidden>
+<div class="filter-group"><label for="f-year">Год</label><select id="f-year"></select></div>
+<div class="filter-group"><label for="f-channel">Канал</label><select id="f-channel"></select></div>
+<div class="filter-group"><label for="f-person">Участник</label><select id="f-person"></select></div>
+<div class="filter-group"><label for="f-sort">Сортировка</label><select id="f-sort"><option value="date-desc">Новые сверху</option><option value="date-asc">Старые сверху</option></select></div>
+<button id="resetFilters" type="button">Сброс</button>
 </div>
 </div>
+<div class="stream-list" id="streams-list"></div>
+</div>
+<script src="../a_data/system/custom-select.js"></script>
 <script src="../a_data/system/script.js"></script>
+<script>
+initStreamsPage();
+</script>
 </body>
 </html>
