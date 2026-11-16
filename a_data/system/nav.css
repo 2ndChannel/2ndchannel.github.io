@@ -278,6 +278,9 @@ pointer-events: auto;
 #to-top:hover {
 filter: brightness(1.15);
 }
+body:has(#to-top.show) {
+padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+}
 .nav .dev-strip {
 color: color-mix(in srgb, var(--active-color, #d4af37) 55%, #ffffff);
 background: linear-gradient(to bottom, color-mix(in srgb, var(--active-color, #d4af37) 22%, #000000), rgb(0, 0, 0));
