@@ -186,6 +186,8 @@ anchor.style.height = (card.offsetHeight + 4) + 'px';
 card.classList.add('stuck');
 const tb = document.getElementById('toggleFilters');
 if (tb && tb.getAttribute('aria-expanded') === 'true') tb.click();
+const vb = document.getElementById('toggleView');
+if (vb && vb.getAttribute('aria-expanded') === 'true') vb.click();
 } else {
 card.classList.remove('stuck');
 anchor.style.height = '0';
@@ -221,8 +223,8 @@ function closeGroups() {
 document.addEventListener('mousedown', e => { if (!e.target.closest('.plat-group')) closeGroups(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeGroups(); });
 window.addEventListener('resize', () => document.querySelectorAll('.plat-group.open').forEach(placeGroup));
-function chipGroup(box, values, allBtn, noneBtn) {
-  box.innerHTML = values.map(v => '<label class="plat-chip"><input type="checkbox" class="plat-cb" value="' + escHtml(v) + '" checked>' + escHtml(v) + '</label>').join('');
+function chipGroup(box, values, allBtn, noneBtn, labels) {
+  box.innerHTML = values.map(v => '<label class="plat-chip"><input type="checkbox" class="plat-cb" value="' + escHtml(v) + '" checked>' + escHtml(labels && labels[v] ? labels[v] : v) + '</label>').join('');
   if (noneBtn) noneBtn.remove();
   if (allBtn) box.insertBefore(allBtn, box.firstChild);
   const boxes = () => [...box.querySelectorAll('.plat-cb')];
@@ -255,8 +257,8 @@ function chipGroup(box, values, allBtn, noneBtn) {
     if (willOpen) { group.classList.add('open'); tg.setAttribute('aria-expanded', 'true'); placeGroup(group); }
   };
   box.addEventListener('change', count);
-  count();
-  return { el: box, selected, active: () => selected().size !== values.length, reset: () => { boxes().forEach(c => c.checked = true); count(); } };
+  count();  const set = vals => { boxes().forEach(c => c.checked = vals.has(c.value)); box.dispatchEvent(new Event('change', { bubbles: true })); };
+  return { el: box, selected, set, active: () => selected().size !== values.length, reset: () => { boxes().forEach(c => c.checked = true); count(); } };
 }
 function setupFilters(render, defaults, extra) {
   const $ = id => document.getElementById(id);
@@ -287,6 +289,149 @@ extras.forEach(x => x.reset());
   updateCount(); render();
 }
 
+const PORTRAIT_DIR = '../a_data/system/portraits/';
+const PORTRAIT_FILES = {
+  'Blood_Man': 'Blood_man',
+  'Emerald Weapon': 'Emerald Weapon',
+  'Lev Zion': 'Lev Zion',
+  'VIKnick': 'VIKnick',
+  'Артур': 'Артур',
+  'Жыкенден': 'Жыкенден',
+  'Игорь': 'Игорь Дрыгин',
+  'Максим': 'Максим',
+  'Гришац': 'Пашо Гришац',
+  'Про Игрок': 'Про Игрок',
+  'Рафаэль': 'Рафаэль'
+};
+const PORTRAIT_LABELS = { 'Игорь': 'Игорь Дрыгин', 'Гришац': 'Пашо Гришац' };
+function personLabel(p) {
+  return PORTRAIT_LABELS[p] || p;
+}
+function personHtml(p, role, kind) {
+  const label = personLabel(p);
+  const file = PORTRAIT_FILES[p] || 'Неизвестно';
+  return '<span class="person" tabindex="0" data-person="' + escHtml(p) + '" data-kind="' + kind + '" data-tip="' + escHtml(label + ' — ' + role) + '"><img src="' + PORTRAIT_DIR + encodeURIComponent(file) + '.png" alt="' + escHtml(label) + '" width="34" height="50" loading="lazy" draggable="false"></span>';
+}
+function peopleHtml(s, v) {
+  const mk = (list, role, kind) => list.filter(p => v.raf || p !== 'Рафаэль').map(p => personHtml(p, role, kind)).join('');
+  if (!v.frame && !v.voice) return '';
+  return '<div class="stream-people">' + (v.frame ? '<div class="people-group people-frame">' + mk(s._frame, 'в кадре', 'frame') + '</div>' : '') +
+    (v.voice ? '<div class="people-group people-voice">' + mk(s._voice, 'в голосе', 'voice') + '</div>' : '') + '</div>';
+}
+function youtubeId(u) {
+  const m = /(?:youtube\.com\/(?:watch\?(?:[^#]*&)?v=|live\/|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/.exec(u || '');
+  return m ? m[1] : '';
+}
+function streamCover(s) {
+  if (s.cover) return s.cover;
+  const id = youtubeId(s.link);
+  return id ? 'https://i.ytimg.com/vi/' + id + '/mqdefault.jpg' : '';
+}
+function setupStreamPreview(box, all, getView) {  const canHover = !!(window.matchMedia && window.matchMedia('(hover: hover)').matches);
+  const byId = new Map(all.map(s => [s.id, s]));
+  const card = document.createElement('a');
+  card.className = 'stream-preview';
+  card.target = '_blank';
+  card.rel = 'noopener noreferrer';
+  document.body.appendChild(card);
+  let showT = 0, hideT = 0, current = '';
+  const hide = () => {
+    clearTimeout(showT);
+    clearTimeout(hideT);
+    card.classList.remove('show');
+    current = '';
+  };  const place = anchor => {
+    const r = anchor.getBoundingClientRect();
+    const w = card.offsetWidth, h = card.offsetHeight;
+    const nav = document.getElementById('nav-inner');
+    const strip = nav ? nav.querySelector('.dev-strip') : null;
+    const topLimit = (nav ? Math.round((strip || nav).getBoundingClientRect().bottom) : 66) + 8;
+    const bottomLimit = window.innerHeight - 8;
+    const left = Math.min(Math.max(8, r.left), window.innerWidth - w - 8);
+    let top = r.bottom + 6;
+    if (top + h > bottomLimit) {
+      const above = r.top - h - 6;
+      top = above >= topLimit ? above : Math.max(topLimit, bottomLimit - h);
+    }
+    card.style.left = left + 'px';
+    card.style.top = top + 'px';
+  };
+  const show = anchor => {    const s = byId.get(anchor.dataset.sid);
+    if (s) { [...card.classList].filter(c => c === 'mc' || c.startsWith('mc-')).forEach(c => card.classList.remove(c)); card.classList.add('mc', 'mc-' + s.date.slice(5, 7)); }
+    if (!s) return;
+    const cover = streamCover(s);
+    if (!cover) return;
+    const info = [];
+    if (s.channel) info.push(escHtml(s.channel));    info.push(fmtDate(s.date));
+    if (s.duration) info.push('⏱ ' + escHtml(s.duration));
+    const names = list => list.map(personLabel).join(', ');
+    card.href = /^https?:\/\//i.test(s.link || '') ? s.link : '#';
+    card.innerHTML = '<div class="sp-thumb"><img src="' + escHtml(cover) + '" alt="" draggable="false"><span class="sp-play"></span>' +
+      (s.duration ? '<span class="sp-dur">' + escHtml(s.duration) + '</span>' : '') + '</div>' +
+      '<div class="sp-title">' + escHtml(s.title) + '</div>' +
+      '<div class="sp-meta">' + info.join(' • ') + '</div>' +      ((!getView || getView().frame) && s._frame.length ? '<div class="sp-people"><b class="sp-frame">В кадре:</b> <i>' + escHtml(names(s._frame)) + '</i></div>' : '') +      ((!getView || getView().voice) && s._voice.length ? '<div class="sp-people"><b class="sp-voice">В голосе:</b> <i>' + escHtml(names(s._voice)) + '</i></div>' : '');
+    const img = card.querySelector('img');
+    img.addEventListener('error', () => { if (img.parentNode) img.parentNode.remove(); });
+    place(anchor);
+    current = anchor.dataset.sid;
+    card.classList.add('show');
+  };  box.addEventListener('mouseover', e => {    if (!canHover) return;
+    const a = hostOf(e.target);
+    if (!a) return;
+    clearTimeout(hideT);
+    const visible = card.classList.contains('show');
+    if (visible && current === a.dataset.sid) return;
+    clearTimeout(showT);
+    showT = setTimeout(() => show(a), visible ? 60 : 250);
+  });  box.addEventListener('mouseout', e => {    if (!canHover) return;
+    const a = hostOf(e.target);
+    if (!a) return;
+    const rt = e.relatedTarget;
+    if (rt && ((a.closest('.stream-row').contains(rt) && !(rt.closest && rt.closest('.person'))) || card.contains(rt))) return;
+    clearTimeout(showT);
+    hideT = setTimeout(hide, 150);
+  });  const hostOf = t => { if (!t || !t.closest || t.closest('.person')) return null; const row = t.closest('.stream-row'); return row && box.contains(row) ? row.querySelector('a.stream-title') : null; };
+  let pressT = 0, sx = 0, sy = 0, suppressClick = false;
+  const cancelPress = () => clearTimeout(pressT);
+  box.addEventListener('touchstart', e => {
+    suppressClick = false;
+    cancelPress();
+    const a = e.target.closest ? e.target.closest('a.stream-title') : null;
+    if (!a || !box.contains(a) || e.touches.length !== 1) return;
+    sx = e.touches[0].clientX;
+    sy = e.touches[0].clientY;
+    pressT = setTimeout(() => {
+      show(a);
+      if (card.classList.contains('show')) {
+        suppressClick = true;
+        if (navigator.vibrate) navigator.vibrate(12);
+      }
+    }, 450);
+  }, { passive: true });
+  box.addEventListener('touchmove', e => {
+    const t = e.touches[0];
+    if (Math.abs(t.clientX - sx) > 10 || Math.abs(t.clientY - sy) > 10) cancelPress();
+  }, { passive: true });
+  box.addEventListener('touchend', cancelPress, { passive: true });
+  box.addEventListener('touchcancel', cancelPress, { passive: true });
+  box.addEventListener('contextmenu', e => {
+    if (!canHover && e.target.closest && e.target.closest('a.stream-title')) e.preventDefault();
+  });
+  box.addEventListener('click', e => {
+    if (!suppressClick) return;
+    suppressClick = false;
+    e.preventDefault();
+    e.stopPropagation();
+  }, true);
+  document.addEventListener('touchstart', e => { if (!card.contains(e.target)) hide(); }, { passive: true });
+  card.addEventListener('mouseenter', () => clearTimeout(hideT));
+  card.addEventListener('mouseleave', () => { hideT = setTimeout(hide, 150); });
+  window.addEventListener('scroll', hide, { passive: true });
+  document.addEventListener('input', hide);
+  document.addEventListener('click', hide);
+  return { hide };
+}
+
 async function initStreamsPage() {
   const box = document.getElementById("streams-list");
   if (!box) return;
@@ -294,26 +439,86 @@ async function initStreamsPage() {
   const $ = id => document.getElementById(id);
   const canon = x => { const t = x.trim(); return t.toLowerCase() === 'blood_man' ? 'Blood_Man' : t; };
   const parse = v => (v || '').split(',').map(canon).filter(Boolean);
-  all.forEach(s => { s._frame = parse(s.frame); s._voice = parse(s.voice); s._year = s.date.slice(0, 4); });
+  all.forEach(s => { s._frame = parse(s.frame); s._voice = parse(s.voice); s._year = s.date.slice(0, 4); s._month = s.date.slice(5, 7); });
   const ranked = lists => {
     const cnt = new Map();
     lists.forEach(l => l.forEach(p => cnt.set(p, (cnt.get(p) || 0) + 1)));    return [...cnt.keys()].sort(collate);
   };
-  const years = [...new Set(all.map(s => s._year))].sort().reverse();
-  const gYear = chipGroup($('f-year'), years, $('year-all'), $('year-none'));
-  const gFrame = chipGroup($('f-frame'), ranked(all.map(s => s._frame)), $('frame-all'), $('frame-none'));
-  const gVoice = chipGroup($('f-voice'), ranked(all.map(s => s._voice)), $('voice-all'), $('voice-none'));
+  const years = [...new Set(all.map(s => s._year))].sort().reverse();  const gYear = chipGroup($('f-year'), years, $('year-all'), $('year-none'));
+  const MONTH_NAMES = { '01': 'Январь', '02': 'Февраль', '03': 'Март', '04': 'Апрель', '05': 'Май', '06': 'Июнь', '07': 'Июль', '08': 'Август', '09': 'Сентябрь', '10': 'Октябрь', '11': 'Ноябрь', '12': 'Декабрь' };
+  const months = [...new Set(all.map(s => s._month))].sort();
+  const gMonth = chipGroup($('f-month'), months, $('month-all'), $('month-none'), MONTH_NAMES);
+  const gFrame = chipGroup($('f-frame'), ranked(all.map(s => s._frame)), $('frame-all'), $('frame-none'));  const gVoice = chipGroup($('f-voice'), ranked(all.map(s => s._voice)), $('voice-all'), $('voice-none'));  const vc = { frame: $('v-frame'), voice: $('v-voice'), raf: $('v-raf') }, vDef = { frame: true, voice: true, raf: false };
+  const view = {
+    el: $('f-view'),
+    state: () => ({ frame: vc.frame.checked, voice: vc.voice.checked, raf: vc.raf.checked }),
+    active: () => Object.keys(vDef).some(k => vc[k].checked !== vDef[k]),
+    reset: () => Object.keys(vDef).forEach(k => { vc[k].checked = vDef[k]; })
+  };
+  setupStreamPreview(box, all, view.state);
+  if (window.CustomSelect) window.CustomSelect.attach($('f-group'));  $('f-group').addEventListener('change', render);
+  const pickBar = $('pick-bar');
+  let pick = null, applying = false;
+  const groupOf = kind => kind === 'frame' ? gFrame : gVoice;
+  const apply = (group, vals) => { applying = true; group.set(vals); applying = false; };
+  const showPick = () => {
+    const parts = [];
+    if (pick.frame) parts.push('в кадре — <i>' + escHtml(personLabel(pick.frame)) + '</i>');
+    if (pick.voice) parts.push('в голосе — <i>' + escHtml(personLabel(pick.voice)) + '</i>');
+    pickBar.querySelector('.pick-text').innerHTML = 'Показаны только стримы: ' + parts.join(', ');
+    pickBar.hidden = false;
+  };
+  const endPick = restore => {
+    if (!pick) return;
+    const snap = pick.snap;
+    pick = null;
+    pickBar.hidden = true;
+    if (restore) { apply(gFrame, snap.frame); apply(gVoice, snap.voice); }
+  };
+  const pickPerson = (name, kind) => {
+    if (!name || !kind) return;
+    if (!pick) pick = { snap: { frame: gFrame.selected(), voice: gVoice.selected() }, frame: null, voice: null };
+    if (pick[kind] === name) {
+      pick[kind] = null;
+      apply(groupOf(kind), pick.snap[kind]);
+      if (!pick.frame && !pick.voice) { endPick(false); return; }
+    } else {
+      pick[kind] = name;
+      apply(groupOf(kind), new Set([name]));
+    }
+    showPick();
+  };
+  box.addEventListener('click', e => {
+    const el = e.target.closest ? e.target.closest('.person') : null;
+    if (el && box.contains(el)) pickPerson(el.dataset.person, el.dataset.kind);
+  });
+  box.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const el = e.target.closest ? e.target.closest('.person') : null;
+    if (!el) return;
+    e.preventDefault();
+    pickPerson(el.dataset.person, el.dataset.kind);
+  });  box.addEventListener('click', e => {
+    if (e.target.closest('a, .person')) return;
+    const row = e.target.closest('.stream-row');
+    const a = row && row.querySelector('a.stream-title');
+    if (!a || String(window.getSelection()).length) return;
+    a.click();
+  });
+  $('pick-reset').addEventListener('click', () => endPick(true));
+  [gFrame, gVoice].forEach(g => g.el.addEventListener('change', () => { if (!applying) endPick(false); }));
   const norm = x => x.toLowerCase();
 
   function render() {
     const q = norm($('f-search').value.trim());
-    const dStart = $('f-date-start').value, dEnd = $('f-date-end').value, sort = $('f-sort').value;
-    const yOn = gYear.active() ? gYear.selected() : null;
+    const dStart = $('f-date-start').value, dEnd = $('f-date-end').value, sort = $('f-sort').value;    const yOn = gYear.active() ? gYear.selected() : null;    const mOn = gMonth.active() ? gMonth.selected() : null;    const byMonth = $('f-group').value === 'month';
+    const v = view.state();
+    box.classList.toggle('no-people', !v.frame && !v.voice);
     const fOn = gFrame.active() ? gFrame.selected() : null;
     const vOn = gVoice.active() ? gVoice.selected() : null;
     let list = all.filter(s =>
-      (!q || norm(s.title).includes(q)) &&
-      (!yOn || yOn.has(s._year)) &&
+      (!q || norm(s.title).includes(q)) &&      (!yOn || yOn.has(s._year)) &&
+      (!mOn || mOn.has(s._month)) &&
       (!fOn || s._frame.some(p => fOn.has(p))) &&
       (!vOn || s._voice.some(p => vOn.has(p))) &&
       (!dStart || s.date >= dStart) && (!dEnd || s.date <= dEnd));
@@ -322,22 +527,28 @@ async function initStreamsPage() {
     if (!list.length) { box.innerHTML = '<div class="empty">Ничего не найдено</div>'; return; }
     let html = '', lastYear = '';
     list.forEach(s => {
-      const y = s.date.slice(0, 4);
-      if (y !== lastYear) { html += '<div class="year-sep">' + y + '</div>'; lastYear = y; }
-      const url = safeUrl(s.link);
-      const title = url ? '<a class="stream-title" href="' + url + '" target="_blank" rel="noopener noreferrer">' + escHtml(s.title) + '</a>'
+      const y = s.date.slice(0, 4);      const groupKey = byMonth ? s.date.slice(0, 7) : y;      if (groupKey !== lastYear) { html += '<div class="year-sep' + (byMonth ? ' mc mc-' + s.date.slice(5, 7) : '') + '">' + (byMonth ? MONTH_NAMES[s.date.slice(5, 7)] + ' ' + y : y) + '</div>'; lastYear = groupKey; }
+      const url = safeUrl(s.link);      const title = url ? '<a class="stream-title" href="' + url + '" data-sid="' + escHtml(s.id) + '" target="_blank" rel="noopener noreferrer">' + escHtml(s.title) + '</a>'
                         : '<span class="stream-title">' + escHtml(s.title) + '</span>';
-      const meta = [];
-      if (s.frame) meta.push('В кадре: ' + escHtml(s.frame));
-      if (s.voice) meta.push('В голосе: ' + escHtml(s.voice));
-      html += '<div class="stream-row"><div class="stream-num">#' + s.num + '</div><div class="stream-main">' + title +
-        (meta.length ? '<div class="stream-meta">' + meta.join(' • ') + '</div>' : '') + '</div>' +
+      html += '<div class="stream-row mc mc-' + s.date.slice(5, 7) + '"><div class="stream-num">#' + s.num + '</div><div class="stream-main">' + title + '</div>' + peopleHtml(s, v) +
         '<div class="stream-side"><span class="stream-date">' + fmtDate(s.date) + '</span>' +
-        (s.duration ? '<span>⏱ ' + s.duration + '</span>' : '') +        '</div></div>';
+        (s.duration ? '<span>⏱ ' + s.duration + '</span>' : '') + '</div></div>';
     });
     box.innerHTML = html;
-  }
-  setupFilters(render, { 'f-date-start': '', 'f-date-end': '', 'f-sort': 'date-desc' }, [gYear, gFrame, gVoice]);
+  }  setupFilters(render, { 'f-date-start': '', 'f-date-end': '', 'f-sort': 'date-desc' }, [gYear, gMonth]);
+  const vBtn = $('toggleView'), vPanel = $('view-panel'), fBtn = $('toggleFilters'), fPanel = $('filters');
+  const setOpen = (btn, panel, open) => { if (open) panel.removeAttribute('hidden'); else panel.setAttribute('hidden', ''); btn.setAttribute('aria-expanded', open ? 'true' : 'false'); };
+  vBtn.addEventListener('click', () => {
+    const open = vPanel.hasAttribute('hidden');
+    if (open) { closeGroups(); setOpen(fBtn, fPanel, false); }
+    setOpen(vBtn, vPanel, open);
+  });  fBtn.addEventListener('click', () => { if (!fPanel.hasAttribute('hidden')) setOpen(vBtn, vPanel, false); });
+  $('resetFilters').addEventListener('click', () => { closeGroups(); setOpen(fBtn, fPanel, false); });  const vCount = () => { $('vcount').textContent = Object.keys(vDef).filter(k => vc[k].checked !== vDef[k]).length + (gFrame.active() ? 1 : 0) + (gVoice.active() ? 1 : 0) || ''; };
+  [gFrame, gVoice].forEach(g => g.el.addEventListener('change', () => { vCount(); render(); }));
+  $('resetView').addEventListener('click', () => { endPick(false); gFrame.reset(); gVoice.reset(); view.reset(); vCount(); render(); closeGroups(); setOpen(vBtn, vPanel, false); });
+  view.el.addEventListener('change', () => {    vCount();
+    render();
+  });
 }
 
 async function initGamesPage() {
