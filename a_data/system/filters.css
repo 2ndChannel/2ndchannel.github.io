@@ -1,6 +1,8 @@
 .plat-group, .plat-head { display: contents; }
 .plat-group:not(.open) .plat-list { display: none; }
-.plat-group.open .plat-list { order: 2; flex: 1 1 100%; }
+.filters-panel { position: relative; }
+.plat-group.open .plat-list { position: absolute; left: 0; right: 0; z-index: 30; padding: 6px; background: rgba(8,14,32,0.98); border: 1px solid rgba(255,255,255,0.18); border-radius: 10px; box-shadow: 0 10px 22px rgba(0,0,0,0.6); }
+.top-card.stuck .plat-group.open .plat-list { position: static; order: 2; flex: 1 1 100%; padding: 0; background: none; border: none; box-shadow: none; }
 .plat-head { display: contents; }
 .plat-title { font-size: 10px; color: #999; text-transform: uppercase; font-weight: bold; letter-spacing: .5px; margin-right: 2px; }
 .top-card .filters-panel button.mini { padding: 2px 8px; font-size: 11px; font-weight: normal; border-radius: 6px; background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.15); }
@@ -47,8 +49,17 @@
 .game-links a.try.yellow { background: rgba(216,164,0,0.55); }
 .game-links a.try.green { background: rgba(49,155,15,0.8); }
 .game-links a.try:hover { filter: brightness(1.25); }
+.game-links a:not(.try) { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); font-size: 14px; }
+.badge.green .game-links a:not(.try) { background: rgba(49,155,15,0.35); border-color: rgba(49,155,15,0.7); }
+.badge.red .game-links a:not(.try) { background: rgba(192,0,0,0.35); border-color: rgba(192,0,0,0.7); }
+.badge.yellow .game-links a:not(.try) { background: rgba(216,164,0,0.3); border-color: rgba(216,164,0,0.6); }
+.game-links a:not(.try):hover { filter: brightness(1.35); }
 .top-card { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
 .top-card .head-row { flex: 0 0 auto; }
 .top-card .search-row { flex: 1 1 360px; margin-top: 0; min-width: 0; }
 .top-card .filters-panel { flex: 1 1 100%; }
 .panel-legend { flex: 1 1 100%; order: 3; }
+.top-card { position: relative; z-index: 20; }
+.top-card .filters-panel { align-items: center; }
+.top-card .filters-panel .filter-group { flex-direction: row; align-items: center; gap: 5px; }
+.top-card .filters-panel .filter-group label[for="f-sort"] { display: none; }

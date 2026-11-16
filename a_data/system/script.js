@@ -187,6 +187,21 @@ function collate(a, b) {
   };
   return cls(a) - cls(b) || String(a).localeCompare(String(b), 'ru', { numeric: true, sensitivity: 'base' });
 }
+function placeGroup(g) {
+  const tg = g.querySelector('.plat-toggle'), box = g.querySelector('.plat-list'), panel = g.closest('.filters-panel');
+  if (!tg || !box || !panel) return;
+  box.style.top = Math.round(tg.getBoundingClientRect().bottom - panel.getBoundingClientRect().top - panel.clientTop + 4) + 'px';
+}
+function closeGroups() {
+  document.querySelectorAll('.plat-group.open').forEach(g => {
+    g.classList.remove('open');
+    const b = g.querySelector('.plat-toggle');
+    if (b) b.setAttribute('aria-expanded', 'false');
+  });
+}
+document.addEventListener('mousedown', e => { if (!e.target.closest('.plat-group')) closeGroups(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeGroups(); });
+window.addEventListener('resize', () => document.querySelectorAll('.plat-group.open').forEach(placeGroup));
 function chipGroup(box, values, allBtn, noneBtn) {
   box.innerHTML = values.map(v => '<label class="plat-chip"><input type="checkbox" class="plat-cb" value="' + escHtml(v) + '" checked>' + escHtml(v) + '</label>').join('');
   if (noneBtn) box.insertBefore(noneBtn, box.firstChild);
@@ -213,7 +228,7 @@ function chipGroup(box, values, allBtn, noneBtn) {
       const b = g.querySelector('.plat-toggle');
       if (b) b.setAttribute('aria-expanded', 'false');
     });
-    if (willOpen) { group.classList.add('open'); tg.setAttribute('aria-expanded', 'true'); }
+    if (willOpen) { group.classList.add('open'); tg.setAttribute('aria-expanded', 'true'); placeGroup(group); }
   };
   box.addEventListener('change', count);
   count();
@@ -230,6 +245,7 @@ function setupFilters(render, defaults, extra) {
     cnt.textContent = n ? n : '';
   }
   btn.onclick = () => {
+    closeGroups();
     const open = panel.hasAttribute('hidden');
     if (open) panel.removeAttribute('hidden'); else panel.setAttribute('hidden', '');
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -372,7 +388,7 @@ async function initGamesPage() {
       (g.icon ? '<img class="game-icon" src="' + escHtml(g.icon) + '" alt="" loading="lazy">' : '') + '<div class="game-content"><span class="game-name">' + escHtml(g.name) + '</span>' +
       (meta ? '<span class="plat-label">' + meta + '</span>' : '') + '</div>' +
       '<div class="game-links">' + moments +
-      '<a ' + (dl ? 'href="' + dl + '" target="_blank" rel="noopener noreferrer"' : 'class="off"') + ' title="Скачать / страница игры">⬇</a>' +
+      '<a ' + (dl ? 'href="' + dl + '" target="_blank" rel="noopener noreferrer"' : 'class="off"') + ' title="Скачать / страница игры">📥</a>' +
       '</div></div>';
   }
 
