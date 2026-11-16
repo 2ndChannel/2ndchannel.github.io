@@ -177,12 +177,56 @@ window.addEventListener('scroll', later, { passive: true });
 window.addEventListener('resize', later);
 update();
 }
+function collate(a, b) {
+  const cls = s => {
+    const c = String(s).trim().charAt(0);
+    if (/[0-9]/.test(c)) return 1;
+    if (/[A-Za-z]/.test(c)) return 2;
+    if (/[А-Яа-яЁё]/.test(c)) return 3;
+    return 0;
+  };
+  return cls(a) - cls(b) || String(a).localeCompare(String(b), 'ru', { numeric: true, sensitivity: 'base' });
+}
+function chipGroup(box, values, allBtn, noneBtn) {
+  box.innerHTML = values.map(v => '<label class="plat-chip"><input type="checkbox" class="plat-cb" value="' + escHtml(v) + '" checked>' + escHtml(v) + '</label>').join('');
+  if (noneBtn) box.insertBefore(noneBtn, box.firstChild);
+  if (allBtn) box.insertBefore(allBtn, box.firstChild);
+  const boxes = () => [...box.querySelectorAll('.plat-cb')];
+  const selected = () => new Set(boxes().filter(c => c.checked).map(c => c.value));
+  const setAll = on => { boxes().forEach(c => c.checked = on); box.dispatchEvent(new Event('change', { bubbles: true })); };
+  if (allBtn) allBtn.onclick = () => setAll(true);
+  if (noneBtn) noneBtn.onclick = () => setAll(false);
+  const group = box.parentNode;
+  const title = group.querySelector('.plat-title');
+  const tg = document.createElement('button');
+  tg.type = 'button';
+  tg.className = 'plat-toggle';
+  tg.setAttribute('aria-expanded', 'false');
+  tg.innerHTML = '<span class="plat-name"></span><span class="plat-n"></span>';
+  tg.querySelector('.plat-name').textContent = title ? title.textContent : '';
+  if (title) title.replaceWith(tg); else group.insertBefore(tg, group.firstChild);
+  const count = () => { const n = selected().size; tg.querySelector('.plat-n').textContent = n === values.length ? '' : n + '/' + values.length; };
+  tg.onclick = () => {
+    const willOpen = !group.classList.contains('open');
+    document.querySelectorAll('.plat-group.open').forEach(g => {
+      g.classList.remove('open');
+      const b = g.querySelector('.plat-toggle');
+      if (b) b.setAttribute('aria-expanded', 'false');
+    });
+    if (willOpen) { group.classList.add('open'); tg.setAttribute('aria-expanded', 'true'); }
+  };
+  box.addEventListener('change', count);
+  count();
+  return { el: box, selected, active: () => selected().size !== values.length, reset: () => { boxes().forEach(c => c.checked = true); count(); } };
+}
 function setupFilters(render, defaults, extra) {
   const $ = id => document.getElementById(id);
   const panel = $('filters'), btn = $('toggleFilters'), cnt = $('fcount');  const ids = Object.keys(defaults);
+  const extras = !extra ? [] : (Array.isArray(extra) ? extra : [extra]);
   if (window.CustomSelect) document.querySelectorAll('#filters select').forEach(el => window.CustomSelect.attach(el));
+  if (window.DatePicker) document.querySelectorAll('#filters input[data-datepicker]').forEach(el => window.DatePicker.attach(el));
   function updateCount() {
-    const n = ids.filter(id => $(id).value !== defaults[id]).length + (extra && extra.active() ? 1 : 0);
+    const n = ids.filter(id => $(id).value !== defaults[id]).length + extras.filter(x => x.active()).length;
     cnt.textContent = n ? n : '';
   }
   btn.onclick = () => {
@@ -191,13 +235,13 @@ function setupFilters(render, defaults, extra) {
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
   };
   document.querySelectorAll('#filters select, #filters input:not(.plat-cb)').forEach(el => el.addEventListener('change', () => { updateCount(); render(); }));
-if (extra) extra.el.addEventListener('change', () => { updateCount(); render(); });
+extras.forEach(x => x.el.addEventListener('change', () => { updateCount(); render(); }));
 setupStickyBar();
   $('f-search').addEventListener('input', render);
   $('resetFilters').onclick = () => {
     $('f-search').value = '';
     ids.forEach(id => $(id).value = defaults[id]);
-if (extra) extra.reset();
+extras.forEach(x => x.reset());
     updateCount(); render();
   };
   updateCount(); render();
@@ -208,21 +252,31 @@ async function initStreamsPage() {
   if (!box) return;
   const all = (await fetch('streams.json').then(r => r.json())).filter(s => !s.hidden);
   const $ = id => document.getElementById(id);
-  fillSelect($('f-year'), [...new Set(all.map(s => s.date.slice(0, 4)))].sort().reverse(), 'Все');
-  fillSelect($('f-channel'), [...new Set(all.map(s => s.channel))], 'Все');
-  const people = new Set();
-  all.forEach(s => (s.frame + ',' + s.voice).split(',').map(x => x.trim()).filter(Boolean).forEach(x => people.add(x.toLowerCase() === 'blood_man' ? 'Blood_Man' : x)));
-  fillSelect($('f-person'), [...people].sort((a, b) => a.localeCompare(b, 'ru')), 'Все');
+  const canon = x => { const t = x.trim(); return t.toLowerCase() === 'blood_man' ? 'Blood_Man' : t; };
+  const parse = v => (v || '').split(',').map(canon).filter(Boolean);
+  all.forEach(s => { s._frame = parse(s.frame); s._voice = parse(s.voice); s._year = s.date.slice(0, 4); });
+  const ranked = lists => {
+    const cnt = new Map();
+    lists.forEach(l => l.forEach(p => cnt.set(p, (cnt.get(p) || 0) + 1)));    return [...cnt.keys()].sort(collate);
+  };
+  const years = [...new Set(all.map(s => s._year))].sort().reverse();
+  const gYear = chipGroup($('f-year'), years, $('year-all'), $('year-none'));
+  const gFrame = chipGroup($('f-frame'), ranked(all.map(s => s._frame)), $('frame-all'), $('frame-none'));
+  const gVoice = chipGroup($('f-voice'), ranked(all.map(s => s._voice)), $('voice-all'), $('voice-none'));
   const norm = x => x.toLowerCase();
 
   function render() {
     const q = norm($('f-search').value.trim());
-    const year = $('f-year').value, ch = $('f-channel').value, person = $('f-person').value, sort = $('f-sort').value;
+    const dStart = $('f-date-start').value, dEnd = $('f-date-end').value, sort = $('f-sort').value;
+    const yOn = gYear.active() ? gYear.selected() : null;
+    const fOn = gFrame.active() ? gFrame.selected() : null;
+    const vOn = gVoice.active() ? gVoice.selected() : null;
     let list = all.filter(s =>
       (!q || norm(s.title).includes(q)) &&
-      (year === 'all' || s.date.startsWith(year)) &&
-      (ch === 'all' || s.channel === ch) &&
-      (person === 'all' || norm(s.frame + ',' + s.voice).includes(norm(person))));
+      (!yOn || yOn.has(s._year)) &&
+      (!fOn || s._frame.some(p => fOn.has(p))) &&
+      (!vOn || s._voice.some(p => vOn.has(p))) &&
+      (!dStart || s.date >= dStart) && (!dEnd || s.date <= dEnd));
     list.sort((a, b) => sort === 'date-asc' ? a.date.localeCompare(b.date) || a.num - b.num : b.date.localeCompare(a.date) || b.num - a.num);
     $('summary').innerHTML = '<b>' + list.length + '</b> ' + plural(list.length, 'стрим', 'стрима', 'стримов') + ' из ' + all.length;
     if (!list.length) { box.innerHTML = '<div class="empty">Ничего не найдено</div>'; return; }
@@ -239,43 +293,56 @@ async function initStreamsPage() {
       html += '<div class="stream-row"><div class="stream-num">#' + s.num + '</div><div class="stream-main">' + title +
         (meta.length ? '<div class="stream-meta">' + meta.join(' • ') + '</div>' : '') + '</div>' +
         '<div class="stream-side"><span class="stream-date">' + fmtDate(s.date) + '</span>' +
-        (s.duration ? '<span>⏱ ' + s.duration + '</span>' : '') +
-        '<span class="channel-badge channel-' + s.channel.toLowerCase() + '">' + escHtml(s.channel) + '</span></div></div>';
+        (s.duration ? '<span>⏱ ' + s.duration + '</span>' : '') +        '</div></div>';
     });
     box.innerHTML = html;
   }
-  setupFilters(render, { 'f-year': 'all', 'f-channel': 'all', 'f-person': 'all', 'f-sort': 'date-desc' });
+  setupFilters(render, { 'f-date-start': '', 'f-date-end': '', 'f-sort': 'date-desc' }, [gYear, gFrame, gVoice]);
 }
 
 async function initGamesPage() {
   const gamesContainer = document.getElementById("games");
   if (!gamesContainer) return;
-  const [streams, allGames] = await Promise.all([
+  const [streams, rawGames] = await Promise.all([
     fetch('../streams/streams.json').then(r => r.json()),
     fetch('games.json').then(r => r.json())
   ]);
   const $ = id => document.getElementById(id);
   const sById = {};
   streams.forEach(s => sById[s.id] = s);
-  const platforms = [...new Set(allGames.map(g => g.platform).filter(Boolean))].sort();
-const platBox = $('f-plat');
-platBox.innerHTML = platforms.map(p => '<label class="plat-chip"><input type="checkbox" class="plat-cb" value="' + escHtml(p) + '" checked>' + escHtml(p) + '</label>').join('');
-const platBoxes = () => [...platBox.querySelectorAll('.plat-cb')];
-const platSelected = () => new Set(platBoxes().filter(c => c.checked).map(c => c.value));
-const setAllPlat = on => { platBoxes().forEach(c => c.checked = on); platBox.dispatchEvent(new Event('change', { bubbles: true })); };
-$('plat-all').onclick = () => setAllPlat(true);
-$('plat-none').onclick = () => setAllPlat(false);
+  const secOf = u => { const m = /[?&#]t=(\d+)/.exec(u || ''); return m ? +m[1] : null; };
+  const byTime = (a, b) => {
+    const x = a.t == null ? Infinity : a.t, y = b.t == null ? Infinity : b.t;
+    return x === y ? 0 : x - y;
+  };
+  const merged = new Map();
+  rawGames.forEach(g => {
+    const k = g.streamId + '|' + g.name + '|' + (g.platform || '');
+    let m = merged.get(k);
+    if (!m) { m = Object.assign({}, g, { attempts: [] }); merged.set(k, m); }
+    m.attempts.push({ status: g.status, timecode: g.timecode, t: secOf(g.timecode) });
+    if (!m.download && g.download) m.download = g.download;
+    if (!m.icon && g.icon) m.icon = g.icon;
+  });
+  const allGames = [...merged.values()];
+  allGames.forEach(m => {
+    m.attempts.sort(byTime);
+    const st = m.attempts.map(a => a.status);
+    m.status = st.includes('green') ? 'green' : st.includes('red') ? 'red' : 'yellow';
+  });
+  const platforms = [...new Set(allGames.map(g => g.platform).filter(Boolean))].sort(collate);
+  const gPlat = chipGroup($('f-plat'), platforms, $('plat-all'), $('plat-none'));
   const statusIcon = { red: 'не пройдено', yellow: 'просто смотрели', green: 'пройдено' };
 
   function applyFilters() {
     const q = $('f-search').value.trim().toLowerCase();
-    const platSel = platSelected(), platAll = platSel.size === platforms.length, status = $('f-status').value;
+    const platOn = gPlat.active() ? gPlat.selected() : null, status = $('f-status').value;
     const dStart = $('f-date-start').value, dEnd = $('f-date-end').value, sortVal = $('f-sort').value;
     let list = allGames.filter(g => {
       const s = sById[g.streamId];
       if (!s) return false;
       return (!q || g.name.toLowerCase().includes(q)) &&
-        (platAll || platSel.has(g.platform)) &&
+        (!platOn || platOn.has(g.platform)) &&
         (status === 'all' || g.status === status) &&
         (!dStart || s.date >= dStart) && (!dEnd || s.date <= dEnd);
     });
@@ -289,14 +356,22 @@ $('plat-none').onclick = () => setAllPlat(false);
     renderGrouped(list, sortVal === 'date-asc');
   }
 
+  function momentLink(a, cls, text, title) {
+    const tc = safeUrl(a.timecode);
+    return '<a class="' + (cls ? cls + ' ' : '') + (tc ? '' : 'off') + '"' + (tc ? ' href="' + tc + '" target="_blank" rel="noopener noreferrer"' : '') + ' title="' + escHtml(title) + '">' + text + '</a>';
+  }
+
   function badge(g) {
-    const dl = safeUrl(g.download), tc = safeUrl(g.timecode);
-    const s = sById[g.streamId];
+    const dl = safeUrl(g.download);
+    const n = g.attempts.length;
+    const meta = [g.platform ? escHtml(g.platform) : '', n > 1 ? n + ' ' + plural(n, 'попытка', 'попытки', 'попыток') : ''].filter(Boolean).join(' · ');
+    const moments = n > 1
+      ? g.attempts.map((a, i) => momentLink(a, 'try ' + a.status, i + 1, 'Попытка ' + (i + 1) + ': ' + (statusIcon[a.status] || ''))).join('')
+      : momentLink(g.attempts[0], '', '🎥', 'Момент на стриме');
     return '<div class="badge ' + g.status + '" title="' + escHtml(statusIcon[g.status] || '') + '">' +
       (g.icon ? '<img class="game-icon" src="' + escHtml(g.icon) + '" alt="" loading="lazy">' : '') + '<div class="game-content"><span class="game-name">' + escHtml(g.name) + '</span>' +
-      (g.platform ? '<span class="plat-label">' + escHtml(g.platform) + '</span>' : '') + '</div>' +
-      '<div class="game-links">' +
-      '<a ' + (tc ? 'href="' + tc + '" target="_blank" rel="noopener noreferrer"' : 'class="off"') + ' title="Момент на стриме">🎥</a>' +
+      (meta ? '<span class="plat-label">' + meta + '</span>' : '') + '</div>' +
+      '<div class="game-links">' + moments +
       '<a ' + (dl ? 'href="' + dl + '" target="_blank" rel="noopener noreferrer"' : 'class="off"') + ' title="Скачать / страница игры">⬇</a>' +
       '</div></div>';
   }
@@ -322,5 +397,5 @@ $('plat-none').onclick = () => setAllPlat(false);
     gamesContainer.innerHTML = '<div class="game-card"><div class="list-body">' + list.map(badge).join('') + '</div></div>';
   }
 
-  setupFilters(applyFilters, { 'f-status': 'all', 'f-date-start': '', 'f-date-end': '', 'f-sort': 'date-desc' }, { el: platBox, active: () => platSelected().size !== platforms.length, reset: () => platBoxes().forEach(c => c.checked = true) });
+  setupFilters(applyFilters, { 'f-status': 'all', 'f-date-start': '', 'f-date-end': '', 'f-sort': 'date-desc' }, gPlat);
 }

@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="../a_data/system/scrollbar.css">
 <link rel="stylesheet" href="../a_data/system/custom-select.css">
 <link rel="stylesheet" href="../a_data/system/streams.css">
+<link rel="stylesheet" href="../a_data/system/filters.css">
 <link rel="canonical" href="https://2ndchannel.github.io/streams/">
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
 <title>Статистика стримов | 2nd Channel</title>
@@ -35,23 +36,27 @@
 </div>
 <div class="container">
 <div class="page-card top-card">
-<div class="head-row"><h1>Статистика по стримам</h1><span class="hint">Эфиры после бана прежнего канала (с 22.09.2021). Название ведёт на запись.</span></div>
+<div class="head-row"><h1>Статистика по стримам</h1></div>
 <div class="search-row">
 <input type="search" id="f-search" placeholder="Поиск по названию…" aria-label="Поиск">
 <button id="toggleFilters" type="button" aria-expanded="false">⚙ Фильтры<span id="fcount"></span></button>
 <span class="summary" id="summary"></span>
 </div>
 <div class="filters-panel" id="filters" hidden>
-<div class="filter-group"><label for="f-year">Год</label><select id="f-year"></select></div>
-<div class="filter-group"><label for="f-channel">Канал</label><select id="f-channel"></select></div>
-<div class="filter-group"><label for="f-person">Участник</label><select id="f-person"></select></div>
+<div class="plat-group"><div class="plat-head"><span class="plat-title">Год</span><button type="button" class="mini" id="year-all">Выделить все</button><button type="button" class="mini" id="year-none">Снять все</button></div><div class="plat-list" id="f-year"></div></div>
+<div class="plat-group"><div class="plat-head"><span class="plat-title">В кадре</span><button type="button" class="mini" id="frame-all">Выделить все</button><button type="button" class="mini" id="frame-none">Снять все</button></div><div class="plat-list" id="f-frame"></div></div>
+<div class="plat-group"><div class="plat-head"><span class="plat-title">В голосе</span><button type="button" class="mini" id="voice-all">Выделить все</button><button type="button" class="mini" id="voice-none">Снять все</button></div><div class="plat-list" id="f-voice"></div></div>
+<div class="filter-group"><label>С даты</label><input type="hidden" id="f-date-start" data-datepicker></div>
+<div class="filter-group"><label>По дату</label><input type="hidden" id="f-date-end" data-datepicker></div>
 <div class="filter-group"><label for="f-sort">Сортировка</label><select id="f-sort"><option value="date-desc">Новые сверху</option><option value="date-asc">Старые сверху</option></select></div>
 <button id="resetFilters" type="button">Сброс</button>
+<span class="hint panel-legend">Эфиры после бана прежнего канала (с 22.09.2021). Название ведёт на запись.</span>
 </div>
 </div>
 <div class="stream-list" id="streams-list"></div>
 </div>
 <script src="../a_data/system/custom-select.js"></script>
+<script src="../a_data/system/date-picker.js"></script>
 <script src="../a_data/system/script.js"></script>
 <script>
 initStreamsPage();
