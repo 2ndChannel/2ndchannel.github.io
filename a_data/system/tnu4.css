@@ -32,6 +32,11 @@ scrollbar-color: var(--scrollbar-color, #cf4100) #000;
 }
 .gallery img {
 height: 180px;
+width: auto;
+aspect-ratio: 3 / 2;
+flex: 0 0 auto;
+object-fit: cover;
+background: rgba(255, 255, 255, 0.06);
 border: 2px solid #444;
 border-radius: 4px;
 cursor: pointer;

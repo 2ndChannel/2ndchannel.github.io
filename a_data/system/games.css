@@ -35,7 +35,7 @@
 
 .game-card { padding: 8px 12px 10px; margin-bottom: 4px; border-radius: 12px; }
 .stream-header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 6px; padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-.stream-header h3 { margin: 0; font-family: "Machina", Arial, sans-serif; font-size: 14px; line-height: 1.25; color: #fff; text-transform: uppercase; letter-spacing: .4px; min-width: 0; overflow-wrap: anywhere; }
+.stream-header h3 { margin: 0; font-family: "Machina", Arial, sans-serif; font-size: 14px; line-height: 1.25; color: #fff; text-transform: uppercase; letter-spacing: 1px; word-spacing: 2px; min-width: 0; overflow-wrap: anywhere; }
 .stream-header h3 a { color: inherit; } .stream-header h3 a:hover { color: #2ecc71; filter: none; }
 .stream-header h3 { color: #b8c0d0; }
 .stream-date-header { font-size: 12px; color: #999; white-space: nowrap; font-weight: bold; }
@@ -48,9 +48,21 @@
 .badge.green  { border-left-color: var(--st-green);  background: rgba(49,155,15,0.18); }
 .badge.red:hover { background: rgba(192,0,0,0.3); } .badge.yellow:hover { background: rgba(216,164,0,0.3); } .badge.green:hover { background: rgba(49,155,15,0.32); }
 .game-icon { width: 25px; height: 20px; flex-shrink: 0; image-rendering: pixelated; }
+.game-lead { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; min-width: 25px; }
+.launch-no { font-size: 9px; line-height: 1; font-weight: bold; color: #aaa; white-space: nowrap; }
 .game-content { display: flex; flex-direction: column; min-width: 0; flex: 1; line-height: 1.15; }
+.game-note { font-size: 9px; font-style: italic; color: #cfcfcf; line-height: 1.15; margin: 1px 0; overflow-wrap: anywhere; }
+.badge.green .game-note { color: #7fe05a; }
+.badge.red .game-note { color: #ff7a7a; }
+.badge.yellow .game-note { color: #f2c94c; }
+.badge.green .plat-label { color: #3f9f22; }
+.badge.red .plat-label { color: #d14b4b; }
+.badge.yellow .plat-label { color: #b8900f; }
+.badge.green .game-note { color: #7fe05a; }
+.badge.red .game-note { color: #ff7a7a; }
+.badge.yellow .game-note { color: #f2c94c; }
 .game-name { font-weight: bold; font-size: 13px; overflow-wrap: anywhere; }
-.plat-label { font-size: 9.5px; color: #aaa; text-transform: uppercase; font-weight: bold; letter-spacing: .4px; }
+.plat-label { font-size: 9.5px; color: #aaa; text-transform: uppercase; font-weight: bold; font-style: italic; letter-spacing: .4px; }
 .game-links { display: flex; gap: 3px; flex-shrink: 0; }
 .game-links a { display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 7px;
   background: rgba(255,255,255,0.08); color: #fff; font-size: 13px; line-height: 1; text-decoration: none; filter: none; }

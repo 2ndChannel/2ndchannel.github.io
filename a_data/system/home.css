@@ -350,6 +350,47 @@ margin-top: 0;
 }
 .no-title-card { padding: 8px; }
 }
+@media (min-width: 1200px) and (hover: hover) and (pointer: fine) {
+.container {
+max-width: 1300px;
+padding: 14px 20px;
+grid-template-columns: 390px minmax(0, 1fr);
+column-gap: 10px;
+}
+.horizontal-container { gap: 8px; }
+.container > .news-row .alert-box {
+font-size: 16px;
+padding: 8px 44px 8px 16px;
+}
+.container > .home-card:not(.links) {
+padding: 20px 24px 16px 24px;
+}
+.home-card h1 { font-size: 30px; margin-bottom: 6px; }
+.container > .home-card:not(.links) p {
+font-size: 17px;
+line-height: 1.45;
+margin: 8px 0;
+}
+.container > .home-card:not(.links) .home-marks {
+margin-top: 8px;
+font-size: 15px;
+}
+.home-card h2 { font-size: 19px; padding-bottom: 6px; }
+.container > .home-card.links,
+.container > .horizontal-container .home-card {
+padding: 11px 16px;
+}
+.container > .horizontal-container .home-card.no-title-card {
+padding: 6px 10px;
+}
+.home-card.links .youtube-grid { margin-top: 8px; gap: 6px; }
+.h2-icon { width: 24px; height: 24px; }
+.yt-item { padding: 7px 11px; gap: 11px; }
+.yt-img-box { width: 40px; height: 40px; border-radius: 10px; }
+.yt-title { font-size: 16px; margin-bottom: 2px; }
+.yt-desc { font-size: 13px; }
+.container > .home-warn { font-size: 14px; padding: 8px 14px; }
+}
 @media (max-width: 360px) {
 .home-card { padding: 12px; }
 .yt-img-box { width: 36px; height: 36px; }

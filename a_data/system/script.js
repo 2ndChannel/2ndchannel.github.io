@@ -356,17 +356,29 @@ async function initGamesPage() {
     return x === y ? 0 : x - y;
   };
   const merged = new Map();
-  rawGames.forEach(g => {
+  const perStream = new Map();
+  rawGames.forEach((g, i) => {
     const k = g.streamId + '|' + g.name + '|' + (g.platform || '');
     let m = merged.get(k);
     if (!m) { m = Object.assign({}, g, { attempts: [] }); merged.set(k, m); }
-    m.attempts.push({ status: g.status, timecode: g.timecode, t: secOf(g.timecode) });
+    const at = { status: g.status, timecode: g.timecode, t: secOf(g.timecode), idx: i };
+    m.attempts.push(at);
+    if (!perStream.has(g.streamId)) perStream.set(g.streamId, []);
+    perStream.get(g.streamId).push(at);
     if (!m.download && g.download) m.download = g.download;
     if (!m.icon && g.icon) m.icon = g.icon;
+    if (!m.note && g.note) m.note = g.note;
+  });
+  // Порядковый номер запуска внутри стрима: по таймкоду; при равенстве/отсутствии
+  // таймкода — по порядку в games.json (там новые сверху, поэтому idx берём в обратную сторону)
+  perStream.forEach(list => {
+    list.sort((a, b) => b.idx - a.idx);
+    list.forEach((a, i) => { a.no = i + 1; });
   });
   const allGames = [...merged.values()];
   allGames.forEach(m => {
-    m.attempts.sort(byTime);
+    m.attempts.sort((a, b) => a.no - b.no);    m.no = m.attempts[0].no;
+    m.nos = m.attempts.map(a => a.no).join(', ');
     const st = m.attempts.map(a => a.status);
     m.status = st.includes('green') ? 'green' : st.includes('red') ? 'red' : 'yellow';
   });
@@ -420,12 +432,13 @@ async function initGamesPage() {
   function badge(g) {
     const dl = safeUrl(g.download);
     const n = g.attempts.length;
-    const meta = [g.platform ? escHtml(g.platform) : '', n > 1 ? n + ' ' + plural(n, 'попытка', 'попытки', 'попыток') : ''].filter(Boolean).join(' · ');
+    const meta = g.platform ? escHtml(g.platform) : '';
     const moments = n > 1
-      ? g.attempts.map((a, i) => momentLink(a, 'try ' + a.status, i + 1, 'Попытка ' + (i + 1) + ': ' + (statusIcon[a.status] || ''))).join('')
+      ? g.attempts.map((a, i) => momentLink(a, 'try ' + a.status, i + 1, 'Попытка ' + (i + 1) + ' (запуск №' + a.no + '): ' + (statusIcon[a.status] || ''))).join('')
       : momentLink(g.attempts[0], '', '🎥', 'Момент на стриме');
     return '<div class="badge ' + g.status + '" title="' + escHtml(tipOf(g)) + '">' +
-      (g.icon ? '<img class="game-icon" src="' + escHtml(g.icon) + '" alt="" loading="lazy">' : '') + '<div class="game-content"><span class="game-name">' + escHtml(g.name) + '</span>' +
+      '<div class="game-lead">' + (g.icon ? '<img class="game-icon" src="' + escHtml(g.icon) + '" alt="" loading="lazy">' : '') +
+      '<span class="launch-no" title="Порядок запуска в эфире">' + g.nos + '</span></div><div class="game-content"><span class="game-name">' + escHtml(g.name) + '</span>' + (g.note ? '<span class="game-note">' + escHtml(g.note) + '</span>' : '') +
       (meta ? '<span class="plat-label">' + meta + '</span>' : '') + '</div>' +
       '<div class="game-links">' + moments +
       '<a ' + (dl ? 'href="' + dl + '" target="_blank" rel="noopener noreferrer"' : 'class="off"') + ' title="Скачать / страница игры">📥</a>' +
@@ -444,7 +457,7 @@ async function initGamesPage() {
       const url = safeUrl(s.link);
       const title = url ? '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + escHtml(s.title) + '</a>' : escHtml(s.title);
       return '<div class="game-card"><div class="stream-header"><h3>' + title + '</h3><span class="stream-date-header">' + fmtDate(s.date) + '</span></div>' +
-        '<div class="list-body">' + groups.get(s.id).map(badge).join('') + '</div></div>';
+        '<div class="list-body">' + groups.get(s.id).slice().sort((a, b) => a.no - b.no).map(badge).join('') + '</div></div>';
     }).join('');
   }
 

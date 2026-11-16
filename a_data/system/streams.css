@@ -36,12 +36,14 @@
 .stream-list { display: grid; gap: 4px; margin-top: 6px; }
 .year-sep { font-family: "Machina", Arial, sans-serif; font-size: 16px; color: #fff; letter-spacing: 1px; margin: 8px 4px 0; padding-bottom: 3px; border-bottom: 1px solid rgba(255,255,255,0.1); }
 .stream-row { display: grid; grid-template-columns: 44px 1fr auto; gap: 0 10px; align-items: center; padding: 6px 12px; border-radius: 10px;
-  background: rgba(0,5,15,0.85); border: 1px solid rgba(255,255,255,0.07); transition: background .2s, border-color .2s; }
-.stream-row:hover { background: rgba(30,40,70,0.9); border-color: rgba(255,255,255,0.2); }
+  background: rgba(0,5,15,0.97); border: 1px solid rgba(255,255,255,0.07); transition: background .2s, border-color .2s; }
+.stream-row:hover { background: rgb(14,47,15); border-color: var(--st-green); }
+.stream-row:hover .stream-num { color: #b9e8a6; }
+.stream-row:hover .stream-meta { color: #c9d8c2; }
 .stream-num { font-family: "Machina", Arial, sans-serif; font-size: 15px; color: #777; text-align: right; }
 .stream-main { min-width: 0; }
 .stream-title { display: block; font-weight: bold; font-size: 14.5px; line-height: 1.2; color: #fff; text-decoration: none; }
-a.stream-title:hover { color: #2ecc71; filter: none; }
+a.stream-title:hover { color: #fff; text-decoration: underline; filter: none; }
 .stream-meta { font-size: 11.5px; color: #999; margin-top: 1px; line-height: 1.25; }
 .stream-side { display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: #bbb; white-space: nowrap; }
 .stream-date { font-weight: bold; color: #fff; font-size: 13px; }
