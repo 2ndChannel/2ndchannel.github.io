@@ -49,14 +49,20 @@ align-items: center;
 gap: 10px;
 color: #fff;
 text-decoration: none;
-font-family: Arial, Helvetica, sans-serif;
-font-weight: bold;
+font-family: "Machina", Arial, Helvetica, sans-serif;
+font-weight: normal;
+text-transform: uppercase;
+letter-spacing: 1px;
+text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 0 0 6px rgba(0, 0, 0, 0.7);
+text-rendering: geometricPrecision;
+-webkit-font-smoothing: antialiased;
 padding: 8px 15px;
 border-radius: 10px;
 transition: all 0.2s ease;
-font-size: 15px;
+font-size: 13.8px;
 background: rgba(255, 255, 255, 0.05);
-border: 1px solid rgba(255, 255, 255, 0.1);
+border: 1px solid rgba(255, 255, 255, 0.28);
+box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.45);
 white-space: nowrap;
 flex-shrink: 0;
 }
@@ -71,6 +77,7 @@ border-color: transparent;
 .menu-links a.is-yellow.active {
 background: var(--btn-color) !important;
 color: #000 !important;
+text-shadow: none;
 }
 .menu-links a.is-yellow:hover .menu-icon,
 .menu-links a.is-yellow.active .menu-icon {
@@ -129,10 +136,14 @@ background: rgba(0, 0, 0, 0.6);
 }
 .current-page-name {
 color: white;
-font-weight: bold;
+font-weight: normal;
 font-size: 16px;
+letter-spacing: 1px;
 text-transform: uppercase;
-font-family: Arial, Helvetica, sans-serif;
+text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 0 0 6px rgba(0, 0, 0, 0.7);
+text-rendering: geometricPrecision;
+-webkit-font-smoothing: antialiased;
+font-family: "Machina", Arial, Helvetica, sans-serif;
 }
 .nav.mobile-mode .mobile-header {
 display: flex;

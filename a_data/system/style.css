@@ -1,6 +1,6 @@
 @font-face {
 font-family: "Machina";
-src: url("2F_MachinaOrto-Medium.ttf") format("truetype");
+src: url("2F_MachinaOrto-Medium-nohint.ttf") format("truetype");
 }
 body {
 margin: 0;
