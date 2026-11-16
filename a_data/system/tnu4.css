@@ -28,7 +28,7 @@ overflow-x: auto;
 gap: 15px;
 padding: 10px 0;
 scrollbar-width: thin;
-scrollbar-color: #ff4444 #000;
+scrollbar-color: var(--scrollbar-color, #cf4100) #000;
 }
 .gallery img {
 height: 180px;

@@ -84,6 +84,9 @@ foundActive = true;
 if (menuTitle) menuTitle.textContent = link.innerText.trim();
 if (btnColor) {
 navInner.style.setProperty('--active-color', btnColor);
+document.documentElement.style.setProperty('--page-color', btnColor);
+document.documentElement.style.setProperty('--page-ink', link.classList.contains('is-yellow') ? '#000' : '#fff');
+document.documentElement.style.setProperty('--scrollbar-color', btnColor);
 navInner.classList.add('color-loaded');
 }
 }
@@ -91,6 +94,7 @@ navInner.classList.add('color-loaded');
 if (!foundActive) {
 if (menuTitle) menuTitle.textContent = "Страница не найдена";
 navInner.style.setProperty('--active-color', '#888888');
+document.documentElement.style.setProperty('--scrollbar-color', '#888888');
 navInner.classList.add('color-loaded');
 }
 checkFitting();
@@ -123,7 +127,21 @@ el.replaceChild(span, node);
 }
 });
 }
-document.addEventListener("DOMContentLoaded", () => {loadNavbar(); fixNumbers(); });
+function setupToTop() {
+  if (document.getElementById('to-top')) return;
+  const b = document.createElement('button');
+  b.id = 'to-top';
+  b.type = 'button';
+  b.title = 'Наверх';
+  b.setAttribute('aria-label', 'Наверх');
+  b.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>';
+  b.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.body.appendChild(b);
+  const check = () => b.classList.toggle('show', (window.scrollY || document.documentElement.scrollTop) > 300);
+  window.addEventListener('scroll', check, { passive: true });
+  check();
+}
+document.addEventListener("DOMContentLoaded", () => {loadNavbar(); fixNumbers(); setupToTop(); });
 window.addEventListener("load", fixNumbers);
 
 function escHtml(t) {
@@ -157,7 +175,8 @@ card.parentNode.insertBefore(anchor, card);
 let stuck = false, timer = null;
 function update() {
 const nav = document.getElementById('nav-inner');
-const nb = nav ? Math.round(nav.getBoundingClientRect().bottom) : 66;
+const strip = nav ? nav.querySelector('.dev-strip') : null;
+const nb = nav ? Math.round((strip || nav).getBoundingClientRect().bottom) : 66;
 document.documentElement.style.setProperty('--nav-h', nb + 'px');
 const want = anchor.getBoundingClientRect().top <= nb + 2;
 if (want === stuck) return;
@@ -204,13 +223,13 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeGroups(
 window.addEventListener('resize', () => document.querySelectorAll('.plat-group.open').forEach(placeGroup));
 function chipGroup(box, values, allBtn, noneBtn) {
   box.innerHTML = values.map(v => '<label class="plat-chip"><input type="checkbox" class="plat-cb" value="' + escHtml(v) + '" checked>' + escHtml(v) + '</label>').join('');
-  if (noneBtn) box.insertBefore(noneBtn, box.firstChild);
+  if (noneBtn) noneBtn.remove();
   if (allBtn) box.insertBefore(allBtn, box.firstChild);
   const boxes = () => [...box.querySelectorAll('.plat-cb')];
   const selected = () => new Set(boxes().filter(c => c.checked).map(c => c.value));
   const setAll = on => { boxes().forEach(c => c.checked = on); box.dispatchEvent(new Event('change', { bubbles: true })); };
-  if (allBtn) allBtn.onclick = () => setAll(true);
-  if (noneBtn) noneBtn.onclick = () => setAll(false);
+  if (allBtn) allBtn.onclick = () => setAll(selected().size !== values.length);
+  
   const group = box.parentNode;
   const title = group.querySelector('.plat-title');
   const tg = document.createElement('button');
@@ -220,7 +239,12 @@ function chipGroup(box, values, allBtn, noneBtn) {
   tg.innerHTML = '<span class="plat-name"></span><span class="plat-n"></span>';
   tg.querySelector('.plat-name').textContent = title ? title.textContent : '';
   if (title) title.replaceWith(tg); else group.insertBefore(tg, group.firstChild);
-  const count = () => { const n = selected().size; tg.querySelector('.plat-n').textContent = n === values.length ? '' : n + '/' + values.length; };
+  const count = () => {
+    const n = selected().size, all = n === values.length;
+    tg.querySelector('.plat-n').textContent = n + '/' + values.length;
+    tg.classList.toggle('all', all);
+    if (allBtn) allBtn.textContent = all ? 'Снять все' : 'Выделить все';
+  };
   tg.onclick = () => {
     const willOpen = !group.classList.contains('open');
     document.querySelectorAll('.plat-group.open').forEach(g => {
@@ -348,25 +372,33 @@ async function initGamesPage() {
   });
   const platforms = [...new Set(allGames.map(g => g.platform).filter(Boolean))].sort(collate);
   const gPlat = chipGroup($('f-plat'), platforms, $('plat-all'), $('plat-none'));
+  const statusBox = $('f-status');
+  const statusCbs = () => [...statusBox.querySelectorAll('.plat-cb')];
+  const gStatus = {
+    el: statusBox,
+    selected: () => new Set(statusCbs().filter(c => c.checked).map(c => c.value)),
+    active: () => statusCbs().some(c => !c.checked),
+    reset: () => statusCbs().forEach(c => { c.checked = true; })
+  };
   const statusIcon = { red: 'не пройдено', yellow: 'просто смотрели', green: 'пройдено' };
 
   function applyFilters() {
     const q = $('f-search').value.trim().toLowerCase();
-    const platOn = gPlat.active() ? gPlat.selected() : null, status = $('f-status').value;
+    const platOn = gPlat.active() ? gPlat.selected() : null, stOn = gStatus.selected();
     const dStart = $('f-date-start').value, dEnd = $('f-date-end').value, sortVal = $('f-sort').value;
     let list = allGames.filter(g => {
       const s = sById[g.streamId];
       if (!s) return false;
       return (!q || g.name.toLowerCase().includes(q)) &&
         (!platOn || platOn.has(g.platform)) &&
-        (status === 'all' || g.status === status) &&
+        stOn.has(g.status) &&
         (!dStart || s.date >= dStart) && (!dEnd || s.date <= dEnd);
     });
     const total = list.length;
     $('summary').innerHTML = '<b>' + total + '</b> ' + plural(total, 'игра', 'игры', 'игр') + ' из ' + allGames.length;
     if (sortVal === 'name-asc') {
       list.sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
-      renderFlat(list);
+      renderByLetter(list);
       return;
     }
     renderGrouped(list, sortVal === 'date-asc');
@@ -377,6 +409,14 @@ async function initGamesPage() {
     return '<a class="' + (cls ? cls + ' ' : '') + (tc ? '' : 'off') + '"' + (tc ? ' href="' + tc + '" target="_blank" rel="noopener noreferrer"' : '') + ' title="' + escHtml(title) + '">' + text + '</a>';
   }
 
+  let tipMode = false;
+  function tipOf(g) {
+    const base = statusIcon[g.status] || '';
+    if (!tipMode) return base;
+    const s = sById[g.streamId];
+    return s ? s.title + '\n' + fmtDate(s.date) + (base ? ' · ' + base : '') : base;
+  }
+
   function badge(g) {
     const dl = safeUrl(g.download);
     const n = g.attempts.length;
@@ -384,7 +424,7 @@ async function initGamesPage() {
     const moments = n > 1
       ? g.attempts.map((a, i) => momentLink(a, 'try ' + a.status, i + 1, 'Попытка ' + (i + 1) + ': ' + (statusIcon[a.status] || ''))).join('')
       : momentLink(g.attempts[0], '', '🎥', 'Момент на стриме');
-    return '<div class="badge ' + g.status + '" title="' + escHtml(statusIcon[g.status] || '') + '">' +
+    return '<div class="badge ' + g.status + '" title="' + escHtml(tipOf(g)) + '">' +
       (g.icon ? '<img class="game-icon" src="' + escHtml(g.icon) + '" alt="" loading="lazy">' : '') + '<div class="game-content"><span class="game-name">' + escHtml(g.name) + '</span>' +
       (meta ? '<span class="plat-label">' + meta + '</span>' : '') + '</div>' +
       '<div class="game-links">' + moments +
@@ -408,10 +448,28 @@ async function initGamesPage() {
     }).join('');
   }
 
+  function renderByLetter(list) {
+    if (!list.length) { gamesContainer.innerHTML = '<div class="empty">Ничего не найдено</div>'; return; }
+    const letterOf = g => {
+      const c = String(g.name || '').trim().charAt(0).toUpperCase();
+      if (/[0-9]/.test(c)) return '0–9';
+      return /[A-ZА-ЯЁ]/.test(c) ? c : '#';
+    };
+    const groups = new Map();
+    list.forEach(g => { const l = letterOf(g); if (!groups.has(l)) groups.set(l, []); groups.get(l).push(g); });
+    tipMode = true;
+    gamesContainer.innerHTML = [...groups.keys()].sort(collate).map(l => {
+      const items = groups.get(l);
+      return '<div class="game-card letter-card"><div class="stream-header"><h3>' + escHtml(l) + '</h3><span class="stream-date-header">' + items.length + ' ' + plural(items.length, 'игра', 'игры', 'игр') + '</span></div>' +
+        '<div class="list-body">' + items.map(badge).join('') + '</div></div>';
+    }).join('');
+    tipMode = false;
+  }
+
   function renderFlat(list) {
     if (!list.length) { gamesContainer.innerHTML = '<div class="empty">Ничего не найдено</div>'; return; }
     gamesContainer.innerHTML = '<div class="game-card"><div class="list-body">' + list.map(badge).join('') + '</div></div>';
   }
 
-  setupFilters(applyFilters, { 'f-status': 'all', 'f-date-start': '', 'f-date-end': '', 'f-sort': 'date-desc' }, gPlat);
+  setupFilters(applyFilters, { 'f-date-start': '', 'f-date-end': '', 'f-sort': 'date-desc' }, [gPlat, gStatus]);
 }

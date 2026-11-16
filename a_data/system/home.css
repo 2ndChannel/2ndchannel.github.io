@@ -41,6 +41,17 @@ height: 26px;
 flex-shrink: 0;
 object-fit: contain;
 }
+.h2-note {
+min-width: 0;
+font-family: Arial, Helvetica, sans-serif;
+font-size: 12px;
+font-weight: normal;
+font-style: italic;
+line-height: 1.25;
+letter-spacing: 0;
+text-transform: none;
+color: #aaa;
+}
 .youtube-grid {
 display: grid;
 grid-template-columns: 1fr;
@@ -48,7 +59,7 @@ gap: 8px;
 margin-top: 12px;
 }
 .home-card:not(.split-card) .youtube-grid {
-grid-template-columns: repeat(3, minmax(0, 1fr));
+grid-template-columns: repeat(3, minmax(0, auto));
 }
 .no-title-card {
 padding: 10px 12px;
@@ -107,6 +118,10 @@ margin-bottom: 3px;
 font-size: 12.5px;
 line-height: 1.25;
 color: #aaa;
+width: max-content;
+max-width: 100%;
+text-align-last: right;
+text-wrap: balance;
 }
 .horizontal-container {
 display: grid;
