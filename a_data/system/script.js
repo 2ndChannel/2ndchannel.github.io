@@ -99,6 +99,19 @@ navInner.classList.add('color-loaded');
 }
 checkFitting();
 window.addEventListener('resize', checkFitting);
+function showNavBlink() {
+if (!navInner.classList.contains('mobile-mode')) return;
+try {
+if (sessionStorage.getItem('navBlinkShown')) return;
+sessionStorage.setItem('navBlinkShown', '1');
+} catch (e) {}
+setTimeout(() => {
+if (!navInner.classList.contains('mobile-mode')) return;
+navInner.classList.add('nav-blink');
+setTimeout(() => navInner.classList.remove('nav-blink'), 2300);
+}, 700);
+}
+showNavBlink();
 const onNavScroll = () => {
 const y = window.scrollY || document.documentElement.scrollTop;
 if (y > 40) navInner.classList.add('compact');

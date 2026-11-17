@@ -298,6 +298,18 @@ background: linear-gradient(to bottom, color-mix(in srgb, var(--active-color, #d
 border-bottom: 3px solid var(--active-color, var(--default-gray));
 }
 body:has(#nav-inner.mobile-mode) .container { padding-top: 5px; }
+.nav.mobile-mode.nav-blink .mobile-header {
+animation: menuBlink 0.7s ease-in-out 3;
+}
+@keyframes menuBlink {
+0%, 100% { opacity: 1; }
+50% { opacity: 0.1; }
+}
+@media (prefers-reduced-motion: reduce) {
+.nav.mobile-mode.nav-blink .mobile-header {
+animation: none;
+}
+}
 body:has(#nav-inner.mobile-mode) {
 padding-top: 76px;
 }
