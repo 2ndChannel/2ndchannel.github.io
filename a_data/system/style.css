@@ -2,6 +2,12 @@
 font-family: "Machina";
 src: url("2F_MachinaOrto-Medium-nohint.ttf") format("truetype");
 }
+@font-face {
+font-family: "Machina";
+src: url("2F_MachinaOrto-Medium-nohint.ttf") format("truetype");
+unicode-range: U+0030-0039;
+size-adjust: 111%;
+}
 body {
 margin: 0;
 padding-top: 92px;

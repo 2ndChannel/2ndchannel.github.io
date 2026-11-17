@@ -165,7 +165,7 @@
 
         trigger.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (activePopup && activePopup._trigger === trigger) { closeActivePopup(); return; }
+            if (window.DatePicker) window.DatePicker.close(); if (activePopup && activePopup._trigger === trigger) { closeActivePopup(); return; }
             closeActivePopup();
             openPopup();
         });

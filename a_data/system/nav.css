@@ -297,6 +297,7 @@ color: color-mix(in srgb, var(--active-color, #d4af37) 55%, #ffffff);
 background: linear-gradient(to bottom, color-mix(in srgb, var(--active-color, #d4af37) 22%, #000000), rgb(0, 0, 0));
 border-bottom: 3px solid var(--active-color, var(--default-gray));
 }
+body:has(#nav-inner.mobile-mode) .container { padding-top: 5px; }
 body:has(#nav-inner.mobile-mode) {
-padding-top: 88px;
+padding-top: 76px;
 }

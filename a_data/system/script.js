@@ -59,7 +59,7 @@ navInner.classList.add('mobile-mode');
 };
 menuBtn.onclick = (e) => {
 e.stopPropagation();
-menuList.classList.toggle('active');
+menuList.classList.toggle('active'); if (window.DatePicker) window.DatePicker.close();
 };
 document.addEventListener('click', () => {
 menuList.classList.remove('active');
@@ -151,8 +151,7 @@ function safeUrl(u) {
   return /^https?:\/\//i.test(u || "") ? escHtml(u) : "";
 }
 function fmtDate(iso) {
-  const p = iso.split('-');
-  return p[2] + '.' + p[1] + '.' + p[0];
+  const p = iso.split('-');  const mn = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];  return mn[+p[1] - 1] + ' ' + (+p[2]) + ' \u2019' + p[0].slice(2);
 }
 function plural(n, a, b, c) {
   const m = Math.abs(n) % 100, d = m % 10;
@@ -172,18 +171,19 @@ card._sticky = true;
 const anchor = document.createElement('div');
 anchor.className = 'sticky-anchor';
 card.parentNode.insertBefore(anchor, card);
-let stuck = false, timer = null;
+let stuck = false, timer = null, barH = 56, preH = 0;
 function update() {
 const nav = document.getElementById('nav-inner');
 const strip = nav ? nav.querySelector('.dev-strip') : null;
 const nb = nav ? Math.round((strip || nav).getBoundingClientRect().bottom) : 66;
 document.documentElement.style.setProperty('--nav-h', nb + 'px');
-const want = anchor.getBoundingClientRect().top <= nb + 2;
+const edge = stuck ? anchor.getBoundingClientRect().bottom - 4 : anchor.getBoundingClientRect().top + card.offsetHeight;
+const want = edge <= nb + 2;
 if (want === stuck) return;
 stuck = want;
 if (want) {
-anchor.style.height = (card.offsetHeight + 4) + 'px';
-card.classList.add('stuck');
+preH = card.offsetHeight; ['toggleFilters', 'toggleView'].forEach(id => { const b = document.getElementById(id); if (b && b.getAttribute('aria-expanded') === 'true') b.click(); });  const h1 = card.offsetHeight; anchor.style.height = (h1 + 4) + 'px'; if (preH > h1) window.scrollBy({ top: h1 - preH, behavior: 'instant' });
+card.classList.add('stuck'); barH = card.offsetHeight;
 const tb = document.getElementById('toggleFilters');
 if (tb && tb.getAttribute('aria-expanded') === 'true') tb.click();
 const vb = document.getElementById('toggleView');
@@ -260,6 +260,19 @@ function chipGroup(box, values, allBtn, noneBtn, labels) {
   count();  const set = vals => { boxes().forEach(c => c.checked = vals.has(c.value)); box.dispatchEvent(new Event('change', { bubbles: true })); };
   return { el: box, selected, set, active: () => selected().size !== values.length, reset: () => { boxes().forEach(c => c.checked = true); count(); } };
 }
+function setDateRange(dates, kind) {
+  const d = dates.filter(Boolean).sort();
+  if (!d.length) return;
+  ['f-date-start', 'f-date-end'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.dataset.min = d[0]; el.dataset.max = d[d.length - 1]; el.dataset.minMsg = (kind === 'game' ? 'Самая ранняя игра была на стриме от ' : 'Самый ранний стрим был ') + d[0].split('-').reverse().join('.') + '.\nЭфиры после бана прежнего канала.'; el.dataset.maxMsg = (kind === 'game' ? 'Самая поздняя игра была на стриме от ' : 'Самый поздний стрим был ') + d[d.length - 1].split('-').reverse().join('.') + '.'; }
+  });
+}
+document.addEventListener('click', e => {
+  const t = e.target;
+  if (!t || !t.closest || t.closest('.top-card, .dp-popup, .cs-popup, #nav')) return;
+  preH = card.offsetHeight; ['toggleFilters', 'toggleView'].forEach(id => { const b = document.getElementById(id); if (b && b.getAttribute('aria-expanded') === 'true') b.click(); });
+});
 function setupFilters(render, defaults, extra) {
   const $ = id => document.getElementById(id);
   const panel = $('filters'), btn = $('toggleFilters'), cnt = $('fcount');  const ids = Object.keys(defaults);
@@ -279,6 +292,7 @@ function setupFilters(render, defaults, extra) {
   document.querySelectorAll('#filters select, #filters input:not(.plat-cb)').forEach(el => el.addEventListener('change', () => { updateCount(); render(); }));
 extras.forEach(x => x.el.addEventListener('change', () => { updateCount(); render(); }));
 setupStickyBar();
+const acceptBtn = $('acceptFilters'); if (acceptBtn) acceptBtn.onclick = () => { if (!panel.hasAttribute('hidden')) btn.click(); };
   $('f-search').addEventListener('input', render);
   $('resetFilters').onclick = () => {
     $('f-search').value = '';
@@ -312,11 +326,90 @@ function personHtml(p, role, kind) {
   const file = PORTRAIT_FILES[p] || 'Неизвестно';
   return '<span class="person" tabindex="0" data-person="' + escHtml(p) + '" data-kind="' + kind + '" data-tip="' + escHtml(label + ' — ' + role) + '"><img src="' + PORTRAIT_DIR + encodeURIComponent(file) + '.png" alt="' + escHtml(label) + '" width="34" height="50" loading="lazy" draggable="false"></span>';
 }
+const STREAM_TYPES = { game: ['🎮', 'Игровой стрим'], movie: ['🎞️', 'Кинопросмотр'], dev: ['🛠️', 'Разработка игры'] };
+function streamTypesHtml(s) {
+  const list = s.types && s.types.length ? s.types : ['game'];
+  return '<span class="stream-types">' + list.filter(k => STREAM_TYPES[k]).map(k => '<span class="st st-' + k + '" title="' + STREAM_TYPES[k][1] + '">' + STREAM_TYPES[k][0] + '</span>').join('') + '</span>';
+}
 function peopleHtml(s, v) {
   const mk = (list, role, kind) => list.filter(p => v.raf || p !== 'Рафаэль').map(p => personHtml(p, role, kind)).join('');
   if (!v.frame && !v.voice) return '';
   return '<div class="stream-people">' + (v.frame ? '<div class="people-group people-frame">' + mk(s._frame, 'в кадре', 'frame') + '</div>' : '') +
     (v.voice ? '<div class="people-group people-voice">' + mk(s._voice, 'в голосе', 'voice') + '</div>' : '') + '</div>';
+}
+function lineStreamTitles() {
+  const mob = window.matchMedia('(max-width: 600px)').matches;
+  const items = [];
+  document.querySelectorAll('#streams-list .stream-title').forEach(t => {
+    if (t.dataset.t === undefined) t.dataset.t = t.textContent;
+    const txt = t.dataset.t;
+    t.classList.remove('lined');
+    t.textContent = txt;
+    if (!mob) return;    const chars = txt.trim().match(/\S\s*/g) || [];
+    t.textContent = '';
+    const sp = chars.map(c => {
+      const s = document.createElement('span');
+      s.textContent = c;
+      t.appendChild(s);
+      return s;
+    });
+    items.push({ t: t, sp: sp });
+  });
+  const result = items.map(it => {
+    const lines = [];
+    let top = null;
+    it.sp.forEach(s => {
+      const y = s.offsetTop;
+      if (top === null || Math.abs(y - top) > 3) { lines.push([]); top = y; }
+      lines[lines.length - 1].push(s.textContent);
+    });
+    return { t: it.t, lines: lines };
+  });
+  result.forEach(r => {
+    r.t.textContent = '';
+    r.lines.forEach((l, i) => {
+      const d = document.createElement('span');
+      d.className = 'tl ' + (i === 0 ? 'tl-first' : i === r.lines.length - 1 ? 'tl-last' : 'tl-mid');
+      d.textContent = l.join('').trim();
+      r.t.appendChild(d);
+    });
+    r.t.classList.add('lined');
+  });
+}
+(function () {
+  let lastW = window.innerWidth, timer = 0;
+  window.addEventListener('resize', () => {
+    if (window.innerWidth === lastW) return;
+    lastW = window.innerWidth;
+    clearTimeout(timer);
+    timer = setTimeout(lineStreamTitles, 150);
+  });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (document.getElementById('streams-list')) lineStreamTitles(); });
+})();
+function lineSplitOne(t) {
+  if (!t) return;
+  const chars = t.textContent.trim().match(/\S\s*/g) || [];
+  t.textContent = '';
+  const sp = chars.map(c => {
+    const s = document.createElement('span');
+    s.textContent = c;
+    t.appendChild(s);
+    return s;
+  });
+  const lines = [];
+  let top = null;
+  sp.forEach(s => {
+    const y = s.offsetTop;
+    if (top === null || Math.abs(y - top) > 3) { lines.push([]); top = y; }
+    lines[lines.length - 1].push(s.textContent);
+  });
+  t.textContent = '';
+  lines.forEach((l, i) => {
+    const d = document.createElement('span');
+    d.className = 'tl ' + (i === 0 ? 'tl-first' : i === lines.length - 1 ? 'tl-last' : 'tl-mid');
+    d.textContent = l.join('').trim();
+    t.appendChild(d);
+  });
 }
 function youtubeId(u) {
   const m = /(?:youtube\.com\/(?:watch\?(?:[^#]*&)?v=|live\/|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/.exec(u || '');
@@ -345,8 +438,7 @@ function setupStreamPreview(box, all, getView) {  const canHover = !!(window.mat
     const w = card.offsetWidth, h = card.offsetHeight;
     const nav = document.getElementById('nav-inner');
     const strip = nav ? nav.querySelector('.dev-strip') : null;
-    const topLimit = (nav ? Math.round((strip || nav).getBoundingClientRect().bottom) : 66) + 8;
-    const bottomLimit = window.innerHeight - 8;
+    const topLimit = (nav ? Math.round((strip || nav).getBoundingClientRect().bottom) : 66) + 8;    const bottomLimit = window.innerHeight - (canHover ? 36 : 8);
     const left = Math.min(Math.max(8, r.left), window.innerWidth - w - 8);
     let top = r.bottom + 6;
     if (top + h > bottomLimit) {
@@ -360,16 +452,17 @@ function setupStreamPreview(box, all, getView) {  const canHover = !!(window.mat
     if (s) { [...card.classList].filter(c => c === 'mc' || c.startsWith('mc-')).forEach(c => card.classList.remove(c)); card.classList.add('mc', 'mc-' + s.date.slice(5, 7)); }
     if (!s) return;
     const cover = streamCover(s);
-    if (!cover) return;
+    
     const info = [];
+    info.push(streamTypesHtml(s));
     if (s.channel) info.push(escHtml(s.channel));    info.push(fmtDate(s.date));
     if (s.duration) info.push('⏱ ' + escHtml(s.duration));
     const names = list => list.map(personLabel).join(', ');
     card.href = /^https?:\/\//i.test(s.link || '') ? s.link : '#';
-    card.innerHTML = '<div class="sp-thumb"><img src="' + escHtml(cover) + '" alt="" draggable="false"><span class="sp-play"></span>' +
+    card.innerHTML = '<div class="sp-thumb"' + (cover ? '' : ' style="display:none"') + '><img src="' + escHtml(cover) + '" alt="" draggable="false">' +
       (s.duration ? '<span class="sp-dur">' + escHtml(s.duration) + '</span>' : '') + '</div>' +
       '<div class="sp-title">' + escHtml(s.title) + '</div>' +
-      '<div class="sp-meta">' + info.join(' • ') + '</div>' +      ((!getView || getView().frame) && s._frame.length ? '<div class="sp-people"><b class="sp-frame">В кадре:</b> <i>' + escHtml(names(s._frame)) + '</i></div>' : '') +      ((!getView || getView().voice) && s._voice.length ? '<div class="sp-people"><b class="sp-voice">В голосе:</b> <i>' + escHtml(names(s._voice)) + '</i></div>' : '');
+      '<div class="sp-meta">' + info.join(' • ') + '</div>' +      ((!getView || getView().frame) && s._frame.length ? '<div class="sp-people"><b class="sp-frame">В кадре:</b> <i>' + escHtml(names(s._frame)) + '</i></div>' : '') +      ((!getView || getView().voice) && s._voice.length ? '<div class="sp-people"><b class="sp-voice">В голосе:</b> <i>' + escHtml(names(s._voice)) + '</i></div>' : '');    lineSplitOne(card.querySelector('.sp-title'));
     const img = card.querySelector('img');
     img.addEventListener('error', () => { if (img.parentNode) img.parentNode.remove(); });
     place(anchor);
@@ -444,7 +537,7 @@ async function initStreamsPage() {
     const cnt = new Map();
     lists.forEach(l => l.forEach(p => cnt.set(p, (cnt.get(p) || 0) + 1)));    return [...cnt.keys()].sort(collate);
   };
-  const years = [...new Set(all.map(s => s._year))].sort().reverse();  const gYear = chipGroup($('f-year'), years, $('year-all'), $('year-none'));
+  setDateRange(all.map(s => s.date));  const years = [...new Set(all.map(s => s._year))].sort().reverse();  const gYear = chipGroup($('f-year'), years, $('year-all'), $('year-none'));
   const MONTH_NAMES = { '01': 'Январь', '02': 'Февраль', '03': 'Март', '04': 'Апрель', '05': 'Май', '06': 'Июнь', '07': 'Июль', '08': 'Август', '09': 'Сентябрь', '10': 'Октябрь', '11': 'Ноябрь', '12': 'Декабрь' };
   const months = [...new Set(all.map(s => s._month))].sort();
   const gMonth = chipGroup($('f-month'), months, $('month-all'), $('month-none'), MONTH_NAMES);
@@ -511,39 +604,56 @@ async function initStreamsPage() {
 
   function render() {
     const q = norm($('f-search').value.trim());
-    const dStart = $('f-date-start').value, dEnd = $('f-date-end').value, sort = $('f-sort').value;    const yOn = gYear.active() ? gYear.selected() : null;    const mOn = gMonth.active() ? gMonth.selected() : null;    const byMonth = $('f-group').value === 'month';
+    const dStart = $('f-date-start').value, dEnd = $('f-date-end').value, sort = $('f-sort').value;    const ySel = gYear.selected();    const yOn = gYear.active() && ySel.size ? ySel : null;    const mSel = gMonth.selected();    const mOn = gMonth.active() && mSel.size ? mSel : null;    const byMonth = $('f-group').value === 'month';
     const v = view.state();
-    box.classList.toggle('no-people', !v.frame && !v.voice);
-    const fOn = gFrame.active() ? gFrame.selected() : null;
-    const vOn = gVoice.active() ? gVoice.selected() : null;
+    box.classList.toggle('no-people', !v.frame && !v.voice);    const fSel = gFrame.selected();
+    const fOn = gFrame.active() && fSel.size ? fSel : null;    const vSel = gVoice.selected();
+    const vOn = gVoice.active() && vSel.size ? vSel : null;
     let list = all.filter(s =>
       (!q || norm(s.title).includes(q)) &&      (!yOn || yOn.has(s._year)) &&
       (!mOn || mOn.has(s._month)) &&
       (!fOn || s._frame.some(p => fOn.has(p))) &&
       (!vOn || s._voice.some(p => vOn.has(p))) &&
       (!dStart || s.date >= dStart) && (!dEnd || s.date <= dEnd));
-    list.sort((a, b) => sort === 'date-asc' ? a.date.localeCompare(b.date) || a.num - b.num : b.date.localeCompare(a.date) || b.num - a.num);
-    $('summary').innerHTML = '<b>' + list.length + '</b> ' + plural(list.length, 'стрим', 'стрима', 'стримов') + ' из ' + all.length;
+    const durSec = s => { const m = /^(\d+):(\d{2}):(\d{2})$/.exec(s.duration || ''); return m ? +m[1] * 3600 + +m[2] * 60 + +m[3] : -1; };
+    const durCmp = (a, b, dir) => { const x = durSec(a), y = durSec(b); if (x < 0 || y < 0) return (x < 0) - (y < 0); return dir * (x - y); };
+    const byDur = sort === 'dur';
+    const dirSign = gDir.asc() ? 1 : -1;
+    list.sort((a, b) => byDur ? durCmp(a, b, dirSign) || b.date.localeCompare(a.date) || b.num - a.num : dirSign * (a.date.localeCompare(b.date) || a.num - b.num));
+    $('summary').innerHTML = (list.length === all.length ? plural(list.length, 'Показан весь ', 'Показаны все ', 'Показаны все ') : plural(list.length, 'Отображён ', 'Отображено ', 'Отображено ')) + '<b>' + list.length + '</b> ' + plural(list.length, 'стрим', 'стрима', 'стримов') + (list.length === all.length ? '' : ' из ' + all.length);
     if (!list.length) { box.innerHTML = '<div class="empty">Ничего не найдено</div>'; return; }
     let html = '', lastYear = '';
     list.forEach(s => {
-      const y = s.date.slice(0, 4);      const groupKey = byMonth ? s.date.slice(0, 7) : y;      if (groupKey !== lastYear) { html += '<div class="year-sep' + (byMonth ? ' mc mc-' + s.date.slice(5, 7) : '') + '">' + (byMonth ? MONTH_NAMES[s.date.slice(5, 7)] + ' ' + y : y) + '</div>'; lastYear = groupKey; }
+      const y = s.date.slice(0, 4);      const groupKey = byMonth ? s.date.slice(0, 7) : y;      if (!byDur && groupKey !== lastYear) { html += '<div class="year-sep' + (byMonth ? ' mc mc-' + s.date.slice(5, 7) : '') + '">' + (byMonth ? MONTH_NAMES[s.date.slice(5, 7)] + ' ' + y : y) + '</div>'; lastYear = groupKey; }
       const url = safeUrl(s.link);      const title = url ? '<a class="stream-title" href="' + url + '" data-sid="' + escHtml(s.id) + '" target="_blank" rel="noopener noreferrer">' + escHtml(s.title) + '</a>'
                         : '<span class="stream-title">' + escHtml(s.title) + '</span>';
-      html += '<div class="stream-row mc mc-' + s.date.slice(5, 7) + '"><div class="stream-num">#' + s.num + '</div><div class="stream-main">' + title + '</div>' + peopleHtml(s, v) +
+      html += '<div class="stream-row mc mc-' + s.date.slice(5, 7) + '"><div class="stream-num">#' + s.num + '</div><div class="stream-main">' + streamTypesHtml(s) + title + '</div>' + peopleHtml(s, v) +
         '<div class="stream-side"><span class="stream-date">' + fmtDate(s.date) + '</span>' +
         (s.duration ? '<span>⏱ ' + s.duration + '</span>' : '') + '</div></div>';
-    });
-    box.innerHTML = html;
-  }  setupFilters(render, { 'f-date-start': '', 'f-date-end': '', 'f-sort': 'date-desc' }, [gYear, gMonth]);
+    });    box.innerHTML = html;
+    lineStreamTitles();
+  }  const dirBtn = $('f-dir');
+  let dirAsc = false;
+  const drawDir = () => { dirBtn.textContent = dirAsc ? '▲' : '▼'; dirBtn.title = dirAsc ? 'По возрастанию' : 'По убыванию'; dirBtn.setAttribute('aria-label', dirBtn.title); };
+  const gDir = { el: dirBtn, asc: () => dirAsc, active: () => dirAsc, reset: () => { dirAsc = false; drawDir(); } };
+  dirBtn.addEventListener('click', () => { dirAsc = !dirAsc; drawDir(); dirBtn.dispatchEvent(new Event('change', { bubbles: true })); });
+  drawDir();
+  setupFilters(render, { 'f-date-start': '', 'f-date-end': '', 'f-sort': 'date' }, [gYear, gMonth, gDir]);
   const vBtn = $('toggleView'), vPanel = $('view-panel'), fBtn = $('toggleFilters'), fPanel = $('filters');
+  const mBtn = $('toggleMore'), mRow = mBtn.closest('.search-row');
+  mBtn.addEventListener('click', () => {
+    const on = !mRow.classList.contains('more-open');    mRow.classList.toggle('more-open', on);    if (!on) [[fBtn, fPanel], [vBtn, vPanel]].forEach(([b, p]) => { if (!p.hasAttribute('hidden')) b.click(); });
+    mBtn.setAttribute('aria-expanded', on ? 'true' : 'false');
+    mBtn.setAttribute('aria-label', on ? 'Скрыть' : 'Показать остальное');
+    mBtn.title = on ? 'Скрыть' : 'Показать остальное';
+  });
   const setOpen = (btn, panel, open) => { if (open) panel.removeAttribute('hidden'); else panel.setAttribute('hidden', ''); btn.setAttribute('aria-expanded', open ? 'true' : 'false'); };
   vBtn.addEventListener('click', () => {
     const open = vPanel.hasAttribute('hidden');
     if (open) { closeGroups(); setOpen(fBtn, fPanel, false); }
     setOpen(vBtn, vPanel, open);
   });  fBtn.addEventListener('click', () => { if (!fPanel.hasAttribute('hidden')) setOpen(vBtn, vPanel, false); });
-  $('resetFilters').addEventListener('click', () => { closeGroups(); setOpen(fBtn, fPanel, false); });  const vCount = () => { $('vcount').textContent = Object.keys(vDef).filter(k => vc[k].checked !== vDef[k]).length + (gFrame.active() ? 1 : 0) + (gVoice.active() ? 1 : 0) || ''; };
+  $('resetFilters').addEventListener('click', () => { closeGroups(); setOpen(fBtn, fPanel, false); });  $('acceptView').addEventListener('click', () => { closeGroups(); setOpen(vBtn, vPanel, false); });  const vCount = () => { $('vcount').textContent = Object.keys(vDef).filter(k => vc[k].checked !== vDef[k]).length + (gFrame.active() ? 1 : 0) + (gVoice.active() ? 1 : 0) || ''; };
   [gFrame, gVoice].forEach(g => g.el.addEventListener('change', () => { vCount(); render(); }));
   $('resetView').addEventListener('click', () => { endPick(false); gFrame.reset(); gVoice.reset(); view.reset(); vCount(); render(); closeGroups(); setOpen(vBtn, vPanel, false); });
   view.el.addEventListener('change', () => {    vCount();
@@ -587,6 +697,7 @@ async function initGamesPage() {
     list.forEach((a, i) => { a.no = i + 1; });
   });
   const allGames = [...merged.values()];
+  setDateRange(allGames.map(g => sById[g.streamId] && sById[g.streamId].date), 'game');
   allGames.forEach(m => {
     m.attempts.sort((a, b) => a.no - b.no);    m.no = m.attempts[0].no;
     m.nos = m.attempts.map(a => a.no).join(', ');
@@ -618,7 +729,7 @@ async function initGamesPage() {
         (!dStart || s.date >= dStart) && (!dEnd || s.date <= dEnd);
     });
     const total = list.length;
-    $('summary').innerHTML = '<b>' + total + '</b> ' + plural(total, 'игра', 'игры', 'игр') + ' из ' + allGames.length;
+    $('summary').innerHTML = (total === allGames.length ? plural(total, 'Показана вся ', 'Показаны все ', 'Показаны все ') : plural(total, 'Отображена ', 'Отображено ', 'Отображено ')) + '<b>' + total + '</b> ' + plural(total, 'игра', 'игры', 'игр') + (total === allGames.length ? '' : ' из ' + allGames.length);
     if (sortVal === 'name-asc') {
       list.sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
       renderByLetter(list);

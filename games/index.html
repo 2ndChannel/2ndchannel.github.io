@@ -42,13 +42,13 @@
 <button id="toggleFilters" type="button" aria-expanded="false">⚙ Фильтры<span id="fcount"></span></button>
 <span class="summary" id="summary"></span>
 </div>
-<div class="filters-panel" id="filters" hidden>
+<div class="filters-panel games-filters" id="filters" hidden>
 <div class="plat-group"><div class="plat-head"><span class="plat-title">Платформа</span><button type="button" class="mini" id="plat-all">Выделить все</button><button type="button" class="mini" id="plat-none">Снять все</button></div><div class="plat-list" id="f-plat"></div></div>
 <div class="status-group"><span class="status-title">Статус</span><div class="status-list" id="f-status"><label class="plat-chip st-green"><input type="checkbox" class="plat-cb" value="green" checked><i class="dot green"></i>пройдено</label><label class="plat-chip st-red"><input type="checkbox" class="plat-cb" value="red" checked><i class="dot red"></i>не пройдено</label><label class="plat-chip st-yellow"><input type="checkbox" class="plat-cb" value="yellow" checked><i class="dot yellow"></i>смотрели</label></div></div>
-<div class="filter-group"><label>С даты</label><input type="hidden" id="f-date-start" data-datepicker></div>
-<div class="filter-group"><label>По дату</label><input type="hidden" id="f-date-end" data-datepicker></div>
+<div class="date-range"><div class="filter-group"><label>С даты</label><input type="hidden" id="f-date-start" data-datepicker></div>
+<div class="filter-group"><label>По дату</label><input type="hidden" id="f-date-end" data-datepicker></div></div>
 <div class="filter-group"><label for="f-sort">Сортировка</label><select id="f-sort"><option value="date-desc">Новые сверху</option><option value="date-asc">Старые сверху</option><option value="name-asc">По названию А–Я</option></select></div>
-<button id="resetFilters" type="button">Сброс</button>
+<div class="panel-actions"><button id="acceptFilters" type="button" class="accept-btn">Принять</button><button id="resetFilters" type="button">Сброс</button></div>
 
 </div>
 </div>

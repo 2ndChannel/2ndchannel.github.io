@@ -17,8 +17,9 @@
     state.trigger.setAttribute('aria-expanded', 'true');
     const cur = valueDesc.get.call(state.input);
     const now = new Date();
-    const todayIso = iso(now.getFullYear(), now.getMonth(), now.getDate());
-    let y = now.getFullYear(), m = now.getMonth();
+    const todayIso = iso(now.getFullYear(), now.getMonth(), now.getDate());    const minIso = state.input.dataset.min || '', maxIso = state.input.dataset.max || todayIso;
+    const ref = todayIso > maxIso ? maxIso : (minIso && todayIso < minIso ? minIso : todayIso);
+    let y = +ref.slice(0, 4), m = +ref.slice(5, 7) - 1;
     if (/^\d{4}-\d{2}-\d{2}$/.test(cur)) { const p = cur.split('-'); y = +p[0]; m = +p[1] - 1; }
     popup = document.createElement('div');
     popup.className = 'dp-popup';
@@ -31,31 +32,33 @@
       const left = Math.min(Math.max(8, r.left), Math.max(8, window.innerWidth - w - 8));
       let top = r.bottom + 4;
       if (top + h > window.innerHeight - 8) top = Math.max(8, r.top - h - 4);
-      popup.style.left = left + 'px';
-      popup.style.top = top + 'px';
+      popup.style.left = (window.innerWidth <= 600 ? Math.max(8, (window.innerWidth - w) / 2) : left) + 'px';
+      popup.style.top = (window.innerWidth <= 600 ? Math.max(8, (window.innerHeight - h) / 2) : top) + 'px';
     };
 
     const build = () => {
       const sel = valueDesc.get.call(state.input);
       const lead = (new Date(y, m, 1).getDay() + 6) % 7;
-      const count = new Date(y, m + 1, 0).getDate();      const maxY = now.getFullYear(), maxM = now.getMonth();
-      const noNextMonth = y > maxY || (y === maxY && m >= maxM);
-      const noNextYear = y + 1 > maxY || (y + 1 === maxY && m > maxM);
+      const count = new Date(y, m + 1, 0).getDate();      const maxY = +maxIso.slice(0, 4), maxM = +maxIso.slice(5, 7) - 1, minY = minIso ? +minIso.slice(0, 4) : -Infinity, minM = minIso ? +minIso.slice(5, 7) - 1 : 0;
+      const noNextMonth = y > maxY || (y === maxY && m >= maxM);      const noNextYear = y + 1 > maxY || (y + 1 === maxY && m > maxM);
+      const noPrevMonth = y < minY || (y === minY && m <= minM);
+      const noPrevYear = y - 1 < minY || (y - 1 === minY && m < minM);
       let h = '<div class="dp-head">' +
-        '<button type="button" class="dp-nav" data-act="py" title="Год назад">«</button>' +
-        '<button type="button" class="dp-nav" data-act="pm" title="Месяц назад">‹</button>' +
+        '<button type="button" class="dp-nav" data-act="py" title="Год назад"' + (noPrevYear ? ' disabled' : '') + '>«</button>' +
+        '<button type="button" class="dp-nav" data-act="pm" title="Месяц назад"' + (noPrevMonth ? ' disabled' : '') + '>‹</button>' +
         '<span class="dp-title">' + MONTHS[m] + ' ' + y + '</span>' +        '<button type="button" class="dp-nav" data-act="nm" title="Месяц вперёд"' + (noNextMonth ? ' disabled' : '') + '>›</button>' +        '<button type="button" class="dp-nav" data-act="ny" title="Год вперёд"' + (noNextYear ? ' disabled' : '') + '>»</button></div><div class="dp-grid">';
       DAYS.forEach(d => { h += '<span class="dp-dow">' + d + '</span>'; });
       for (let i = 0; i < lead; i++) h += '<span></span>';
       for (let d = 1; d <= count; d++) {
-        const v = iso(y, m, d);        h += '<button type="button" class="dp-day' + (v === sel ? ' sel' : '') + (v === todayIso ? ' today' : '') + '" data-v="' + v + '"' + (v > todayIso ? ' disabled' : '') + '>' + d + '</button>';
-      }
-      h += '</div><div class="dp-foot"><button type="button" class="dp-mini" data-act="today">Сегодня</button><button type="button" class="dp-mini" data-act="clear">Очистить</button></div>';
-      popup.innerHTML = h;
+        const v = iso(y, m, d);        h += '<button type="button" class="dp-day' + (v === sel ? ' sel' : '') + (v === todayIso ? ' today' : '') + '" data-v="' + v + '"' + (v > maxIso || (minIso && v < minIso) ? ' disabled' : '') + '>' + d + '</button>';
+      }      for (let i = lead + count; i < 42; i++) h += '<span class="dp-pad"></span>';
+      h += '</div><div class="dp-foot"><button type="button" class="dp-mini" data-act="today"' + (todayIso > maxIso || (minIso && todayIso < minIso) ? ' disabled' : '') + '>Сегодня</button><button type="button" class="dp-mini" data-act="clear">Очистить</button></div><div class="dp-note"></div>';
+      
+      popup.innerHTML = h;      popup.querySelectorAll('button:disabled').forEach(b => { b.disabled = false; b.classList.add('dp-off'); const a = b.dataset.act; b.dataset.off = (a === 'py' || a === 'pm') ? 'min' : (a === 'ny' || a === 'nm') ? 'max' : b.dataset.v ? (b.dataset.v > maxIso ? 'max' : 'min') : (todayIso > maxIso ? 'max' : 'min'); });
       place();
     };
 
-    const pick = v => {
+    const showLimit = k => { const n = popup.querySelector('.dp-note'); if (!n) return; const t = (k === 'min' ? state.input.dataset.minMsg : state.input.dataset.maxMsg) || ''; n.textContent = t; n.classList.remove('up'); n.classList.toggle('on', !!t); if (t && n.getBoundingClientRect().bottom > window.innerHeight - 8) n.classList.add('up'); };    const pick = v => {
       const input = state.input;
       const changed = valueDesc.get.call(input) !== v;
       input.value = v;
@@ -65,7 +68,7 @@
 
     popup.addEventListener('click', e => {
       e.stopPropagation();
-      const b = e.target.closest('button');      if (!b || b.disabled) return;
+      const b = e.target.closest('button');      if (!b) return;      if (b.dataset.off) { showLimit(b.dataset.off); return; }
       const act = b.dataset.act;
       if (b.dataset.v) { pick(b.dataset.v); return; }
       if (act === 'today') { pick(todayIso); return; }
