@@ -788,7 +788,7 @@ async function initGamesPage() {
     gamesContainer.innerHTML = order.map(s => {
       const url = safeUrl(s.link);
       const title = url ? '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + escHtml(s.title) + '</a>' : escHtml(s.title);
-      return '<div class="game-card"><div class="stream-header"><h3>' + (s.num > 0 ? '<span class="stream-no" title="Номер стрима">#' + s.num + '</span>' : '') + title + '</h3><span class="stream-date-header">' + fmtDate(s.date) + '</span></div>' +
+      return '<div class="game-card"><div class="stream-header"><h3>' + (s.num > 0 ? '<span class="stream-no" title="Номер стрима">#' + s.num + '</span>' : '') + title + '</h3><span class="stream-date-header">' + (s.num > 0 ? '<span class="sdh-no">#' + s.num + ' • </span>' : '') + fmtDate(s.date) + '</span></div>' +
         '<div class="list-body">' + groups.get(s.id).slice().sort((a, b) => a.no - b.no).map(badge).join('') + '</div></div>';
     }).join('');
   }
