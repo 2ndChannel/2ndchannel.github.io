@@ -16,10 +16,5 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://2ndchannel.github.io/tnu4/</loc> <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://2ndchannel.github.io/tnu4/ngiv/</loc>
-    <priority>0.5</priority>
-  </url>
+    <loc>https://2ndchannel.github.io/tnu4/</loc> <priority>0.7</priority>  </url>
 </urlset>
