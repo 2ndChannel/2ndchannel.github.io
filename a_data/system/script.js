@@ -425,10 +425,26 @@ function youtubeId(u) {
   const m = /(?:youtube\.com\/(?:watch\?(?:[^#]*&)?v=|live\/|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/.exec(u || '');
   return m ? m[1] : '';
 }
-function streamCover(s) {
-  if (s.cover) return s.cover;
+const VK_LOGO = '/home/vkvideolive.png';
+const vkName = u => /^https?:\/\/live\.vkvideo\.ru\//i.test(u || '') ? 'VK Live' : 'VK';
+const vkLogo = u => vkName(u) === 'VK Live' ? VK_LOGO : '/home/vk.png';
+function streamLinks(s) {
+  const out = [];
+  const add = (k, name, url, cover, duration) => {
+    if (/^https?:\/\//i.test(url || '') && !out.some(o => o.url === url)) out.push({ k: k, name: name, url: url, cover: cover, duration: duration || '' });
+  };
+  const isVk = u => { try { return /(^|\.)(vk\.com|vkvideo\.ru)$/.test(new URL(u).hostname); } catch (e) { return false; } };
   const id = youtubeId(s.link);
-  return id ? 'https://i.ytimg.com/vi/' + id + '/mqdefault.jpg' : '';
+  const ytCover = id ? (s.cover || 'https://i.ytimg.com/vi/' + id + '/mqdefault.jpg') : (s.cover || '');
+  if (id) add('yt', 'YouTube', s.link, ytCover, s.duration);
+  else if (isVk(s.link)) add('vk', vkName(s.link), s.link, s.vkCover || s.cover || vkLogo(s.link), s.duration);
+  else add('other', s.channel || 'Ссылка', s.link, s.cover || '', s.duration);
+  if (s.vk) add('vk', vkName(s.vk), s.vk, s.vkCover || ytCover || vkLogo(s.vk), s.vkDuration);
+  return out;
+}
+function streamCover(s) {
+  const l = streamLinks(s)[0];
+  return l ? l.cover : (s.cover || '');
 }
 function setupStreamPreview(box, all, getView) {  const canHover = !!(window.matchMedia && window.matchMedia('(hover: hover)').matches);
   const byId = new Map(all.map(s => [s.id, s]));
@@ -465,16 +481,29 @@ function setupStreamPreview(box, all, getView) {  const canHover = !!(window.mat
     
     const info = [];
     info.push(streamTypesHtml(s));
-    if (s.channel) info.push(escHtml(s.channel));    info.push(fmtDate(s.date));
-    if (s.duration) info.push('⏱ ' + escHtml(s.duration));
+    const plats = streamLinks(s).map(l => l.name); if (s.channel && !plats.includes(s.channel)) plats.unshift(s.channel); if (plats.length && streamLinks(s).length < 2) info.push(escHtml(plats.join(' + ')));    info.push(fmtDate(s.date));
+    const infoBase = info.slice(); const durInfo = d => d ? ['⏱ ' + escHtml(d)] : []; info.push(...durInfo((streamLinks(s)[0] || {}).duration));
     const names = list => list.map(personLabel).join(', ');
-    card.href = /^https?:\/\//i.test(s.link || '') ? s.link : '#';
-    card.innerHTML = '<div class="sp-thumb"' + (cover ? '' : ' style="display:none"') + '><img src="' + escHtml(cover) + '" alt="" draggable="false">' +
-      (s.duration ? '<span class="sp-dur">' + escHtml(s.duration) + '</span>' : '') + '</div>' +
+    const links = streamLinks(s); card.href = links[0] ? links[0].url : '#';
+    const tabsHtml = links.length > 1 ? '<div class="sp-tabs">' + links.map((l, i) => '<span class="sp-tab sp-tab-' + l.k + (i ? '' : ' on') + '" data-i="' + i + '" title="Открыть: ' + escHtml(l.name) + '">' + escHtml(l.name) + '</span>').join('') + '</div>' : '';
+    card.innerHTML = tabsHtml + '<div class="sp-thumb' + (/^\/home\//.test(cover) ? ' sp-logo' : '') + '"' + (cover ? '' : ' style="display:none"') + '><img src="' + escHtml(cover) + '" alt="" draggable="false">' +
+      (links[0] && links[0].duration ? '<span class="sp-dur">' + escHtml(links[0].duration) + '</span>' : '') + '</div>' +
       '<div class="sp-title">' + escHtml(s.title) + '</div>' +
       '<div class="sp-meta">' + info.join(' • ') + '</div>' +      ((!getView || getView().frame) && s._frame.length ? '<div class="sp-people"><b class="sp-frame">В кадре:</b> <i>' + escHtml(names(s._frame)) + '</i></div>' : '') +      ((!getView || getView().voice) && s._voice.length ? '<div class="sp-people"><b class="sp-voice">В голосе:</b> <i>' + escHtml(names(s._voice)) + '</i></div>' : '');    lineSplitOne(card.querySelector('.sp-title'));
     const img = card.querySelector('img');
-    img.addEventListener('error', () => { if (img.parentNode) img.parentNode.remove(); });    place(anchor, mx);
+    img.addEventListener('error', () => { if (img.parentNode) img.parentNode.remove(); });
+    const bindImg = () => { const im = card.querySelector('.sp-thumb img'); if (im) im.addEventListener('error', () => { if (im.parentNode) im.parentNode.remove(); }); };
+    card._links = links;
+    card._select = i => {
+      const l = links[i];
+      if (!l) return;
+      card.href = l.url; card.querySelector('.sp-meta').innerHTML = infoBase.concat(durInfo(l.duration)).join(' • ');
+      card.querySelectorAll('.sp-tab').forEach(t => t.classList.toggle('on', +t.dataset.i === i));
+      const html = '<div class="sp-thumb' + (/^\/home\//.test(l.cover) ? ' sp-logo' : '') + '"' + (l.cover ? '' : ' style="display:none"') + '><img src="' + escHtml(l.cover) + '" alt="" draggable="false">' + (l.duration ? '<span class="sp-dur">' + escHtml(l.duration) + '</span>' : '') + '</div>';
+      const th = card.querySelector('.sp-thumb');
+      if (th) th.outerHTML = html; else card.querySelector('.sp-tabs').insertAdjacentHTML('afterend', html);
+      bindImg();
+    };    place(anchor, mx);
     current = anchor.dataset.sid;
     card.classList.add('show');
   };  box.addEventListener('mousemove', e => { mx = e.clientX; }); box.addEventListener('mouseover', e => { mx = e.clientX;    if (!canHover) return;
@@ -531,6 +560,48 @@ function setupStreamPreview(box, all, getView) {  const canHover = !!(window.mat
   window.addEventListener('scroll', hide, { passive: true });
   document.addEventListener('input', hide);
   document.addEventListener('click', hide);
+  const pick = document.createElement('div');
+  pick.className = 'stream-pick';
+  pick.hidden = true;
+  document.body.appendChild(pick);
+  const closePick = () => { pick.hidden = true; setTimeout(() => { if (pick.hidden) pick.innerHTML = ''; }, 0); };
+  const openPick = (s, links) => {
+    hide();
+    pick.innerHTML = '<div class="sk-box mc mc-' + s.date.slice(5, 7) + '" role="dialog" aria-modal="true"><div class="sk-title">' + escHtml(s.title) + '</div><div class="sk-sub">Где смотреть?</div>' +
+      links.map(l => '<a class="sk-item sk-' + l.k + '" href="' + escHtml(l.url) + '" target="_blank" rel="noopener noreferrer">' + escHtml(l.name) + '</a>').join('') +
+      '<button type="button" class="sk-close">Отмена</button></div>';
+    pick.hidden = false;
+    const f = pick.querySelector('.sk-item');
+    if (f) f.focus();
+  };
+  pick.addEventListener('click', e => { if (e.target === pick || e.target.closest('.sk-close') || e.target.closest('.sk-item')) closePick(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !pick.hidden) closePick(); });
+  const intercept = (e, s) => {
+    if (!s || e.defaultPrevented) return;
+    const links = streamLinks(s);
+    if (links.length < 2) return;
+    e.preventDefault();
+    e.stopPropagation();
+    openPick(s, links);
+  };
+  box.addEventListener('click', e => {
+    const a = e.target.closest ? e.target.closest('a.stream-title') : null;
+    if (!a || e.ctrlKey || e.metaKey || e.shiftKey || e.button) return;
+    intercept(e, byId.get(a.dataset.sid));
+  }, true);  card.addEventListener('mouseover', e => {
+    const t = e.target.closest ? e.target.closest('.sp-tab') : null;
+    if (t && card._select) card._select(+t.dataset.i);
+  });
+  card.addEventListener('click', e => {
+    const t = e.target.closest ? e.target.closest('.sp-tab') : null;
+    if (!t || !card._links) return;
+    const l = card._links[+t.dataset.i];
+    if (!l) return;
+    e.preventDefault();
+    e.stopPropagation();
+    window.open(l.url, '_blank', 'noopener,noreferrer');
+    hide();
+  });
   return { hide };
 }
 
@@ -680,7 +751,12 @@ async function initGamesPage() {
   const $ = id => document.getElementById(id);
   const sById = {};
   streams.forEach(s => sById[s.id] = s);
-  const secOf = u => { const m = /[?&#]t=(\d+)/.exec(u || ''); return m ? +m[1] : null; };
+  const attByIdx = new Map();
+  const secOf = u => {
+    const m = /[?&#](?:t|tc)=(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s?)?(?=$|[&#])/.exec(u || '');
+    if (!m || (!m[1] && !m[2] && !m[3])) return null;
+    return (+m[1] || 0) * 3600 + (+m[2] || 0) * 60 + (+m[3] || 0);
+  };
   const byTime = (a, b) => {
     const x = a.t == null ? Infinity : a.t, y = b.t == null ? Infinity : b.t;
     return x === y ? 0 : x - y;
@@ -691,7 +767,7 @@ async function initGamesPage() {
     const k = g.streamId + '|' + g.name + '|' + (g.platform || '');
     let m = merged.get(k);
     if (!m) { m = Object.assign({}, g, { attempts: [] }); merged.set(k, m); }
-    const at = { status: g.status, timecode: g.timecode, t: secOf(g.timecode), idx: i };
+    const at = { status: g.status, timecode: g.timecode, vkTimecode: g.vkTimecode, sid: g.streamId, game: m, t: secOf(g.timecode) ?? secOf(g.vkTimecode), idx: i }; attByIdx.set(i, at);
     m.attempts.push(at);
     if (!perStream.has(g.streamId)) perStream.set(g.streamId, []);
     perStream.get(g.streamId).push(at);
@@ -747,9 +823,23 @@ async function initGamesPage() {
     renderGrouped(list, sortVal === 'date-asc');
   }
 
+  function momentLinks(a) {
+    const s = sById[a.sid];
+    const out = [];
+    const add = (u, fallback) => {
+      if (!/^https?:\/\//i.test(u || '') || out.some(o => o.url === u)) return;
+      const vk = /^https?:\/\/([^/]*\.)?(vk\.com|vkvideo\.ru)(\/|$)/i.test(u);
+      out.push({ k: vk ? 'vk' : 'yt', name: vk ? vkName(u) + (fallback ? ' (без таймкода)' : '') : 'YouTube', url: u });
+    };
+    add(a.timecode, false);
+    add(a.vkTimecode, false);
+    if (!out.some(o => o.k === 'vk') && s && s.vk) add(s.vk, true);
+    return out;
+  }
+
   function momentLink(a, cls, text, title) {
-    const tc = safeUrl(a.timecode);
-    return '<a class="' + (cls ? cls + ' ' : '') + (tc ? '' : 'off') + '"' + (tc ? ' href="' + tc + '" target="_blank" rel="noopener noreferrer"' : '') + ' title="' + escHtml(title) + '">' + text + '</a>';
+    const ls = momentLinks(a); const tc = ls.length ? escHtml(ls[0].url) : ''; const att = ls.length > 1 ? ' data-att="' + a.idx + '"' : '';
+    return '<a class="' + (cls ? cls + ' ' : '') + (tc ? '' : 'off') + '"' + (tc ? ' href="' + tc + '" target="_blank" rel="noopener noreferrer"' + att : '') + ' title="' + escHtml(title) + '">' + text + '</a>';
   }
 
   let tipMode = false;
@@ -786,7 +876,7 @@ async function initGamesPage() {
     });
     gamesContainer.innerHTML = order.map(s => {
       const url = safeUrl(s.link);
-      const title = url ? '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + escHtml(s.title) + '</a>' : escHtml(s.title);
+      const title = url ? '<a href="' + url + '"' + (streamLinks(s).length > 1 ? ' data-sid="' + escHtml(s.id) + '"' : '') + ' target="_blank" rel="noopener noreferrer">' + escHtml(s.title) + '</a>' : escHtml(s.title);
       return '<div class="game-card"><div class="stream-header"><h3>' + (s.num > 0 ? '<span class="stream-no" title="Номер стрима">#' + s.num + '</span>' : '') + title + '</h3><span class="stream-date-header">' + (s.num > 0 ? '<span class="sdh-no">#' + s.num + ' • </span>' : '') + fmtDate(s.date) + '</span></div>' +
         '<div class="list-body">' + groups.get(s.id).slice().sort((a, b) => a.no - b.no).map(badge).join('') + '</div></div>';
     }).join('');
@@ -819,6 +909,16 @@ async function initGamesPage() {
   pop.className = 'game-pop';
   pop.hidden = true;
   document.body.appendChild(pop);
+  const openPop = (title, items, x, y) => {
+    pop.innerHTML = '<div class="pop-title">' + escHtml(title) + '</div>' + items.join('');
+    pop.hidden = false;
+    const r = pop.getBoundingClientRect();
+    const left = Math.max(8, Math.min(x, window.innerWidth - r.width - 8));
+    let top = y + 8;
+    if (top + r.height > window.innerHeight - 8) top = y - r.height - 8;
+    pop.style.left = left + 'px';
+    pop.style.top = Math.max(8, top) + 'px';
+  };
   const closePop = () => { pop.hidden = true; };
   gamesContainer.addEventListener('click', e => {
     const b = e.target.closest('.badge');
@@ -827,11 +927,13 @@ async function initGamesPage() {
     const g = allGames[+b.dataset.gi];
     if (!g) return;
     const urls = []; const link = (u, text) => { urls.push(u); return '<a class="pop-item" href="' + u + '" target="_blank" rel="noopener noreferrer">' + escHtml(text) + '</a>'; };
-    const items = [];
-    g.attempts.forEach((a, i) => {
-      const u = safeUrl(a.timecode);
-      if (!u) return;
-      items.push(link(u, g.attempts.length > 1 ? '🎥 Попытка ' + (i + 1) + ' · запуск №' + a.no + ' · ' + (statusIcon[a.status] || '') : '🎥 Перейти к просмотру'));
+    const items = [];    g.attempts.forEach((a, i) => {
+      const ls = momentLinks(a);
+      ls.forEach(m => {
+        const base = g.attempts.length > 1 ? 'Попытка ' + (i + 1) + ' · запуск №' + a.no + ' · ' + (statusIcon[a.status] || '') : '';
+        const text = base ? (ls.length > 1 ? base + ' · ' + m.name : base) : (ls.length > 1 ? 'Смотреть: ' + m.name : 'Перейти к просмотру');
+        items.push(link(escHtml(m.url), '🎥 ' + text));
+      });
     });
     const dl = safeUrl(g.download);
     if (dl) items.push(link(dl, '📥 Скачать / страница игры'));
@@ -850,5 +952,24 @@ async function initGamesPage() {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closePop(); });
   window.addEventListener('scroll', closePop, { passive: true });
   window.addEventListener('resize', closePop);
+  gamesContainer.addEventListener('click', e => {
+    if (e.ctrlKey || e.metaKey || e.shiftKey || e.button) return;
+    const el = e.target.closest ? e.target.closest('a[data-att], a[data-sid]') : null;
+    if (!el || !gamesContainer.contains(el)) return;
+    let title = '', ls = [];
+    if (el.dataset.att) {
+      const at = attByIdx.get(+el.dataset.att);
+      if (at) { ls = momentLinks(at); title = at.game.name; }
+    } else {
+      const s = sById[el.dataset.sid];
+      if (s) { ls = streamLinks(s); title = s.title; }
+    }
+    if (ls.length < 2) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const r = el.getBoundingClientRect();
+    const hasPt = e.clientX || e.clientY;
+    openPop(title, ls.map(l => '<a class="pop-item" href="' + escHtml(l.url) + '" target="_blank" rel="noopener noreferrer">🎥 ' + escHtml(l.name) + '</a>'), hasPt ? e.clientX : r.left, hasPt ? e.clientY : r.bottom);
+  }, true);
   setupFilters(applyFilters, { 'f-date-start': '', 'f-date-end': '', 'f-sort': 'date-desc' }, [gPlat, gStatus]);
 }
