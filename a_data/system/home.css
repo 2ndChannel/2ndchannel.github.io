@@ -222,7 +222,7 @@ animation: warnBlink 1.8s ease-in-out infinite;
 @media (prefers-reduced-motion: reduce) {
 .home-warn { animation: none; }
 }
-@media (max-width: 850px) {
+:where(html:not([data-mode="pc"])) {
 .home-card h1 { font-size: 24px; margin-bottom: 8px; }
 .home-card h2 { font-size: 17px; padding-bottom: 8px; }
 .home-card p { font-size: 15px; line-height: 1.45; }
@@ -231,10 +231,10 @@ animation: warnBlink 1.8s ease-in-out infinite;
 .container { padding: 10px; }
 .alert-box { font-size: 14px; }
 }
-@media (max-width: 760px) {
+:where(html[data-mode="phone"]) {
 .triple-layout { grid-template-columns: 1fr; }
 }
-@media (max-width: 640px) {
+:where(html[data-mode="phone"]) {
 .double-layout { grid-template-columns: 1fr; }
 .home-card:not(.split-card) .youtube-grid { grid-template-columns: 1fr; }
 .h2-icon { width: 24px; height: 24px; }
@@ -249,15 +249,8 @@ body:has(#nav-inner.mobile-mode) .home-card p { font-size: 15px; line-height: 1.
 body:has(#nav-inner.mobile-mode) .home-card { padding: 16px; border-radius: 16px; }
 body:has(#nav-inner.mobile-mode) .home-card.no-title-card { padding: 8px; }
 body:has(#nav-inner.mobile-mode) .container { padding: 10px; }
-@media (hover: none) and (pointer: coarse) and (max-width: 999px) {
-.home-card h1 { font-size: 24px; margin-bottom: 8px; }
-.home-card h2 { font-size: 17px; padding-bottom: 8px; }
-.home-card p { font-size: 15px; line-height: 1.45; }
-.home-card { padding: 16px; border-radius: 16px; }
-.home-card.no-title-card { padding: 8px; }
-.container { padding: 10px; }
-}
-@media (min-width: 1000px) {
+
+:where(html[data-mode="pc"]) {
 .container {
 display: grid;
 grid-template-columns: 330px minmax(0, 1fr);
@@ -350,7 +343,7 @@ margin-top: 0;
 }
 .no-title-card { padding: 8px; }
 }
-@media (min-width: 1200px) and (hover: hover) and (pointer: fine) {
+:where(html[data-mode="pc"][data-input="mouse"][data-size="wide"]) {
 .container {
 max-width: 1300px;
 padding: 14px 20px;
@@ -391,11 +384,11 @@ padding: 6px 10px;
 .yt-desc { font-size: 13px; }
 .container > .home-warn { font-size: 14px; padding: 8px 14px; }
 }
-@media (max-width: 360px) {
+:where(html[data-size="tiny"]) {
 .home-card { padding: 12px; }
 .yt-img-box { width: 36px; height: 36px; }
 }
-@media (max-width: 850px) {
+:where(html:not([data-mode="pc"])) {
 .home-card.links .title-with-icon {
 flex-direction: row-reverse;
 justify-content: flex-start;
@@ -414,7 +407,8 @@ gap: 12px;
 body:has(#nav-inner.mobile-mode) .home-card.links h2 { font-size: 19px; }
 body:has(#nav-inner.mobile-mode) .home-warn { display: none; }
 .triple-title { display: none; }
-@media (max-width: 850px) {
+:where(html[data-mode="pc"][data-input="mouse"]) .container { zoom: var(--ui-scale); }
+:where(html:not([data-mode="pc"])) {
 .triple-layout {
 grid-template-columns: 1fr;
 gap: 8px;

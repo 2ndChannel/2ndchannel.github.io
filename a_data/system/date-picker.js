@@ -31,9 +31,8 @@
       const w = popup.offsetWidth, h = popup.offsetHeight;
       const left = Math.min(Math.max(8, r.left), Math.max(8, window.innerWidth - w - 8));
       let top = r.bottom + 4;
-      if (top + h > window.innerHeight - 8) top = Math.max(8, r.top - h - 4);
-      popup.style.left = (window.innerWidth <= 600 ? Math.max(8, (window.innerWidth - w) / 2) : left) + 'px';
-      popup.style.top = (window.innerWidth <= 600 ? Math.max(8, (window.innerHeight - h) / 2) : top) + 'px';
+      if (top + h > window.innerHeight - 8) top = Math.max(8, r.top - h - 4);      popup.style.left = (document.documentElement.dataset.mode === 'phone' ? Math.max(8, (window.innerWidth - w) / 2) : left) + 'px';
+      popup.style.top = (document.documentElement.dataset.mode === 'phone' ? Math.max(8, (window.innerHeight - h) / 2) : top) + 'px';
     };
 
     const build = () => {

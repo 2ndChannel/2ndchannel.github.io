@@ -98,6 +98,10 @@ fill: none;
 stroke: currentColor;
 stroke-width: 2;
 }
+.nav.tight { padding: 0 8px; }
+.nav.tight .menu-links { gap: 6px; }
+.nav.tight .menu-links a { gap: 6px; padding: 6px 9px; font-size: 12px; letter-spacing: 0.5px; border-radius: 9px; }
+.nav.tight .menu-icon { width: 15px; height: 15px; }
 .mobile-header {
 display: none;
 justify-content: center;

@@ -42,20 +42,18 @@ const navInner = document.getElementById('nav-inner');
 const menuList = document.getElementById('menu-list');
 const menuBtn = document.getElementById('menu-btn');
 const menuTitle = document.getElementById('menuTitle');
-function isSmallTouch() {
-const touch = navigator.maxTouchPoints > 0 || window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-return touch && Math.min(window.screen.width, window.screen.height) < 600;
-}
-if (isSmallTouch()) navInner.classList.add('mobile-mode');
 const checkFitting = () => {
-if (isSmallTouch()) {
+navInner.classList.remove('mobile-mode', 'tight');
+if (document.documentElement.dataset.mode === 'phone') {
 navInner.classList.add('mobile-mode');
 return;
 }
-navInner.classList.remove('mobile-mode');
-if (window.innerWidth < 850 || menuList.scrollWidth > navInner.clientWidth - 20) {
+const overflow = () => menuList.scrollWidth > navInner.clientWidth - 20;
+if (!overflow()) return;
+navInner.classList.add('tight');
+if (!overflow()) return;
+navInner.classList.remove('tight');
 navInner.classList.add('mobile-mode');
-}
 };
 menuBtn.onclick = (e) => {
 e.stopPropagation();
@@ -99,6 +97,7 @@ navInner.classList.add('color-loaded');
 }
 checkFitting();
 window.addEventListener('resize', checkFitting);
+window.addEventListener('modechange', checkFitting);
 function showNavBlink() {
 if (!navInner.classList.contains('mobile-mode')) return;
 try {
@@ -351,7 +350,7 @@ function peopleHtml(s, v) {
     (v.voice ? '<div class="people-group people-voice">' + mk(s._voice, 'в голосе', 'voice') + '</div>' : '') + '</div>';
 }
 function lineStreamTitles() {
-  const mob = window.matchMedia('(max-width: 600px)').matches;
+  const mob = document.documentElement.dataset.mode === 'phone';
   const items = [];
   document.querySelectorAll('#streams-list .stream-title').forEach(t => {
     if (t.dataset.t === undefined) t.dataset.t = t.textContent;
@@ -709,7 +708,7 @@ async function initGamesPage() {
     list.sort((a, b) => b.idx - a.idx);
     list.forEach((a, i) => { a.no = i + 1; });
   });
-  const allGames = [...merged.values()];
+  const allGames = [...merged.values()]; allGames.forEach((m, i) => { m.gi = i; });
   setDateRange(allGames.map(g => sById[g.streamId] && sById[g.streamId].date), 'game');
   allGames.forEach(m => {
     m.attempts.sort((a, b) => a.no - b.no);    m.no = m.attempts[0].no;
@@ -758,7 +757,7 @@ async function initGamesPage() {
 
   let tipMode = false;
   function tipOf(g) {
-    const base = statusIcon[g.status] || '';
+    const base = [(statusIcon[g.status] || '').replace(/^./, c => c.toUpperCase()), g.note, g.attempts.length > 1 ? 'Попыток: ' + g.attempts.length : '', g.platform].filter(Boolean).join(' · ');
     if (!tipMode) return base;
     const s = sById[g.streamId];
     return s ? s.title + '\n' + fmtDate(s.date) + (base ? ' · ' + base : '') : base;
@@ -771,7 +770,7 @@ async function initGamesPage() {
     const moments = n > 1
       ? g.attempts.map((a, i) => momentLink(a, 'try ' + a.status, i + 1, 'Попытка ' + (i + 1) + ' (запуск №' + a.no + '): ' + (statusIcon[a.status] || ''))).join('')
       : momentLink(g.attempts[0], '', '🎥', 'Момент на стриме');
-    return '<div class="badge ' + g.status + '" title="' + escHtml(tipOf(g)) + '">' +
+    return '<div class="badge ' + g.status + '" data-gi="' + g.gi + '" title="' + escHtml(tipOf(g)) + '">' +
       '<div class="game-lead">' + (g.icon ? '<img class="game-icon" src="' + escHtml(g.icon) + '" alt="" loading="lazy">' : '') +
       '<span class="launch-no" title="Порядок запуска в эфире">' + g.nos + '</span></div><div class="game-content"><span class="game-name">' + escHtml(g.name) + '</span>' + (g.note ? '<span class="game-note">' + escHtml(g.note) + '</span>' : '') +
       (meta ? '<span class="plat-label">' + meta + '</span>' : '') + '</div>' +
@@ -791,7 +790,7 @@ async function initGamesPage() {
     gamesContainer.innerHTML = order.map(s => {
       const url = safeUrl(s.link);
       const title = url ? '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + escHtml(s.title) + '</a>' : escHtml(s.title);
-      return '<div class="game-card"><div class="stream-header"><h3>' + title + '</h3><span class="stream-date-header">' + fmtDate(s.date) + '</span></div>' +
+      return '<div class="game-card"><div class="stream-header"><h3>' + (s.num > 0 ? '<span class="stream-no" title="Номер стрима">#' + s.num + '</span>' : '') + title + '</h3><span class="stream-date-header">' + fmtDate(s.date) + '</span></div>' +
         '<div class="list-body">' + groups.get(s.id).slice().sort((a, b) => a.no - b.no).map(badge).join('') + '</div></div>';
     }).join('');
   }
@@ -819,5 +818,40 @@ async function initGamesPage() {
     gamesContainer.innerHTML = '<div class="game-card"><div class="list-body">' + list.map(badge).join('') + '</div></div>';
   }
 
+  const pop = document.createElement('div');
+  pop.className = 'game-pop';
+  pop.hidden = true;
+  document.body.appendChild(pop);
+  const closePop = () => { pop.hidden = true; };
+  gamesContainer.addEventListener('click', e => {
+    const b = e.target.closest('.badge');
+    if (!b || e.target.closest('.game-links')) return;
+    e.stopPropagation();
+    const g = allGames[+b.dataset.gi];
+    if (!g) return;
+    const urls = []; const link = (u, text) => { urls.push(u); return '<a class="pop-item" href="' + u + '" target="_blank" rel="noopener noreferrer">' + escHtml(text) + '</a>'; };
+    const items = [];
+    g.attempts.forEach((a, i) => {
+      const u = safeUrl(a.timecode);
+      if (!u) return;
+      items.push(link(u, g.attempts.length > 1 ? '🎥 Попытка ' + (i + 1) + ' · запуск №' + a.no + ' · ' + (statusIcon[a.status] || '') : '🎥 Перейти к просмотру'));
+    });
+    const dl = safeUrl(g.download);
+    if (dl) items.push(link(dl, '📥 Скачать / страница игры'));
+    if (!items.length) { closePop(); return; } if (items.length === 1) { closePop(); window.open(urls[0], '_blank', 'noopener,noreferrer'); return; }
+    pop.innerHTML = '<div class="pop-title">' + escHtml(g.name) + '</div>' + items.join('');
+    pop.hidden = false;
+    const r = pop.getBoundingClientRect();
+    const left = Math.max(8, Math.min(e.clientX, window.innerWidth - r.width - 8));
+    let top = e.clientY + 8;
+    if (top + r.height > window.innerHeight - 8) top = e.clientY - r.height - 8;
+    pop.style.left = left + 'px';
+    pop.style.top = Math.max(8, top) + 'px';
+  });
+  pop.addEventListener('click', () => setTimeout(closePop, 0));
+  document.addEventListener('click', closePop);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePop(); });
+  window.addEventListener('scroll', closePop, { passive: true });
+  window.addEventListener('resize', closePop);
   setupFilters(applyFilters, { 'f-date-start': '', 'f-date-end': '', 'f-sort': 'date-desc' }, [gPlat, gStatus]);
 }

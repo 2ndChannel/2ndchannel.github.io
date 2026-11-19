@@ -18,10 +18,14 @@ background: linear-gradient(to bottom, #09143f 0%, #050a1f 100%) no-repeat fixed
 background-color: #000;
 overflow-x: hidden;
 }
+:root {
+--page-w: clamp(950px, 90vw, 2200px);
+--ui-scale: 1;
+}
 .container {
 position: relative;
 z-index: 1;
-max-width: 1100px;
+max-width: calc(var(--page-w) + 30px);
 margin: 0 auto;
 padding: 15px;
 }

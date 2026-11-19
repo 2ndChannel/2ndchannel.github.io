@@ -6,7 +6,7 @@ backdrop-filter: blur(8px);
 -webkit-backdrop-filter: blur(8px);
 padding: 22px 24px;
 margin: 0 auto 6px auto;
-max-width: 950px;
+max-width: min(var(--page-w), 1200px);
 width: 100%;
 border-radius: 18px;
 border: 1px solid rgba(255, 255, 255, 0.1);
@@ -72,6 +72,10 @@ text-transform: uppercase;
 letter-spacing: 1px;
 overflow-wrap: anywhere;
 }
+.tnu-facts { gap: 6px; margin-top: 12px; }
+.tnu-facts .tnu-fact { gap: 1px; padding: 5px 10px; border-radius: 10px; }
+.tnu-facts .tnu-fact-val { font-size: 15px; line-height: 1.15; letter-spacing: .8px; }
+.tnu-facts .tnu-fact-key { font-size: 11.5px; line-height: 1.2; }
 .tnu-fact-key {
 font-size: 12.5px;
 line-height: 1.25;
@@ -231,6 +235,12 @@ border: 1px solid rgba(255, 255, 255, 0.15);
 font-size: 13px;
 font-weight: bold;
 color: #ddd;
+}
+.tnu-pair { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; width: 100%; max-width: min(var(--page-w), 1200px); margin: 0 auto 6px auto; }
+.tnu-pair > .tnu-card { margin: 0; max-width: none; }
+:where(html[data-mode="pc"]) {
+.tnu-pair { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.tnu-pair .tnu-links { grid-template-columns: minmax(0, 1fr); }
 }
 .tnu-chip:hover {
 background: rgba(255, 255, 255, 0.14);
@@ -397,7 +407,7 @@ font-size: 13px;
 color: #aaa;
 pointer-events: none;
 }
-@media (max-width: 850px) {
+:where(html:not([data-mode="pc"])) {
 .tnu-gallery,
 .tnu-gallery-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .tnu-times { grid-template-columns: 1fr; }
@@ -407,7 +417,7 @@ pointer-events: none;
 .tnu-lb-prev { left: 6px; }
 .tnu-lb-next { right: 6px; }
 }
-@media (max-width: 850px) {
+:where(html:not([data-mode="pc"])) {
 .tnu-card { padding: 16px; border-radius: 16px; }
 .tnu-card h1 { font-size: 24px; }
 .tnu-card h2 { font-size: 17px; padding-bottom: 8px; }
@@ -417,7 +427,7 @@ pointer-events: none;
 .tnu-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .container { padding: 10px; }
 }
-@media (max-width: 640px) {
+:where(html[data-mode="phone"]) {
 .tnu-grid,
 .tnu-links { grid-template-columns: 1fr; }
 .tnu-link { padding: 9px 10px; gap: 11px; }
@@ -434,9 +444,10 @@ body:has(#nav-inner.mobile-mode) .tnu-card .tnu-lead { font-size: 16px; }
 body:has(#nav-inner.mobile-mode) .tnu-icon { width: 44px; height: 44px; border-radius: 10px; }
 body:has(#nav-inner.mobile-mode) .container { padding: 10px; }
 .tnu-mega .tnu-link-title { color: #e0373d; }
-@media (min-width: 641px) {
+:where(html:not([data-mode="phone"])) {
 .tnu-links-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+.tnu-card p.tnu-important b { font-weight: 900; text-transform: uppercase; letter-spacing: .6px; margin-right: 6px; }
 .tnu-card p.tnu-important {
 margin: 8px 0 12px 0;
 padding: 10px 14px;
@@ -474,7 +485,7 @@ align-items: start;
 grid-template-columns: 1fr;
 margin-top: 0;
 }
-@media (max-width: 850px) {
+:where(html:not([data-mode="pc"])) {
 .tnu-podcast { grid-template-columns: 1fr; }
 }
 .tnu-help-img {
@@ -502,7 +513,7 @@ margin-top: 12px;
 grid-template-columns: 1fr;
 margin-top: 0;
 }
-@media (max-width: 850px) {
+:where(html:not([data-mode="pc"])) {
 .tnu-help { grid-template-columns: 1fr; }
 .tnu-help-img { max-width: 360px; margin: 0 auto; }
 }
@@ -510,10 +521,10 @@ margin-top: 0;
 content: "• Страница собрана наспех, не отредактирована";
 margin-left: 0.6em;
 }
-@media (max-width: 480px) {
+:where(html:is([data-size="tiny"], [data-size="small"])) {
 #nav .dev-strip { font-size: 9px; letter-spacing: 0; }
 }
-@media (max-width: 380px) {
+:where(html[data-size="tiny"]) {
 #nav .dev-strip {
 display: block;
 height: auto;
@@ -527,10 +538,10 @@ content: "Страница собрана наспех, не отредакти�
 display: block;
 margin: 0;
 }
-body:has(#nav-inner.mobile-mode) { padding-top: 90px; }
+& body:has(#nav-inner.mobile-mode) { padding-top: 90px; }
 }
 .tnu-deco {
-max-width: 950px;
+max-width: min(var(--page-w), 1200px);
 margin: 14px auto 20px auto;
 }
 .tnu-deco .tnu-shot {
@@ -547,10 +558,28 @@ image-rendering: pixelated;
 border-radius: 12px;
 border: 1px solid rgba(255, 255, 255, 0.12);
 }
-@media (max-width: 640px) {
+:where(html[data-mode="phone"]) {
 .tnu-float {
 width: 88px;
 height: 88px;
 margin-left: 12px;
 }
+}
+:where(html[data-mode="pc"]) {
+.tnu-hero {
+display: grid;
+grid-template-columns: minmax(0, 1fr) minmax(0, 46%);
+grid-template-rows: auto 1fr auto;
+grid-template-areas: "title banner" "lead banner" "note facts";
+column-gap: 24px;
+row-gap: 10px;
+align-items: start;
+}
+.tnu-hero .tnu-title { grid-area: title; }
+.tnu-hero .tnu-lead { grid-area: lead; }
+.tnu-hero p.tnu-important { grid-area: note; align-self: stretch; display: flex; align-items: center; justify-content: center; text-align: center; margin: 0; padding: 7px 12px; font-size: 13px; line-height: 1.35; }
+.tnu-hero p.tnu-important b { font-size: 17px; line-height: 1; position: relative; top: -1px; }
+.tnu-hero .tnu-fact { justify-content: center; }
+.tnu-hero .tnu-facts { grid-area: facts; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; margin-top: 0; align-self: stretch; }
+.tnu-hero .tnu-banner { grid-area: banner; align-self: stretch; height: 100%; object-fit: cover; margin: 0; }
 }
