@@ -437,19 +437,19 @@ function setupStreamPreview(box, all, getView) {  const canHover = !!(window.mat
   card.target = '_blank';
   card.rel = 'noopener noreferrer';
   document.body.appendChild(card);
-  let showT = 0, hideT = 0, current = '';
+  let showT = 0, hideT = 0, current = '', mx = null;
   const hide = () => {
     clearTimeout(showT);
     clearTimeout(hideT);
     card.classList.remove('show');
     current = '';
-  };  const place = anchor => {
+  };  const place = (anchor, px) => {
     const r = anchor.getBoundingClientRect();
     const w = card.offsetWidth, h = card.offsetHeight;
     const nav = document.getElementById('nav-inner');
     const strip = nav ? nav.querySelector('.dev-strip') : null;
     const topLimit = (nav ? Math.round((strip || nav).getBoundingClientRect().bottom) : 66) + 8;    const bottomLimit = window.innerHeight - (canHover ? 36 : 8);
-    const left = Math.min(Math.max(8, r.left), window.innerWidth - w - 8);
+    const left = Math.min(Math.max(8, px == null ? r.left : px - 16), window.innerWidth - w - 8);
     let top = r.bottom + 6;
     if (top + h > bottomLimit) {
       const above = r.top - h - 6;
@@ -474,11 +474,10 @@ function setupStreamPreview(box, all, getView) {  const canHover = !!(window.mat
       '<div class="sp-title">' + escHtml(s.title) + '</div>' +
       '<div class="sp-meta">' + info.join(' • ') + '</div>' +      ((!getView || getView().frame) && s._frame.length ? '<div class="sp-people"><b class="sp-frame">В кадре:</b> <i>' + escHtml(names(s._frame)) + '</i></div>' : '') +      ((!getView || getView().voice) && s._voice.length ? '<div class="sp-people"><b class="sp-voice">В голосе:</b> <i>' + escHtml(names(s._voice)) + '</i></div>' : '');    lineSplitOne(card.querySelector('.sp-title'));
     const img = card.querySelector('img');
-    img.addEventListener('error', () => { if (img.parentNode) img.parentNode.remove(); });
-    place(anchor);
+    img.addEventListener('error', () => { if (img.parentNode) img.parentNode.remove(); });    place(anchor, mx);
     current = anchor.dataset.sid;
     card.classList.add('show');
-  };  box.addEventListener('mouseover', e => {    if (!canHover) return;
+  };  box.addEventListener('mousemove', e => { mx = e.clientX; }); box.addEventListener('mouseover', e => { mx = e.clientX;    if (!canHover) return;
     const a = hostOf(e.target);
     if (!a) return;
     clearTimeout(hideT);
@@ -501,7 +500,7 @@ function setupStreamPreview(box, all, getView) {  const canHover = !!(window.mat
     cancelPress();
     const a = e.target.closest ? e.target.closest('a.stream-title') : null;
     if (!a || !box.contains(a) || e.touches.length !== 1) return;
-    sx = e.touches[0].clientX;
+    sx = e.touches[0].clientX; mx = sx;
     sy = e.touches[0].clientY;
     pressT = setTimeout(() => {
       show(a);
