@@ -33,7 +33,8 @@ if (!navCont) return;
 try {
 const isSubDir = window.location.pathname.includes('/games/') ||
 window.location.pathname.includes('/streams/') ||
-window.location.pathname.includes('/tnu4/');
+window.location.pathname.includes('/tnu4/') ||
+window.location.pathname.includes('/ngiv/');
 const relPath = isSubDir ? '../' : './';
 const response = await fetch(relPath + 'a_data/system/nav.html');
 const html = await response.text();

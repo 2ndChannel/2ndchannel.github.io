@@ -18,6 +18,7 @@ height: 60px;
 .menu-links a:nth-child(2) { --btn-color: var(--color-2); }
 .menu-links a:nth-child(3) { --btn-color: var(--color-3); }
 .menu-links a:nth-child(4) { --btn-color: var(--color-4); }
+.menu-links a:nth-child(5) { --btn-color: var(--color-5); }
 .nav {
 display: flex;
 justify-content: center;
