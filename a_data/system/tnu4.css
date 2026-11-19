@@ -172,8 +172,8 @@ transition: background 0.2s, transform 0.2s, border-color 0.2s;
 -webkit-tap-highlight-color: transparent;
 }
 .tnu-link:hover {
-background: rgba(255, 255, 255, 0.11);
-border-color: rgba(255, 255, 255, 0.2);
+background: rgba(207, 65, 0, 0.18);
+border-color: var(--tnu-accent);
 filter: none;
 }
 @media (hover: hover) {
@@ -238,6 +238,10 @@ color: #ddd;
 }
 .tnu-pair { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; width: 100%; max-width: min(var(--page-w), 1200px); margin: 0 auto 6px auto; }
 .tnu-pair > .tnu-card { margin: 0; max-width: none; }
+.tnu-col { display: grid; grid-template-rows: auto 1fr; gap: 6px; min-width: 0; }
+.tnu-col > .tnu-card { margin: 0; max-width: none; }
+.tnu-col > .tnu-card:last-child { display: flex; flex-direction: column; }
+.tnu-col > .tnu-card:last-child .tnu-links { flex: 1 1 auto; grid-auto-rows: 1fr; }
 :where(html[data-mode="pc"]) {
 .tnu-pair { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 .tnu-pair .tnu-links { grid-template-columns: minmax(0, 1fr); }

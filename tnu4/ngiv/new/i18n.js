@@ -1,7 +1,21 @@
 (function () {
   /* Оригинал, открытый отдельной страницей (не в окне просмотрщика), — только на английском:
-     без перевода, без переключателя языка и без подсказок. */
-  if (window.parent === window && /\/site\/[^\/]*$/.test(location.pathname)) return;
+     без перевода, без переключателя языка и без подсказок. */  if (window.parent === window && /\/site\/[^\/]*$/.test(location.pathname)) {
+    if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
+      var vp = document.createElement('meta');
+      vp.name = 'viewport';
+      document.head.appendChild(vp);
+      var fitVp = function () {
+        var r = document.getElementById('root');
+        var t = r ? null : document.querySelector('body > table');
+        var w = r ? r.offsetWidth : (t ? t.offsetWidth + 20 : 0);
+        vp.content = 'width=' + (w > 200 ? w : 700);
+      };
+      fitVp();
+      window.addEventListener('load', fitVp);
+    }
+    return;
+  }
   var KEY = 'ngivLang';  var lang = 'en';
   try { lang = localStorage.getItem(KEY) === 'ru' ? 'ru' : 'en'; } catch (e) {}
   var q = location.search.match(/[?&]lang=(ru|en)/);

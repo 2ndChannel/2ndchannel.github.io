@@ -84,7 +84,7 @@ img.nv-hot { filter: brightness(1.25); }
 .nv-btn:hover { background: color-mix(in srgb, var(--page-color, #2341b6) 55%, transparent); border-color: var(--page-color, #2341b6); }
 .nv-seg { display: inline-flex; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 8px; }
 .nv-seg a { padding: 6px 11px; font-weight: 700; color: #aab6e6 !important; }
-.nv-seg a:hover { background: rgba(255, 255, 255, 0.1); }
+.nv-seg a:hover { background: color-mix(in srgb, var(--page-color, #2341b6) 55%, transparent); color: #fff !important; }
 .nv-seg a.on { background: var(--page-color, #2341b6); color: #fff !important; }
 
 .nv-grpbox { display: inline-flex; align-items: center; gap: 7px; }
