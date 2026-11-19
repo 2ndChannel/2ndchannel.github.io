@@ -31,11 +31,10 @@ async function loadNavbar() {
 const navCont = document.getElementById('nav');
 if (!navCont) return;
 try {
-const isSubDir = window.location.pathname.includes('/games/') ||
-window.location.pathname.includes('/streams/') ||
-window.location.pathname.includes('/tnu4/') ||
-window.location.pathname.includes('/ngiv/');
-const relPath = isSubDir ? '../' : './';
+const pth = window.location.pathname;
+const secM = pth.match(/\/(games|streams|tnu4)\//);
+let relPath = './';
+if (secM) { const rest = pth.slice(pth.indexOf(secM[0]) + secM[0].length); relPath = '../'.repeat(1 + rest.split('/').length - 1); }
 const response = await fetch(relPath + 'a_data/system/nav.html');
 const html = await response.text();
 navCont.innerHTML = html;
@@ -76,7 +75,7 @@ link.classList.add('is-yellow');
 }
 const isHome = (currentPath === "" || currentPath.endsWith("index.html")) &&
 (rawHref === "./" || rawHref === "index.html");
-const isCurrent = (currentPath === linkPath && rawHref !== "./");
+const isCurrent = (currentPath === linkPath && rawHref !== "./") || (rawHref === "tnu4/" && currentPath.indexOf("/tnu4/") !== -1);
 if (isHome || isCurrent) {
 link.classList.add('active');
 foundActive = true;
@@ -194,8 +193,7 @@ const edge = stuck ? anchor.getBoundingClientRect().bottom - 4 : anchor.getBound
 const want = edge <= nb + 2;
 if (want === stuck) return;
 stuck = want;
-if (want) {
-preH = card.offsetHeight; ['toggleFilters', 'toggleView'].forEach(id => { const b = document.getElementById(id); if (b && b.getAttribute('aria-expanded') === 'true') b.click(); });  const h1 = card.offsetHeight; anchor.style.height = (h1 + 4) + 'px'; if (preH > h1) window.scrollBy({ top: h1 - preH, behavior: 'instant' });
+if (want) {  ['toggleFilters', 'toggleView'].forEach(id => { const b = document.getElementById(id); if (b && b.getAttribute('aria-expanded') === 'true') b.click(); });  const h1 = card.offsetHeight; anchor.style.height = (h1 + 4) + 'px'; if (preH > h1) window.scrollBy({ top: h1 - preH, behavior: 'instant' });
 card.classList.add('stuck'); barH = card.offsetHeight;
 const tb = document.getElementById('toggleFilters');
 if (tb && tb.getAttribute('aria-expanded') === 'true') tb.click();
@@ -283,8 +281,7 @@ function setDateRange(dates, kind) {
 }
 document.addEventListener('click', e => {
   const t = e.target;
-  if (!t || !t.closest || t.closest('.top-card, .dp-popup, .cs-popup, #nav')) return;
-  preH = card.offsetHeight; ['toggleFilters', 'toggleView'].forEach(id => { const b = document.getElementById(id); if (b && b.getAttribute('aria-expanded') === 'true') b.click(); });
+  if (!t || !t.closest || t.closest('.top-card, .dp-popup, .cs-popup, #nav')) return;  ['toggleFilters', 'toggleView'].forEach(id => { const b = document.getElementById(id); if (b && b.getAttribute('aria-expanded') === 'true') b.click(); });
 });
 function setupFilters(render, defaults, extra) {
   const $ = id => document.getElementById(id);

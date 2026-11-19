@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="../../a_data/system/mode.js"></script>
+<link rel="stylesheet" href="../../a_data/system/style.css">
+<link rel="stylesheet" href="../../a_data/system/nav.css">
+<link rel="stylesheet" href="../../a_data/system/scrollbar.css">
+<link rel="stylesheet" href="new/ngiv-ui.css">
+<link rel="canonical" href="https://2ndchannel.github.io/tnu4/ngiv/">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<title>Ninja Gaiden IV — архив сайта Guardian | 2nd Channel</title>
+<meta name="description" content="Архив старого фанатского сайта Ninja Gaiden IV от Guardian (Geocities, 2000-е): боссы, враги, Рю, Роберт, сюжет и Ninja Gaiden Trilogy.">
+<meta name="robots" content="index, follow">
+<meta name="language" content="ru">
+<meta property="og:title" content="Ninja Gaiden IV — архив сайта Guardian | 2nd Channel">
+<meta property="og:description" content="Старый фанатский сайт Ninja Gaiden IV, сохранённый как ретро-архив">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://2ndchannel.github.io/tnu4/ngiv/">
+<meta property="og:image" content="https://2ndchannel.github.io/a_data/system/preview.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+.nv-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; padding: 8px 14px; }
+.nv-title b { display: inline; font-size: 17px; }
+.nv-title span { display: inline; max-width: none; margin: 0 0 0 10px; font-size: 13px; }
+.nv-tools { gap: 8px 14px; }
+.nv-hint { display: none; }
+.ngiv-foot {
+  margin-top: 10px;
+  padding: 8px 14px;
+  background: rgba(0, 0, 0, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #aaa;
+}
+#ngiv-window {
+  border: 3px solid var(--page-color, #2341b6);
+  border-radius: 12px;
+  background: #000;
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.55);
+}
+#ngiv-box { position: relative; width: 100%; min-height: 300px; overflow: hidden; background: #000; }
+#ngiv-frame { display: block; border: 0; background: #000; width: 100%; height: 600px; transform-origin: 0 0; }
+.ngiv-noscript { padding: 20px; font-family: Arial, Helvetica, sans-serif; font-size: 16px; color: #fff; }
+.ngiv-noscript a { color: #8fb0ff; }
+html:not([data-mode="pc"]) #ngiv-viewbox { display: none; }
+
+/* ---------- ПК: слева панель управления, справа просмотрщик ---------- */
+html[data-mode="pc"] body { height: 100vh; box-sizing: border-box; overflow: hidden; }
+html[data-mode="pc"] .container {
+  height: 100%; box-sizing: border-box; padding: 10px 15px;
+  display: grid; grid-template-columns: 300px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; gap: 12px;
+}
+html[data-mode="pc"] #ngiv-window { grid-column: 2; grid-row: 1; min-height: 0; display: flex; }
+html[data-mode="pc"] #ngiv-box { flex: 1 1 auto; min-height: 0; height: auto; }
+html[data-mode="pc"] .ngiv-foot { grid-column: 1 / -1; grid-row: 2; margin: 0; }
+html[data-mode="pc"] #ngiv-frame { position: absolute; }
+html[data-mode="pc"] #ngiv-box.is-new #ngiv-frame { left: 0; top: 0; width: 100%; height: 100%; transform: none; }
+/* оригинал: натуральный размер (или крупнее), вертикальная прокрутка */
+html[data-mode="pc"] #ngiv-box.is-orig { overflow-x: hidden; overflow-y: auto; }
+html[data-mode="pc"] #ngiv-box.is-orig #ngiv-frame { position: absolute; top: 0; }
+html[data-mode="pc"] #ngiv-box.is-orig #ngiv-sizer { display: block; width: 1px; visibility: hidden; pointer-events: none; }
+
+html[data-mode="pc"] .nv-bar {  grid-column: 1; grid-row: 1; align-self: start; margin: 0; min-height: 0; overflow: hidden;
+  display: flex; flex-direction: column; flex-wrap: nowrap; align-items: stretch; justify-content: flex-start; gap: 0;
+  padding: 14px 14px 14px;
+  background: linear-gradient(180deg, rgba(14, 20, 52, 0.92), rgba(0, 0, 0, 0.86));
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-top: 3px solid var(--page-color, #2341b6);
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+}
+html[data-mode="pc"] .nv-title { padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.12); }
+html[data-mode="pc"] .nv-title b { display: block; font-size: 18px; line-height: 1.2; letter-spacing: 0.2px; }
+html[data-mode="pc"] .nv-title span { display: block; margin: 4px 0 0; max-width: none; font-size: 12px; line-height: 1.35; color: #9aa6d6; }
+html[data-mode="pc"] .nv-tools { display: flex; flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 10px; flex: 1 1 auto; min-height: 0; }
+html[data-mode="pc"] .nv-grpbox { display: flex; flex-direction: row; align-items: center; gap: 10px; }
+html[data-mode="pc"] .nv-lab { flex: 0 0 44px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8f9bc9; }
+html[data-mode="pc"] .nv-seg { flex: 1 1 auto; display: flex; padding: 3px; gap: 3px; background: rgba(0, 0, 0, 0.45); border-radius: 10px; }
+html[data-mode="pc"] .nv-seg a { flex: 1 1 0; text-align: center; padding: 7px 4px; font-size: 13.5px; border-radius: 7px; transition: background 0.15s; }
+html[data-mode="pc"] .nv-seg a.on { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45); }
+html[data-mode="pc"] .nv-hint { display: block; margin: -4px 0 0; font-size: 11.5px; line-height: 1.35; color: #8e98c4; }
+
+html[data-mode="pc"] .nv-btn { display: block; text-align: center; padding: 9px 12px; font-size: 14px; font-weight: 700; border-radius: 10px; }
+html[data-mode="pc"] .nv-btn small { display: block; margin-top: 2px; font-size: 11.5px; font-weight: 400; color: #9aa6d6; }
+html[data-mode="pc"] #ngiv-open { background: color-mix(in srgb, var(--page-color, #2341b6) 38%, transparent); border-color: var(--page-color, #2341b6); }
+html[data-mode="pc"] #ngiv-open:hover { background: var(--page-color, #2341b6); }
+html[data-mode="pc"] #ngiv-open small { color: #c9d3ff; }
+html[data-mode="pc"] .nv-btn.nv-back { padding: 7px 12px; font-weight: 400; background: transparent; color: #b8c2ee !important; }
+.nv-btn small { display: none; }
+html[data-mode="pc"] .nv-btn small { display: block; }
+@media (max-width: 1250px) { html[data-mode="pc"] .container { grid-template-columns: 250px minmax(0, 1fr); } }
+@media (max-height: 860px) {
+  html[data-mode="pc"] .nv-title span, html[data-mode="pc"] .nv-hint { display: none; }
+  html[data-mode="pc"] .nv-title { margin-bottom: 10px; }
+  html[data-mode="pc"] #ngiv-open small { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div id="nav">
+<noscript><a href="/tnu4/">Team Ninja Unkende 4</a> <a href="/streams/">Статистика по стримам</a> <a href="/games/">Игры на стримах</a></noscript>
+</div>
+<div class="container">
+<header class="nv-bar">
+<div class="nv-title"><b>Home of Ninja Gaiden IV</b><span>Архив фанатского сайта Guardian (Geocities, 2000-е)</span></div>
+<div class="nv-tools">
+<span class="nv-grpbox"><span class="nv-lab">Язык</span><span class="nv-seg" id="ngiv-lang"><a href="#" id="ngiv-lang-en" data-l="en">EN</a><a href="#" id="ngiv-lang-ru" data-l="ru">RU</a></span></span>
+<span class="nv-grpbox" id="ngiv-viewbox"><span class="nv-lab">Вид</span><span class="nv-seg" id="ngiv-view"><a href="#" id="ngiv-view-new" data-v="new">Крупный</a><a href="#" id="ngiv-view-orig" data-v="orig">Оригинал</a></span><span class="nv-hint" id="ngiv-viewhint"></span></span>
+<a class="nv-btn" href="site/NG4Home.html" id="ngiv-open" target="_blank" rel="noopener" data-tip-side="r">Отдельно ↗<small>Оригинал, English, новая вкладка</small></a>
+<a class="nv-btn nv-back" href="/tnu4/">К проекту TNU4</a>
+</div>
+</header>
+<div id="ngiv-window">
+<div id="ngiv-box" class="is-new">
+<div id="ngiv-sizer"></div>
+<iframe id="ngiv-frame" title="Home of Ninja Gaiden IV" scrolling="no"></iframe>
+<noscript><div class="ngiv-noscript">Для просмотра окна нужен JavaScript. <a href="site/NG4Home.html">Открыть архив отдельной страницей</a>.</div></noscript>
+</div>
+</div>
+<div class="ngiv-foot">
+Ninja Gaiden и связанные изображения — собственность Tecmo. Тексты и вёрстка архивных страниц принадлежат их автору, Guardian. Реклама, счётчики и мёртвые внешние картинки убраны, внешние ссылки ведут в веб-архив. Часть анимированных превью с оригинала не сохранилась.
+</div>
+</div>
+<script src="../../a_data/system/script.js"></script>
+<script src="new/ngiv-ui.js"></script>
+<script>
+(function () {
+  var START = 'NG4Home';
+  var SUFFIX = ' | 2nd Channel';
+  var VKEY = 'ngivView';
+  var frame = document.getElementById('ngiv-frame');
+  var box = document.getElementById('ngiv-box');
+  var openLink = document.getElementById('ngiv-open');
+  var vNew = document.getElementById('ngiv-view-new');
+  var vOrig = document.getElementById('ngiv-view-orig');
+  var hint = document.getElementById('ngiv-viewhint');
+  var sizer = document.getElementById('ngiv-sizer');
+  var root = document.documentElement;
+  var firstLoad = true;
+  var timers = [];
+  var view = 'new';
+  try { view = localStorage.getItem(VKEY) === 'orig' ? 'orig' : 'new'; } catch (e) {}
+  if (/[?&]v=orig/.test(location.search)) view = 'orig';
+
+  function isPc() { return root.getAttribute('data-mode') === 'pc'; }
+  function eff() { return isPc() ? view : 'orig'; }
+  function dir() { return eff() === 'new' ? 'new/' : 'site/'; }
+
+  function nameFromHash() {
+    var h = '';
+    try { h = decodeURIComponent(location.hash.replace(/^#/, '')); } catch (e) {}
+    return /^[A-Za-z0-9_]+$/.test(h) ? h : START;
+  }
+
+  function currentName() {
+    try {
+      var m = frame.contentWindow.location.pathname.match(/([^\/]+)\.html$/);
+      return m ? m[1] : null;
+    } catch (e) { return null; }
+  }
+
+  function paintView() {
+    vNew.classList.toggle('on', view === 'new');
+    vOrig.classList.toggle('on', view === 'orig');
+    vNew.setAttribute('aria-pressed', view === 'new');
+    vOrig.setAttribute('aria-pressed', view === 'orig');
+    box.classList.toggle('is-new', eff() === 'new');
+    frame.setAttribute('scrolling', eff() === 'new' ? 'auto' : 'no');
+    box.classList.toggle('is-orig', eff() === 'orig');
+    if (hint) hint.textContent = view === 'new'
+      ? 'Адаптированная вёрстка: крупнее и по размеру окна. Это не оригинал.'
+      : 'Как на Geocities: натуральный размер без сжатия, страница листается вниз.';
+  }
+
+  function openHref(name) {
+    /* «Отдельно» всегда ведёт на оригинал (site/), независимо от вида в окне */
+    if (openLink) openLink.href = 'site/' + name + '.html';
+  }
+
+  function layout() {
+    paintView();
+    if (eff() === 'new') {
+      frame.style.cssText = '';
+      box.style.height = '';
+      if (sizer) sizer.style.height = '0px';
+      return;
+    }
+    var doc;
+    try { doc = frame.contentDocument; } catch (e) { return; }
+    if (!doc || !doc.body) return;
+    var rootEl = doc.getElementById('root');
+    var table = rootEl ? null : doc.querySelector('body > table');
+    var pageW = rootEl ? rootEl.offsetWidth : (table ? table.offsetWidth + 20 : 700);
+    if (!pageW || pageW < 200) pageW = 700;
+    frame.style.width = pageW + 'px';
+    frame.style.height = '10px';
+    var h = Math.max(doc.documentElement.scrollHeight, doc.body.scrollHeight);
+    if (rootEl) {
+      h = Math.max(h, rootEl.offsetHeight);
+      for (var i = 0; i < rootEl.children.length; i++) {
+        var c = rootEl.children[i];
+        h = Math.max(h, c.offsetTop + c.offsetHeight);
+      }
+    }
+    frame.style.height = h + 'px';
+    var bw = box.clientWidth;
+    if (isPc()) {
+      /* ПК: оригинал не сжимаем. Вертикальная колонка по центру с прокруткой;
+         при широком окне слегка увеличиваем (не больше --ui-scale), чтобы текст читался. */
+      frame.style.position = 'absolute';
+      box.style.height = '';
+      var us = parseFloat(getComputedStyle(root).getPropertyValue('--ui-scale')) || 1;
+      var sc = Math.max(1, Math.min(us, bw / pageW));
+      if (sizer) sizer.style.height = Math.ceil(h * sc) + 'px';
+      bw = box.clientWidth;
+      sc = Math.max(1, Math.min(us, bw / pageW));
+      frame.style.transform = sc > 1 ? 'scale(' + sc + ')' : 'none';
+      frame.style.left = Math.max(0, Math.round((bw - pageW * sc) / 2)) + 'px';
+      frame.style.top = '0px';
+      return;
+    }
+    var scale = bw >= pageW ? 1 : bw / pageW;
+    frame.style.width = (scale === 1 ? bw : pageW) + 'px';
+    frame.style.position = 'static';
+    frame.style.transform = scale < 1 ? 'scale(' + scale + ')' : 'none';
+    box.style.height = Math.ceil(h * scale) + 'px';
+  }
+
+  function relayoutSoon() {
+    timers.forEach(clearTimeout);
+    timers = [150, 600, 1500, 3500].map(function (ms) { return setTimeout(layout, ms); });
+  }
+
+  function load(name) {
+    paintView();
+    frame.src = dir() + name + '.html';
+  }
+
+  function onFrameLoad() {
+    var name = currentName();
+    var doc;
+    try { doc = frame.contentDocument; } catch (e) { doc = null; }
+    if (name) {
+      try { history.replaceState(null, '', location.pathname + '#' + name); } catch (e) {}
+      openHref(name);
+      if (window.ngivMarkNav) window.ngivMarkNav(name);
+    }
+    if (doc && doc.title) document.title = doc.title.replace(/ \| 2nd Channel$/, '').replace(/ \(адаптированная версия\)/, '') + SUFFIX;
+    layout();
+    if (doc && eff() === 'orig') {
+      Array.prototype.forEach.call(doc.images, function (img) {
+        if (!img.complete) img.addEventListener('load', layout);
+      });
+    }
+    relayoutSoon();
+    if (isPc() && eff() === 'orig') box.scrollTop = 0;
+    if (!firstLoad && !isPc()) {
+      var top = box.getBoundingClientRect().top + window.pageYOffset - 100;
+      if (window.pageYOffset > top) window.scrollTo({ top: Math.max(0, top), behavior: 'auto' });
+    }
+    firstLoad = false;
+  }
+
+  function setView(v, e) {
+    e.preventDefault();
+    if (view === v) return;
+    view = v;
+    try { localStorage.setItem(VKEY, v); } catch (x) {}
+    load(currentName() || nameFromHash());
+  }
+  vNew.addEventListener('click', function (e) { setView('new', e); });
+  vOrig.addEventListener('click', function (e) { setView('orig', e); });
+
+  frame.addEventListener('load', onFrameLoad);
+  load(nameFromHash());
+
+  window.addEventListener('hashchange', function () {
+    var n = nameFromHash();
+    if (n !== currentName()) load(n);
+  });
+
+  var raf = 0;
+  window.addEventListener('resize', function () {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(layout);
+  });
+  window.addEventListener('modechange', function () {
+    var n = currentName() || nameFromHash();
+    if (frame.src.indexOf('/' + dir() + n + '.html') < 0) load(n); else setTimeout(layout, 50);
+  });
+})();
+(function () {
+  var KEY = 'ngivLang';
+  var ru = document.getElementById('ngiv-lang-ru');
+  var en = document.getElementById('ngiv-lang-en');
+  var frame = document.getElementById('ngiv-frame');
+  function get() {
+    try { return localStorage.getItem(KEY) === 'ru' ? 'ru' : 'en'; } catch (e) { return 'en'; }
+  }
+  function paint() {
+    var l = get();
+    ru.classList.toggle('on', l === 'ru');
+    en.classList.toggle('on', l === 'en');
+    ru.setAttribute('aria-pressed', l === 'ru');
+    en.setAttribute('aria-pressed', l === 'en');
+  }
+  function pick(l, e) {
+    e.preventDefault();
+    if (get() === l) return;
+    try { localStorage.setItem(KEY, l); } catch (x) {}
+    paint();
+    window.dispatchEvent(new Event('ngivlang'));
+    try { frame.contentWindow.location.reload(); } catch (x) {}
+  }
+  ru.addEventListener('click', function (e) { pick('ru', e); });
+  en.addEventListener('click', function (e) { pick('en', e); });
+  paint();
+})();
+</script>
+</body>
+</html>
